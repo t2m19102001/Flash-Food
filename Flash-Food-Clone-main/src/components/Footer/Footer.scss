@@ -1,0 +1,98 @@
+.footer{
+    display: flex;
+    color: azure;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 8vw;
+    padding-top: 80px;
+    background-color:rgb(83, 79, 79);
+    margin-top: 20px;
+
+    .footer-content{
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        gap: 50px;
+        .footer-content-left, .footer-content-right, .footer-content-center-1,.footer-content-center-2,.app-download{
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+            gap: 20px;
+
+            li{
+                list-style: none;
+                margin-bottom: 10px;
+                cursor: pointer;
+            }
+            li:hover{
+                color: red;
+            }
+            h2{
+                font-size: 24px;
+                font-weight: 900;
+                color:rgb(190, 238, 230);
+            }
+           
+                  
+        }
+        .footer-content-left{
+            p{
+                font-weight: 600;
+            }
+            img{
+                width: 40%;
+                margin-right: 15px;
+            }
+            .footer-social-icons{
+                display: flex;
+               padding-right:20px;
+               
+            }
+        }
+        .app-download{
+
+            p{
+                font-weight: 600;
+                line-height: 20px;
+            }
+            .app-download-platforms{
+                img{
+                    cursor: pointer;
+                    width: max(30vw,120px);
+                    max-width: 180px;
+                    transition: 0.5s;
+                    cursor: pointer;
+                }
+                img:hover{
+                    transform: scale(1.05);
+                }
+            }
+        }
+        
+    }
+}
+
+@media (max-width:750px) {
+    .footer{
+        .footer-content{
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+           .footer-content-right{
+           display: none;
+           }
+           .footer-content-center-1{
+            display: none;
+           }
+           .footer-content-center-2{
+                display: none;
+            }
+        }
+        .footer-copyright{
+            text-align: center;
+        }
+    }
+    
+   
+}
