@@ -1,0 +1,97 @@
+.myorders {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 0 20px;
+
+  h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  .no-orders {
+    text-align: center;
+    color: #888;
+    font-size: 16px;
+    padding: 40px 0;
+  }
+
+  .orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .order-item {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 16px;
+    background: #fff;
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+
+      .order-date {
+        color: #888;
+        font-size: 14px;
+      }
+
+      .order-status {
+        font-weight: 600;
+        font-size: 14px;
+      }
+    }
+
+    .order-foods {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+
+    .order-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 10px;
+      border-top: 1px solid #f0f0f0;
+
+      .order-total {
+        font-weight: 700;
+        color: tomato;
+        font-size: 16px;
+      }
+
+      .order-items-count {
+        color: #888;
+        font-size: 13px;
+      }
+    }
+  }
+}
+
+@media (max-width: 750px) {
+  .myorders {
+    margin: 20px auto;
+    padding: 0 15px;
+
+    h2 {
+      font-size: 20px;
+    }
+
+    .order-item {
+      padding: 12px;
+
+      .order-foods {
+        font-size: 13px;
+      }
+
+      .order-footer .order-total {
+        font-size: 14px;
+      }
+    }
+  }
+}
