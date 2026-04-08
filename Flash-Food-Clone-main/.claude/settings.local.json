@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run:*)",
+      "Bash(npx vite:*)",
+      "Bash(npm install:*)",
+      "Bash(curl -s http://localhost:5173)",
+      "Bash(curl -s http://localhost:5174)",
+      "Bash(curl -s http://localhost:5175)",
+      "Bash(curl -s http://localhost:5176)",
+      "Bash(curl -s -X POST http://localhost:4000/api/user/login -H 'Content-Type: application/json' -d '{\"email\":\"admin@flashfood.com\",\"password\":\"12345678\"}')",
+      "Bash(curl -s -X POST http://localhost:4000/api/user/login -H 'Content-Type: application/json' -d '{\"email\":\"test@test.com\",\"password\":\"12345678\"}')",
+      "Bash(curl -s -X POST http://localhost:4000/api/user/register -H 'Content-Type: application/json' -d '{\"name\":\"Test User\",\"email\":\"testuser@test.com\",\"password\":\"12345678\"}')",
+      "Bash(curl -s -X POST http://localhost:4000/api/user/login -H 'Content-Type: application/json' -H 'Origin: http://localhost:5174' -d '{\"email\":\"admin@flashfood.com\",\"password\":\"12345678\"}')",
+      "Bash(curl -s http://localhost:4000/)",
+      "Bash(curl -s -X POST http://localhost:4000/api/user/login -H 'Content-Type: application/json' -d '{\"email\":\"an.nguyen@email.com\",\"password\":\"password123\"}')",
+      "Bash(node -e ':*)",
+      "Bash(curl -s http://localhost:4000/api/food/list)",
+      "Bash(python3 -c \"import sys,json; data=json.load\\(sys.stdin\\); print\\('success:', data.get\\('success'\\)\\); foods=data.get\\('foods',[]\\); print\\('total:', len\\(foods\\)\\); [print\\(f['_id'], f['name'], f['image'][:30]\\) for f in foods[:3]]\")"
+    ]
+  }
+}
