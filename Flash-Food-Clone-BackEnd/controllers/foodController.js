@@ -9,7 +9,9 @@ export const addFood = async (req, res) => {
         description: req.body.description,
         price: req.body.price,
         category: req.body.category,
-        image: image_filename
+        image: image_filename,
+        rating: req.body.rating || 4.5,
+        address: req.body.address || ""
     });
     try {
         await food.save();
@@ -85,6 +87,8 @@ export const updateFood = async (req, res) => {
         food.description = req.body.description;
         food.price = req.body.price;
         food.category = req.body.category;
+        food.rating = req.body.rating || food.rating;
+        food.address = req.body.address || food.address;
 
         // If new image uploaded, delete old image and update
         if (req.file) {

@@ -5,7 +5,7 @@ import { StoreContext } from '../../context/StoreContext'
 import ReviewPopup from '../ReviewPopup/ReviewPopup'
 import { useNavigate } from 'react-router-dom' // Bước 1: Import useNavigate
 
-const FoodItem = ({ id, name, price, description, image }) => {
+const FoodItem = ({ id, name, price, description, image, rating, address }) => {
 
   const { cartItems, addToCart, removeFromCart, getImageUrl } = useContext(StoreContext) // Lấy getImageUrl từ Context
   const [showReview, setShowReview] = useState(false)
@@ -21,12 +21,12 @@ const FoodItem = ({ id, name, price, description, image }) => {
     <div className='food-item'>
       <div className="food-item-container">
         {/* Bước 3: Sử dụng getImageUrl để hiện ảnh từ database và thêm sự kiện click */}
-        <img 
-          className='food-item-image' 
-          src={getImageUrl(image)} 
-          alt={name} 
+        <img
+          className='food-item-image'
+          src={getImageUrl(image)}
+          alt={name}
           onClick={handleNavigate}
-          style={{cursor: 'pointer'}}
+          style={{ cursor: 'pointer' }}
         />
         {
           !cartItems[id]
@@ -41,7 +41,7 @@ const FoodItem = ({ id, name, price, description, image }) => {
       <div className="food-item-info">
         <div className="food-item-name-rating">
           {/* Bước 4: Cho phép click vào tên món ăn để xem chi tiết */}
-          <p onClick={handleNavigate} style={{cursor: 'pointer'}}>{name}</p>
+          <p onClick={handleNavigate} style={{ cursor: 'pointer' }}>{name}</p>
           <img
             src={assets.rating_starts}
             alt=""
@@ -51,8 +51,10 @@ const FoodItem = ({ id, name, price, description, image }) => {
           />
         </div>
         <p className='food-item-desc'>{description}</p>
+        {rating && <p className='food-item-rating'>⭐ {rating}</p>}
+        {address && <p className='food-item-address'>📍 {address}</p>}
         {/* Hiển thị giá có dấu phân cách nghìn cho chuyên nghiệp */}
-        <p className='food-item-price'>{price.toLocaleString()} VNĐ</p> 
+        <p className='food-item-price'>{price.toLocaleString()} VNĐ</p>
       </div>
 
       {showReview && (

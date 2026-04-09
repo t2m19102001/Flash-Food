@@ -16,7 +16,7 @@ const FoodDetail = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0); // Cuộn lên đầu khi đổi món
-    
+
     if (foodItem && food_list.length > 0) {
       const suggestions = food_list
         .filter(item => item.category === foodItem.category && String(item._id) !== String(foodId))
@@ -40,12 +40,12 @@ const FoodDetail = () => {
           <nav className="breadcrumb">
             <span onClick={() => navigate('/')}>Home</span> » TP. HCM » {foodItem.name}
           </nav>
-          
+
           <p className="category-tag">MÓN ĂN / ĐỒ UỐNG</p>
           <h1 className='food-name'>{foodItem.name}</h1>
-          
+
           <div className="rating-section">
-            <div className="stars">⭐⭐⭐⭐⭐</div>
+            <div className="stars">⭐ {foodItem.rating || 4.5}</div>
             <span className="rating-count">50+ đánh giá trên FlashFood</span>
           </div>
 
@@ -53,6 +53,13 @@ const FoodDetail = () => {
             <span className="status-open">● Mở cửa</span>
             <span className="time">06:00 - 21:00</span>
           </div>
+
+          {foodItem.address && (
+            <div className="address-section">
+              <span className="address-label">📍 Địa chỉ:</span>
+              <span className="address-value">{foodItem.address}</span>
+            </div>
+          )}
 
           <div className="price-section">
             <span className="currency">₫</span>
@@ -71,8 +78,8 @@ const FoodDetail = () => {
           </div>
 
           <div className="description-box">
-             <p className="label">MÔ TẢ MÓN ĂN</p>
-             <p className='desc'>{foodItem.description || "Món ăn chuẩn vị Flash Food."}</p>
+            <p className="label">MÔ TẢ MÓN ĂN</p>
+            <p className='desc'>{foodItem.description || "Món ăn chuẩn vị Flash Food."}</p>
           </div>
 
           <button className="add-to-cart-btn" onClick={() => addToCart(foodItem._id)}>
@@ -88,12 +95,12 @@ const FoodDetail = () => {
             <h2 className="related-title">Món ăn bạn có thể thích</h2>
             <span className="view-all-text" onClick={() => navigate('/menu')}>Xem tất cả</span>
           </div>
-          
+
           <div className="related-grid">
             {relatedProducts.map((item) => (
-              <div 
-                key={item._id} 
-                className="related-item-card" 
+              <div
+                key={item._id}
+                className="related-item-card"
                 onClick={() => navigate(`/food/${item._id}`)}
               >
                 <div className="related-img-wrapper">
@@ -101,6 +108,7 @@ const FoodDetail = () => {
                 </div>
                 <div className="related-info">
                   <h3 className="related-name">{item.name}</h3>
+                  {item.rating && <p className="related-rating">⭐ {item.rating}</p>}
                   <p className="related-price">₫{item.price.toLocaleString()}</p>
                 </div>
               </div>
