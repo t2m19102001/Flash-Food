@@ -17,13 +17,11 @@ const Login = ({ setIsLoggedIn, url }) => {
 
     const onSubmit = async (event) => {
         event.preventDefault();
-
         try {
             const response = await axios.post(`${url}/api/user/login`, data);
-
             if (response.data.success) {
                 if (response.data.isAdmin) {
-                    setCookie("adminToken", response.data.token, 1); // 1 day
+                    setCookie("adminToken", response.data.token, 1);
                     setIsLoggedIn(true);
                     toast.success("Đăng nhập thành công!");
                 } else {
@@ -76,6 +74,11 @@ const Login = ({ setIsLoggedIn, url }) => {
                             Đăng nhập
                         </button>
                     </form>
+
+                    {/* THÊM PHẦN QUAY LẠI TRANG NGƯỜI DÙNG Ở ĐÂY */}
+                    <div className="back-to-home">
+                        <a href="http://localhost:5173">← Quay lại trang người dùng</a>
+                    </div>
 
                     <div className="login-footer">
                         <p>© 2024 Flash Food - Admin Dashboard</p>

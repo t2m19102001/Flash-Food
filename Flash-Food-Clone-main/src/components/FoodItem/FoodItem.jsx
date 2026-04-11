@@ -3,16 +3,31 @@ import './FoodItem.scss'
 import { assets } from '../../assets/assets'
 import { StoreContext } from '../../context/StoreContext'
 import ReviewPopup from '../ReviewPopup/ReviewPopup'
+import { useNavigate } from 'react-router-dom' // Bước 1: Import useNavigate
 
 const FoodItem = ({ id, name, price, description, image }) => {
 
-  const { cartItems, addToCart, removeFromCart } = useContext(StoreContext)
+  const { cartItems, addToCart, removeFromCart, getImageUrl } = useContext(StoreContext) // Lấy getImageUrl từ Context
   const [showReview, setShowReview] = useState(false)
+  const navigate = useNavigate() // Bước 2: Khởi tạo navigate
+
+  // Hàm để chuyển trang khi click vào ảnh hoặc tên
+  const handleNavigate = () => {
+    navigate(`/product/${id}`); // Điều hướng đến Route đã khai báo trong App.jsx
+    window.scrollTo(0, 0); // Cuộn lên đầu trang cho đẹp
+  }
 
   return (
     <div className='food-item'>
       <div className="food-item-container">
-        <img className='food-item-image' src={image} alt="" />
+        {/* Bước 3: Sử dụng getImageUrl để hiện ảnh từ database và thêm sự kiện click */}
+        <img 
+          className='food-item-image' 
+          src={getImageUrl(image)} 
+          alt={name} 
+          onClick={handleNavigate}
+          style={{cursor: 'pointer'}}
+        />
         {
           !cartItems[id]
             ? <img className='add' onClick={() => addToCart(id)} src={assets.add_icon_white} />
@@ -25,7 +40,8 @@ const FoodItem = ({ id, name, price, description, image }) => {
       </div>
       <div className="food-item-info">
         <div className="food-item-name-rating">
-          <p>{name}</p>
+          {/* Bước 4: Cho phép click vào tên món ăn để xem chi tiết */}
+          <p onClick={handleNavigate} style={{cursor: 'pointer'}}>{name}</p>
           <img
             src={assets.rating_starts}
             alt=""
@@ -35,7 +51,8 @@ const FoodItem = ({ id, name, price, description, image }) => {
           />
         </div>
         <p className='food-item-desc'>{description}</p>
-        <p className='food-item-price'>{price} VNĐ</p>
+        {/* Hiển thị giá có dấu phân cách nghìn cho chuyên nghiệp */}
+        <p className='food-item-price'>{price.toLocaleString()} VNĐ</p> 
       </div>
 
       {showReview && (

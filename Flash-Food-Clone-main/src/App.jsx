@@ -7,6 +7,10 @@ import Order from "./pages/Order/Order"
 import MyOrders from "./pages/MyOrders/MyOrders"
 import Footer from "./components/Footer/Footer"
 import Login from "./components/Login/Login"
+import Profile from './components/Profile/Profile'
+import FoodDetail from './components/Product/FoodDetail';
+
+
 import { useState } from "react"
 
 const App = () => {
@@ -24,7 +28,8 @@ const App = () => {
       <Route path='/cart' element={<Cart/>}/>
       <Route path='/order' element={<Order/>}/>
       <Route path='/myorders' element={<MyOrders/>}/>
-    
+      <Route path='/profile' element={<Profile />} />
+      <Route path='/product/:foodId' element={<FoodDetail />} />
     </Routes>
     </div>
     <Footer/>

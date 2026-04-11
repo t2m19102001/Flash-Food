@@ -1,0 +1,283 @@
+/* BIẾN MÀU SẮC CHỦ ĐẠO */
+$primary-orange: #ee4d2d;
+$text-main: #333;
+$text-light: #888;
+$white: #ffffff;
+$border-color: #f1f1f1;
+
+.food-detail {
+  padding: 40px 5% 80px;
+  background-color: #f8f9fa;
+  font-family: "Inter", sans-serif;
+
+  .food-detail-container {
+    display: flex;
+    gap: 60px; // Tăng gap để ảnh và chữ không dính nhau
+    background: $white;
+    padding: 45px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
+    max-width: 1200px;
+    margin: 0 auto 60px;
+
+    .food-detail-left {
+      flex: 1;
+      img {
+        width: 100%;
+        max-height: 500px;
+        object-fit: cover; // Để ảnh lấp đầy khung mà không méo
+        border-radius: 12px;
+      }
+    }
+
+    .food-detail-right {
+      flex: 1.2;
+      display: flex;
+      flex-direction: column;
+
+      /* Breadcrumb & Tags */
+      .breadcrumb {
+        font-size: 13px;
+        color: #0288d1;
+        margin-bottom: 12px;
+        span {
+          cursor: pointer;
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+      .category-tag {
+        font-size: 12px;
+        font-weight: 700;
+        color: $text-light;
+        margin-bottom: 8px;
+      }
+
+      /* Tên món ăn - To, đậm, thoáng */
+      .food-name {
+        font-size: 36px;
+        font-weight: 800;
+        color: $text-main;
+        margin: 0 0 15px 0; // Bỏ margin top để không bị đẩy xuống
+        line-height: 1.1;
+      }
+
+      /* Ratings & Status */
+      .rating-section,
+      .status-section {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+        font-size: 14px;
+        .stars {
+          color: #ffbc00;
+        }
+        .rating-count {
+          color: #0288d1;
+        }
+        .status-open {
+          color: #27ae60;
+          font-weight: 700;
+        }
+      }
+
+      /* Giá tiền nổi bật */
+      .price-section {
+        margin: 25px 0;
+        .currency {
+          font-size: 22px;
+          font-weight: 700;
+          color: $primary-orange;
+          vertical-align: top;
+        }
+        .amount {
+          font-size: 42px;
+          font-weight: 900;
+          color: $primary-orange;
+        }
+      }
+
+      /* Khối thông tin dịch vụ - Tạo đường kẻ thoáng */
+      .service-info {
+        display: flex;
+        border-top: 1px solid $border-color;
+        border-bottom: 1px solid $border-color;
+        padding: 20px 0;
+        margin-bottom: 30px;
+        .info-item {
+          flex: 1;
+          &.border-left {
+            border-left: 1px solid $border-color;
+            padding-left: 35px;
+          }
+          .label {
+            font-size: 11px;
+            color: #aaa;
+            margin-bottom: 6px;
+            font-weight: 600;
+            text-transform: uppercase;
+          }
+          .value {
+            font-size: 15px;
+            font-weight: 700;
+          }
+          .highlight-orange {
+            color: $primary-orange;
+          }
+        }
+      }
+
+      /* Mô tả món ăn */
+      .description-box {
+        margin-bottom: 40px;
+        .label {
+          font-size: 12px;
+          color: $text-light;
+          font-weight: 700;
+          margin-bottom: 10px;
+          text-transform: uppercase;
+        }
+        .desc {
+          font-size: 15px;
+          color: #555;
+          line-height: 1.7;
+        }
+      }
+
+      /* Nút thêm vào giỏ hàng - Bo góc mịn và đổ bóng */
+      .add-to-cart-btn {
+        width: fit-content; // Không trải dài 100% để tránh cảm giác thô
+        min-width: 280px;
+        background: $primary-orange;
+        color: $white;
+        padding: 18px 30px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+        transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 8px 25px rgba(238, 77, 45, 0.2);
+
+        &:hover {
+          background: #d73211;
+          transform: translateY(-3px);
+          box-shadow: 0 12px 30px rgba(238, 77, 45, 0.35);
+        }
+      }
+    }
+  }
+
+  /* 2. PHẦN GỢI Ý MÓN ĂN (Grid 6 cột) */
+  .related-products {
+    max-width: 1200px;
+    margin: 0 auto;
+
+    .related-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 35px;
+      .related-title {
+        font-size: 24px;
+        font-weight: 800;
+        color: #333;
+        border-left: 6px solid $primary-orange;
+        padding-left: 18px;
+      }
+      .view-all-text {
+        color: $primary-orange;
+        font-weight: 700;
+        cursor: pointer;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr); // 5 món + 1 mờ
+      gap: 20px;
+
+      .related-item-card {
+        background: $white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        cursor: pointer;
+        transition: 0.3s;
+        position: relative;
+
+        &:hover {
+          transform: translateY(-8px);
+          box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .related-img-wrapper {
+          height: 150px;
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+        .related-info {
+          padding: 15px;
+          .related-name {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+          .related-price {
+            color: $primary-orange;
+            font-weight: 800;
+          }
+        }
+      }
+
+      /* Ô XEM THÊM - HIỆU ỨNG MỜ */
+      .view-more-card {
+        @extend .related-item-card;
+        &::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(
+            to top,
+            rgba(255, 255, 255, 1) 35%,
+            rgba(255, 255, 255, 0.4) 100%
+          );
+          z-index: 1;
+        }
+        .view-more-content {
+          position: absolute;
+          bottom: 30px;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 2;
+          text-align: center;
+          .plus-icon {
+            font-size: 32px;
+            color: $primary-orange;
+            font-weight: 300;
+            margin-bottom: 5px;
+          }
+          p {
+            font-size: 14px;
+            font-weight: 800;
+            color: $primary-orange;
+          }
+        }
+      }
+    }
+  }
+}

@@ -14,8 +14,6 @@ const Add = ({ url }) => {
     description: "",
     category: "Ăn sáng",
     price: "",
-    rating: "4.5",
-    address: "",
   });
   const onChangeHandler = (event) => {
     const name = event.target.name;
@@ -33,8 +31,6 @@ const Add = ({ url }) => {
     formData.append("description", data.description);
     formData.append("category", data.category);
     formData.append("price", Number(data.price));
-    formData.append("rating", Number(data.rating));
-    formData.append("address", data.address);
 
     const token = getCookie("adminToken");
     const response = await axios.post(`${url}/api/food/add`, formData, {
@@ -50,8 +46,6 @@ const Add = ({ url }) => {
         description: "",
         category: "Ăn sáng",
         price: "",
-        rating: "4.5",
-        address: "",
       });
       setImage(false);
     } else {
@@ -150,37 +144,6 @@ const Add = ({ url }) => {
               rows="4"
               placeholder="Viết mô tả sản phẩm..."
             ></textarea>
-          </div>
-
-          {/* Đánh giá và Địa chỉ */}
-          <div className="form-layout">
-            <div className="form-left">
-              <div className="form-group">
-                <label>Đánh giá (1-5)</label>
-                <input
-                  onChange={onChangeHandler}
-                  value={data.rating}
-                  type="number"
-                  name="rating"
-                  min="1"
-                  max="5"
-                  step="0.1"
-                  placeholder="4.5"
-                />
-              </div>
-            </div>
-            <div className="form-right">
-              <div className="form-group">
-                <label>Địa chỉ</label>
-                <input
-                  onChange={onChangeHandler}
-                  value={data.address}
-                  type="text"
-                  name="address"
-                  placeholder="Nhập địa chỉ..."
-                />
-              </div>
-            </div>
           </div>
 
           <button type="submit" className="add-btn">

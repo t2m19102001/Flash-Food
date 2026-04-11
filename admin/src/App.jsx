@@ -52,9 +52,15 @@ const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    // Kiểm tra token khi load app
-    const token = getCookie("adminToken");
-    if (token) {
+    // 1. Kiểm tra token trong localStorage (cái mà trang Người dùng đã lưu)
+    const localToken = localStorage.getItem("token");
+    const isAdmin = localStorage.getItem("isAdmin") === "true";
+
+    // 2. Kiểm tra adminToken trong Cookie (cũ)
+    const cookieToken = getCookie("adminToken");
+
+    // Nếu có token và đúng là admin thì cho vào thẳng luôn
+    if ((localToken && isAdmin) || cookieToken) {
       setIsLoggedIn(true);
     }
   }, []);
@@ -63,10 +69,13 @@ const App = () => {
     return (
       <>
         <ToastContainer />
+        {/* Truyền thêm setToken nếu cần để đồng bộ */}
         <Login setIsLoggedIn={setIsLoggedIn} url={url} />
       </>
     );
   }
+
+  
 
   return (
     <NotificationProvider>

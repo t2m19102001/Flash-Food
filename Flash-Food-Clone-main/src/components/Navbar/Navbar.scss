@@ -1,163 +1,300 @@
+/* BIẾN MÀU SẮC ĐỒNG BỘ */
+$primary-orange: #ee4d2d; // Màu cam đỏ đặc trưng
+$text-color: #49557e;
+$white: #ffffff;
+
 .navbar {
-  padding: 20px 10px;
+  padding: 15px 5%;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: $white;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
   .logo {
-        height: 100px;
-        width: 200px;
+    width: 160px;
+    transition: transform 0.3s;
+    &:hover {
+      transform: scale(1.05);
     }
-    .navbar-menu {
-            display: flex;
-            list-style: none;
-            gap: 40px;
-            color: #49557e;
-            font-size: 30px;
-            li{
-                cursor: pointer;
-            }
-        }
-    .navbar-right {
-            display: flex;
-            gap: 40px;
-            align-items: center;
-            .navbar-search-icon{
-                position: relative;
+  }
 
-                .dot{
-                    position: absolute;
-                    min-width: 10px;
-                    min-height: 10px;
-                    background-color: tomato;
-                    border-radius: 5px;
-                    top: -8px;
-                    right: -8px;
-                    float: right;
-                }
-            }
+  .navbar-menu {
+    display: flex;
+    list-style: none;
+    gap: 25px;
+    color: $text-color;
+    font-size: 17px;
+    font-weight: 500;
 
-            button{
-                background: transparent;
-                padding: 10px 30px;
-                font-size: 16px;
-                color: #49557e;
-                border: 1px solid tomato;
-                border-radius: 50px;
-                cursor: pointer;
-                transition: 0.3;
-            }
-            :hover{
-                background: #FFF4F2;
-            }
-        }
-.navbar-profile {
-    position: relative;
-    cursor: pointer;
+    li,
+    a {
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      transition: 0.3s;
+      &:hover {
+        color: $primary-orange;
+      }
 
-    .navbar-username {
-        padding: 10px 20px;
-        font-size: 16px;
-        color: #49557e;
-        border: 1px solid tomato;
-        border-radius: 50px;
-        transition: 0.3s;
-        &:hover {
-            background: #FFF4F2;
-        }
-    }
-
-    .navbar-dropdown {
+      &::after {
+        content: "";
         position: absolute;
-        top: 100%;
-        right: 0;
-        z-index: 10;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
-        min-width: 150px;
-        margin-top: 10px;
-        padding: 10px 0;
+        width: 0;
+        height: 2px;
+        bottom: -5px;
+        left: 50%;
+        background: $primary-orange;
+        transition: 0.3s;
+        transform: translateX(-50%);
+      }
+      &:hover::after {
+        width: 100%;
+      }
+    }
+    .active {
+      color: $primary-orange;
+      &::after {
+        width: 100%;
+      }
+    }
+  }
 
-        p {
-            padding: 8px 20px;
-            cursor: pointer;
+  .navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    /* SEARCH WRAPPER */
+    .navbar-search-wrapper {
+      position: relative;
+      .navbar-search-container {
+        display: flex;
+        align-items: center;
+        background: #f1f3f4;
+        padding: 8px 12px;
+        border-radius: 50px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1.5px solid transparent;
+        cursor: pointer;
+
+        input {
+          width: 0;
+          border: none;
+          outline: none;
+          background: transparent;
+          transition: 0.4s;
+          font-size: 14px;
+          opacity: 0;
+        }
+
+        .logo__search {
+          width: 20px;
+          height: 20px;
+          flex-shrink: 0;
+          opacity: 0.7;
+        }
+
+        &.active {
+          width: 250px;
+          background: $white;
+          border-color: $primary-orange;
+          box-shadow: 0 0 10px rgba(238, 77, 45, 0.1);
+          input {
+            width: 200px;
+            opacity: 1;
+            padding-left: 8px;
+          }
+          .logo__search {
+            opacity: 1;
+            color: $primary-orange;
+          }
+        }
+      }
+
+      .search-suggestions {
+        position: absolute;
+        top: 115%;
+        left: 0;
+        width: 100%;
+        background: $white;
+        border-radius: 12px;
+        border: 1px solid #eee;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        list-style: none;
+        padding: 8px 0;
+        margin: 0;
+        z-index: 1001;
+        max-height: 300px;
+        overflow-y: auto;
+        animation: slideDown 0.3s ease;
+
+        li {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 10px 15px;
+          cursor: pointer;
+          transition: 0.2s;
+          &:hover {
+            background-color: #fff4f2;
+            span {
+              color: $primary-orange;
+            }
+          }
+          img {
+            width: 35px;
+            height: 35px;
+            border-radius: 6px;
+            object-fit: cover;
+          }
+          span {
             font-size: 14px;
-            color: #49557e;
-            &:hover {
-                background: #FFF4F2;
-                color: tomato;
+            color: $text-color;
+            font-weight: 500;
+          }
+        }
+      }
+    }
+
+    /* GIỎ HÀNG & BADGE SỐ LƯỢNG */
+    .navbar-search-icon {
+      position: relative;
+      img {
+        width: 26px;
+        transition: 0.3s;
+        cursor: pointer;
+      }
+      &:hover img {
+        transform: translateY(-2px);
+      }
+
+      .nav-cart-badge {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background-color: $primary-orange; // Màu cam đỏ
+        color: white;
+        font-size: 10px;
+        font-weight: 800;
+        min-width: 18px;
+        height: 18px;
+        border-radius: 50%; // Tạo hình tròn
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 2px solid white; // Viền trắng nổi bật
+        padding: 2px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
+    }
+
+    /* LOGIN & PROFILE */
+    .nav-login-btn {
+      border: 1.5px solid $primary-orange;
+      padding: 8px 22px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+      &:hover {
+        background: $primary-orange;
+        color: $white;
+      }
+    }
+
+    .navbar-profile {
+      position: relative;
+      .navbar-user-display {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 3px 12px 3px 3px;
+        border: 1.5px solid #ececec;
+        border-radius: 50px;
+        height: 38px;
+        cursor: pointer;
+        &:hover {
+          border-color: $primary-orange;
+          background: #fff4f2;
+        }
+        .nav-profile-img {
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          object-fit: cover;
+        }
+        p {
+          font-size: 13px;
+          font-weight: 600;
+          margin: 0;
+        }
+      }
+
+      .navbar-dropdown {
+        position: absolute;
+        top: 45px;
+        right: 0;
+        background: $white;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        min-width: 180px;
+        animation: slideDown 0.3s ease;
+        padding: 5px 0;
+        li {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 10px 20px;
+          cursor: pointer;
+          &:hover {
+            background: #fff4f2;
+            p {
+              color: $primary-orange;
             }
+          }
+          img {
+            width: 18px;
+          }
+          p {
+            font-size: 14px;
+            margin: 0;
+            font-weight: 500;
+          }
         }
-
-        a {
-            text-decoration: none;
-        }
-
         hr {
-            margin: 4px 0;
-            border: none;
-            border-top: 1px solid #eee;
+          border: none;
+          height: 1px;
+          background: #f0f0f0;
+          margin: 5px 0;
         }
+      }
     }
+  }
 }
 
-.active{
-    padding-bottom: 2px;
-    border-bottom: 2px solid #49557e;
-}
-}
-
-@media (max-width:1050px) {
-    .navbar{
-        logo{
-            width: 140px;
-        }
-        .navbar-menu{
-            gap: 20px;
-            font-size: 17px;
-        }
-        .navbar-right{
-            gap: 30px;
-            img{
-                width: 22px;
-            }
-            button{
-                padding: 8px 25px;
-            }
-        }
-    }
-    
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-@media (max-width:900px) {
-    .navbar{
-        logo{
-            width: 140px;
-        }
-        .navbar-menu{
-            gap: 15px;
-            font-size: 16px;
-        }
-        .navbar-right{
-            gap: 20px;
-            img{
-                width: 20px;
-            }
-            button{
-                padding: 7px 20px;
-                font-size: 15px;
-            }
-        }
-    }
-    
+@media (max-width: 1050px) {
+  .navbar .navbar-menu {
+    display: none;
+  }
 }
-@media (max-width:750px) {
-    .navbar{
-       
-        .navbar-menu{
-           display: none;
-        }
-       
-    }
-    
+@media (max-width: 500px) {
+  .navbar .navbar-search-container.active {
+    width: 160px;
+  }
 }

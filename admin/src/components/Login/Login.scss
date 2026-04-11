@@ -29,7 +29,6 @@
             opacity: 0;
             transform: translateY(30px);
         }
-
         to {
             opacity: 1;
             transform: translateY(0);
@@ -107,11 +106,33 @@
         }
     }
 
+    // PHẦN MỚI THÊM CHO NÚT QUAY LẠI
+    .back-to-home {
+        margin-top: 20px;
+        text-align: center;
+
+        a {
+            color: #777;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+
+            &:hover {
+                color: #ff6347;
+                transform: translateX(-4px); // Hiệu ứng nhích nhẹ sang trái khi hover
+            }
+        }
+    }
+
     .login-footer {
         text-align: center;
-        margin-top: 30px;
+        margin-top: 25px;
         padding-top: 20px;
-        border-top: 1px solid #e0e0e0;
+        border-top: 1px solid #eee;
 
         p {
             color: #999;
