@@ -170,7 +170,6 @@ global.broadcastOrderUpdate = broadcastOrderUpdate;
 import fs from 'fs';
 const uploadsDir = path.join(__dirname, 'uploads');
 const imagesDir = path.join(uploadsDir, 'images');
-const seedUploadsDir = path.join(__dirname, 'seed-uploads');
 
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
@@ -179,10 +178,8 @@ if (!fs.existsSync(imagesDir)) {
   fs.mkdirSync(imagesDir, { recursive: true });
 }
 
-// uploads/ chứa file user upload (gitignored). seed-uploads/ chứa ảnh seed
-// được commit vào git để mọi env có sẵn. Cả hai dùng chung prefix /uploads/.
+// uploads/ chứa toàn bộ ảnh: category subfolders (seed) + images/ (user upload)
 app.use('/uploads', express.static(uploadsDir));
-app.use('/uploads', express.static(seedUploadsDir));
 app.use('/images', express.static(imagesDir));
 
 // ========== API ENDPOINTS ==========

@@ -27,7 +27,6 @@ import orderModel from '../models/orderModel.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const seedDir = path.join(__dirname, '..', 'seed-uploads');
 const uploadsDir = path.join(__dirname, '..', 'uploads');
 
 const dryRun = process.argv.includes('--dry-run');
@@ -47,9 +46,10 @@ const stripHash = (name) => {
 
 const buildSeedMap = () => {
   const map = new Map();
-  if (!fs.existsSync(seedDir)) return map;
-  for (const folder of fs.readdirSync(seedDir)) {
-    const folderPath = path.join(seedDir, folder);
+  if (!fs.existsSync(uploadsDir)) return map;
+  for (const folder of fs.readdirSync(uploadsDir)) {
+    if (folder === 'images') continue; // skip user-upload subfolder
+    const folderPath = path.join(uploadsDir, folder);
     if (!fs.statSync(folderPath).isDirectory()) continue;
     for (const file of fs.readdirSync(folderPath)) {
       map.set(file, `uploads/${folder}/${file}`);
@@ -171,7 +171,7 @@ const main = async () => {
 
   const seedMap = buildSeedMap();
   const folderCount = new Set([...seedMap.values()].map((v) => v.split('/')[1])).size;
-  console.log(`Loaded ${seedMap.size} seed files across ${folderCount} folders`);
+  console.log(`Loaded ${seedMap.size} files across ${folderCount} category folders`);
 
   await runCollection('food', foodModel, (d, m, s) => fixDocImage(d, d.name, m, s), seedMap);
   await runCollection('category', categoryModel, (d, m, s) => fixDocImage(d, d.name, m, s), seedMap);
