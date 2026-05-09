@@ -68,23 +68,31 @@ const resolveNewPath = (raw, seedMap) => {
 
   let candidate = raw;
 
-  // Strip full URL down to path segments, e.g. http://host/uploads/banhmi/x.jpg → uploads/banhmi/x.jpg
+  // Strip full URL down to path, e.g. http://host/uploads/assets/x-HASH.jpg → uploads/assets/x-HASH.jpg
   if (raw.startsWith('http')) {
     try {
-      candidate = new URL(raw).pathname.replace(/^\//, '');
+      candidate = new URL(raw).pathname;
     } catch {
       return null;
     }
   }
 
-  // Already correct
-  if (candidate.startsWith('uploads/')) return candidate;
+  // Strip leading slash (handles /uploads/category/file.jpg)
+  if (candidate.startsWith('/')) candidate = candidate.slice(1);
 
-  // "category/filename.jpg" → "uploads/category/filename.jpg"
-  if (candidate.includes('/')) return `uploads/${candidate}`;
+  // Already correct format: uploads/<category>/<file> (NOT the old uploads/assets/ path)
+  if (candidate.startsWith('uploads/') && !candidate.startsWith('uploads/assets/')) {
+    return candidate;
+  }
 
-  // Plain filename — look up in filesystem (for legacy absolute-URL + Vite hash case)
+  // "category/filename.jpg" (no uploads/ prefix, has slash) → prepend uploads/
+  if (!candidate.startsWith('uploads/') && candidate.includes('/')) {
+    return `uploads/${candidate}`;
+  }
+
+  // Remaining cases: plain filename or old uploads/assets/filename-HASH.jpg → filesystem lookup
   const filename = candidate.split('/').pop();
+  if (!filename) return null;
   if (seedMap.has(filename)) return seedMap.get(filename);
   const cleaned = stripHash(filename);
   if (cleaned !== filename && seedMap.has(cleaned)) return seedMap.get(cleaned);
@@ -115,8 +123,7 @@ const fixDocImage = async (doc, label, seedMap, stats) => {
   console.log(`    old: ${original}`);
   console.log(`    new: ${newPath}`);
   if (!dryRun) {
-    doc.image = newPath;
-    await doc.save();
+    await doc.constructor.collection.updateOne({ _id: doc._id }, { $set: { image: newPath } });
   }
   stats.fixed++;
 };
@@ -142,8 +149,11 @@ const fixOrder = async (order, seedMap, stats) => {
   }
   if (touched) {
     if (!dryRun) {
-      order.markModified('items');
-      await order.save();
+      const updates = {};
+      order.items.forEach((item, idx) => {
+        if (item?.image) updates[`items.${idx}.image`] = item.image;
+      });
+      await orderModel.collection.updateOne({ _id: order._id }, { $set: updates });
     }
     stats.fixed++;
   } else {
