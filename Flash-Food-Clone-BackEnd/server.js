@@ -63,8 +63,9 @@ const corsOptions = {
       return callback(null, true);
     }
 
-    // Cho phép production server
-    if (origin === 'http://112.197.123.59' || origin === 'http://112.197.123.59:4000') {
+    // Cho phép production server (public IP và VPN IP)
+    if (origin === 'http://112.197.123.59' || origin === 'http://112.197.123.59:4000' ||
+        origin === 'http://10.8.0.1' || origin === 'http://10.8.0.1:8000' || origin === 'http://10.8.0.1:4000') {
       return callback(null, true);
     }
 
