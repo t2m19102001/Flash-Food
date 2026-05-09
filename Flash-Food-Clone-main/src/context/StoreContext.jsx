@@ -17,7 +17,7 @@ const StoreContextProvider = (props) => {
   const [loading, setLoading] = useState(true);
   const [authLoading, setAuthLoading] = useState(true);
 
-  const url = import.meta.env.VITE_API_URL || "http://localhost:4000";
+  const url = import.meta.env.VITE_API_URL || "";
 
   // Cấu hình axios mặc định
   axios.defaults.withCredentials = true;
