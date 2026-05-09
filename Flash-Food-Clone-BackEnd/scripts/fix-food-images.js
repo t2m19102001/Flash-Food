@@ -63,23 +63,28 @@ const userUploadExists = (filename) => {
   return fs.existsSync(path.join(uploadsDir, 'images', filename));
 };
 
-const extractFilename = (raw) => {
+const resolveNewPath = (raw, seedMap) => {
   if (!raw || typeof raw !== 'string') return null;
+
   let candidate = raw;
+
+  // Strip full URL down to path segments, e.g. http://host/uploads/banhmi/x.jpg → uploads/banhmi/x.jpg
   if (raw.startsWith('http')) {
     try {
-      candidate = new URL(raw).pathname;
+      candidate = new URL(raw).pathname.replace(/^\//, '');
     } catch {
       return null;
     }
   }
-  return candidate.split('/').filter(Boolean).pop() || null;
-};
 
-const resolveNewPath = (raw, seedMap) => {
-  const filename = extractFilename(raw);
-  if (!filename) return null;
-  // Try filename as-is first (already clean), then with Vite hash stripped.
+  // Already correct
+  if (candidate.startsWith('uploads/')) return candidate;
+
+  // "category/filename.jpg" → "uploads/category/filename.jpg"
+  if (candidate.includes('/')) return `uploads/${candidate}`;
+
+  // Plain filename — look up in filesystem (for legacy absolute-URL + Vite hash case)
+  const filename = candidate.split('/').pop();
   if (seedMap.has(filename)) return seedMap.get(filename);
   const cleaned = stripHash(filename);
   if (cleaned !== filename && seedMap.has(cleaned)) return seedMap.get(cleaned);
