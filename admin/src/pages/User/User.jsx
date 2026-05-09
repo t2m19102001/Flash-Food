@@ -2,30 +2,22 @@ import React, { useState, useEffect } from "react";
 import "./User.scss";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { getCookie } from "../../utils/cookieHelper";
 import { SkeletonTable, LoadingOverlay } from "../../components/Loading/Loading";
-import {
-    FormInput,
-    FormSelect,
-    FileUpload,
-    FormActions,
-    useFormValidation
-} from "../../components/FormComponents/FormComponents";
 
 const User = ({ url }) => {
     const [users, setUsers] = useState([]);
     const [showAddForm, setShowAddForm] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editingId, setEditingId] = useState(null);
-    const [image, setImage] = useState(false);
+    const [image, setImage] = useState(null);
     const [currentImage, setCurrentImage] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 40;
+    const itemsPerPage = 20;
     const [searchTerm, setSearchTerm] = useState("");
     const [filterRole, setFilterRole] = useState("all");
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
-    const [newUser, setNewUser] = useState({
+    const [formData, setFormData] = useState({
         name: "",
         phone: "",
         email: "",
@@ -34,84 +26,36 @@ const User = ({ url }) => {
         isActive: true
     });
 
-    // Validation schema
-    const validationSchema = {
-        name: (value) => {
-            if (!value.trim()) return 'Tên không được để trống';
-            if (value.trim().length < 2) return 'Tên phải có ít nhất 2 ký tự';
-            if (value.trim().length > 50) return 'Tên không được quá 50 ký tự';
-            return '';
-        },
-        email: (value) => {
-            if (!value.trim()) return 'Email không được để trống';
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(value)) return 'Email không hợp lệ';
-            return '';
-        },
-        phone: (value) => {
-            if (value && !/^[0-9]{10,11}$/.test(value)) {
-                return 'Số điện thoại không hợp lệ (10-11 số)';
-            }
-            return '';
-        },
-        password: (value) => {
-            if (!isEditing && !value) return 'Mật khẩu không được để trống';
-            if (value && value.length < 8) return 'Mật khẩu phải có ít nhất 8 ký tự';
-            return '';
-        },
-        role: (value) => {
-            if (!value) return 'Vui lòng chọn vai trò';
-            return '';
-        }
+    // 🔥 HÀM LẤY URL ẢNH
+    const getImageUrl = (imagePath) => {
+        if (!imagePath) return '';
+        if (imagePath.startsWith('http')) return imagePath;
+        if (imagePath.startsWith('/')) return `${url}${imagePath}`;
+        return `${url}/images/${imagePath}`;
     };
 
-    const initialValues = {
-        name: "",
-        phone: "",
-        email: "",
-        password: "",
-        role: "user",
-        isActive: true
-    };
-
-    const {
-        values,
-        errors,
-        touched,
-        setValue,
-        setError,
-        handleChange,
-        handleBlur,
-        validateForm,
-        resetForm
-    } = useFormValidation(initialValues, validationSchema);
-
-    // Filter and search users
+    // Filter users
     const filteredUsers = users.filter(user => {
-        const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (user.phone && user.phone.includes(searchTerm));
+        const matchesSearch = user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.phone?.includes(searchTerm);
         const matchesRole = filterRole === "all" ||
             (filterRole === "admin" && user.isAdmin) ||
             (filterRole === "user" && !user.isAdmin);
         return matchesSearch && matchesRole;
     });
 
-
-    // Calculate pagination
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentUsers = filteredUsers.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
 
-    const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
+    // 🔥 SỬA: fetch users với withCredentials
     const fetchUsers = async () => {
+        setLoading(true);
         try {
-            setLoading(true);
-            const token = getCookie("adminToken");
             const response = await axios.get(`${url}/api/user/list`, {
-                headers: { token }
+                withCredentials: true
             });
             if (response.data.success) {
                 setUsers(response.data.users);
@@ -120,83 +64,71 @@ const User = ({ url }) => {
             }
         } catch (error) {
             console.error("Error fetching users:", error);
-            toast.error("Lỗi khi tải danh sách");
+            if (error.response?.status === 401) {
+                toast.error("Phiên đăng nhập hết hạn, vui lòng đăng nhập lại!");
+            } else {
+                toast.error("Lỗi khi tải danh sách người dùng");
+            }
         } finally {
             setLoading(false);
         }
     };
 
-    const onSubmitHandler = async () => {
-        if (!validateForm()) {
-            toast.error("Vui lòng sửa các lỗi trong form");
+    // 🔥 SỬA: add/edit user với withCredentials
+    const onSubmitHandler = async (e) => {
+        e.preventDefault();
+        
+        // Validate
+        if (!formData.name || !formData.email) {
+            toast.error("Vui lòng nhập đầy đủ tên và email");
+            return;
+        }
+        if (!isEditing && !formData.password) {
+            toast.error("Vui lòng nhập mật khẩu");
+            return;
+        }
+        if (formData.password && formData.password.length < 8) {
+            toast.error("Mật khẩu phải có ít nhất 8 ký tự");
             return;
         }
 
+        setSubmitting(true);
+        
         try {
-            setSubmitting(true);
-            const token = getCookie("adminToken");
-
             if (isEditing) {
-                // Update user
-                const formData = new FormData();
-                formData.append("id", editingId);
-                formData.append("name", values.name);
-                formData.append("email", values.email);
-                formData.append("phone", values.phone);
-                formData.append("isAdmin", values.role === "admin");
+                const updateData = new FormData();
+                updateData.append("id", editingId);
+                updateData.append("name", formData.name);
+                updateData.append("email", formData.email);
+                updateData.append("phone", formData.phone || "");
+                updateData.append("isAdmin", formData.role === "admin");
+                if (image) updateData.append("image", image);
+                if (formData.password) updateData.append("password", formData.password);
 
-                if (image) {
-                    formData.append("image", image);
-                }
-
-                const response = await axios.post(`${url}/api/user/update`, formData, {
-                    headers: { token }
+                const response = await axios.post(`${url}/api/user/update`, updateData, {
+                    withCredentials: true,
+                    headers: { "Content-Type": "multipart/form-data" }
                 });
 
                 if (response.data.success) {
                     toast.success("Cập nhật người dùng thành công!");
-                    setIsEditing(false);
-                    setEditingId(null);
-                    setNewUser({
-                        name: "",
-                        phone: "",
-                        email: "",
-                        password: "",
-                        role: "user",
-                        isActive: true
-                    });
-                    setImage(false);
-                    setCurrentImage("");
-                    setShowAddForm(false);
+                    resetForm();
                     fetchUsers();
                 } else {
                     toast.error(response.data.message || "Không thể cập nhật người dùng");
                 }
             } else {
-                // Add new user
                 const response = await axios.post(`${url}/api/user/register`, {
-                    name: values.name,
-                    email: values.email,
-                    password: values.password,
-                    phone: values.phone,
-                    role: values.role,
-                    isActive: values.isActive
-                }, {
-                    headers: { token }
-                });
+                    name: formData.name,
+                    email: formData.email,
+                    password: formData.password,
+                    phone: formData.phone || "",
+                    isAdmin: formData.role === "admin"
+                }, { withCredentials: true });
 
                 if (response.data.success) {
                     toast.success("Thêm người dùng thành công!");
-                    setNewUser({
-                        name: "",
-                        phone: "",
-                        email: "",
-                        password: "",
-                        role: "user",
-                        isActive: true
-                    });
-                    setImage(false);
-                    setShowAddForm(false);
+                    resetForm();
                     fetchUsers();
                 } else {
                     toast.error(response.data.message || "Không thể thêm người dùng");
@@ -204,75 +136,24 @@ const User = ({ url }) => {
             }
         } catch (error) {
             console.error("Error:", error);
-            toast.error("Lỗi khi xử lý yêu cầu");
+            toast.error(error.response?.data?.message || "Lỗi khi xử lý yêu cầu");
         } finally {
             setSubmitting(false);
         }
     };
 
-    const editUser = (user) => {
-        setIsEditing(true);
-        setEditingId(user._id);
-        setValue('name', user.name);
-        setValue('phone', user.phone || '');
-        setValue('email', user.email);
-        setValue('password', '');
-        setValue('role', user.isAdmin ? "admin" : "user");
-        setValue('isActive', true);
-        setImage(false);
-        setCurrentImage(user.image || "");
-        setShowAddForm(true);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    const cancelEdit = () => {
-        setIsEditing(false);
-        setEditingId(null);
-        resetForm();
-        setImage(false);
-        setCurrentImage("");
-        setShowAddForm(false);
-    };
-
-    const handleDeleteUser = async (id) => {
-        try {
-            const token = getCookie("adminToken");
-            const response = await axios.post(`${url}/api/user/delete`,
-                { id },
-                { headers: { token } }
-            );
-            if (response.data.success) {
-                toast.success("Xóa người dùng thành công");
-                fetchUsers(); // Reload danh sách
-            } else {
-                toast.error(response.data.message || "Không thể xóa người dùng");
-            }
-        } catch (error) {
-            console.error("Error deleting user:", error);
-            toast.error("Lỗi khi xóa người dùng");
-        }
-    };
-
+    // 🔥 SỬA: toggle user status với withCredentials
     const handleToggleUserStatus = async (user) => {
-        const action = user.isActive ? "khóa" : "mở khóa";
-        const confirmMessage = `Bạn có chắc muốn ${action} tài khoản "${user.name}"?`;
-
-        if (!window.confirm(confirmMessage)) {
-            return;
-        }
+        const action = user.isActive !== false ? "khóa" : "mở khóa";
+        if (!window.confirm(`Bạn có chắc muốn ${action} tài khoản "${user.name}"?`)) return;
 
         try {
-            const token = getCookie("adminToken");
-            const response = await axios.post(`${url}/api/user/toggle-status`,
-                {
-                    userId: user._id,
-                    isActive: !user.isActive
-                },
-                { headers: { token } }
-            );
+            const response = await axios.post(`${url}/api/user/toggle-status`, {
+                id: user._id
+            }, { withCredentials: true });
 
             if (response.data.success) {
-                toast.success(`${action.charAt(0).toUpperCase() + action.slice(1)} tài khoản thành công`);
+                toast.success(response.data.message);
                 fetchUsers();
             } else {
                 toast.error(response.data.message || `Không thể ${action} tài khoản`);
@@ -283,301 +164,158 @@ const User = ({ url }) => {
         }
     };
 
+    // 🔥 SỬA: delete user với withCredentials
+    const handleDeleteUser = async (userId) => {
+        if (!window.confirm("Bạn có chắc muốn xóa người dùng này?")) return;
+
+        try {
+            const response = await axios.post(`${url}/api/user/delete`, {
+                id: userId
+            }, { withCredentials: true });
+
+            if (response.data.success) {
+                toast.success("Xóa người dùng thành công");
+                fetchUsers();
+            } else {
+                toast.error(response.data.message || "Không thể xóa người dùng");
+            }
+        } catch (error) {
+            console.error("Error deleting user:", error);
+            toast.error("Lỗi khi xóa người dùng");
+        }
+    };
+
+    const editUser = (user) => {
+        setIsEditing(true);
+        setEditingId(user._id);
+        setFormData({
+            name: user.name || "",
+            phone: user.phone || "",
+            email: user.email || "",
+            password: "",
+            role: user.isAdmin ? "admin" : "user",
+            isActive: user.isActive !== false
+        });
+        setCurrentImage(user.image || "");
+        setShowAddForm(true);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    const resetForm = () => {
+        setIsEditing(false);
+        setEditingId(null);
+        setFormData({
+            name: "",
+            phone: "",
+            email: "",
+            password: "",
+            role: "user",
+            isActive: true
+        });
+        setImage(null);
+        setCurrentImage("");
+        setShowAddForm(false);
+    };
+
     useEffect(() => {
         fetchUsers();
     }, []);
 
-    const onChangeHandler = (event) => {
-        const name = event.target.name;
-        const value = event.target.value;
-        setValue(name, value);
-    };
-
     return (
         <div className="user-page">
             <LoadingOverlay show={submitting} text="Đang xử lý yêu cầu..." />
+            
             <div className="user-header">
                 <div>
-                    <h2>Quản Lý Người Dùng</h2>
+                    <h2>👥 Quản Lý Người Dùng</h2>
+                    <p className="subtitle">Quản lý tất cả tài khoản người dùng trên hệ thống</p>
                 </div>
                 <div className="header-actions">
                     <div className="user-count">
-                        <span>Tổng số: <strong>{users.length}</strong> người dùng</span>
+                        <span>📊 Tổng số: <strong>{users.length}</strong> người dùng</span>
                     </div>
-                    <button className="add-user-btn" onClick={() => {
-                        if (showAddForm) {
-                            cancelEdit();
-                        } else {
-                            setShowAddForm(true);
-                        }
-                    }}>
-                        {showAddForm ? "Hủy" : "Thêm Người Dùng"}
+                    <button className="add-user-btn" onClick={() => setShowAddForm(!showAddForm)}>
+                        {showAddForm ? "✖ Hủy" : "➕ Thêm Người Dùng"}
                     </button>
                 </div>
             </div>
 
-            {/* Search and Filter Bar */}
+            {/* Toolbar */}
             <div className="toolbar">
                 <div className="toolbar-left">
                     <div className="search-box">
                         <span className="search-icon">🔍</span>
                         <input
                             type="text"
-                            placeholder="Tìm..."
+                            placeholder="Tìm kiếm theo tên, email, SĐT..."
                             value={searchTerm}
-                            onChange={(e) => {
-                                setSearchTerm(e.target.value);
-                                setCurrentPage(1);
-                            }}
+                            onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
                         />
                     </div>
                     <div className="filter-group">
-                        <select
-                            className="filter-dropdown"
-                            value={filterRole}
-                            onChange={(e) => {
-                                setFilterRole(e.target.value);
-                                setCurrentPage(1);
-                            }}
-                        >
-                            <option value="all">▼ Bộ lọc</option>
-                            <option value="user">Người dùng</option>
-                            <option value="admin">Quản trị viên</option>
+                        <select className="filter-dropdown" value={filterRole} onChange={(e) => { setFilterRole(e.target.value); setCurrentPage(1); }}>
+                            <option value="all">📋 Tất cả</option>
+                            <option value="user">👤 Người dùng</option>
+                            <option value="admin">👑 Quản trị viên</option>
                         </select>
-                        <button className="toolbar-btn" onClick={fetchUsers} title="Làm mới">
-                            🔄
-                        </button>
+                        <button className="toolbar-btn" onClick={fetchUsers} title="Làm mới">🔄</button>
                     </div>
                 </div>
                 <div className="toolbar-right">
                     <div className="pagination-info">
                         {filteredUsers.length > 0 ? `${indexOfFirstItem + 1}-${Math.min(indexOfLastItem, filteredUsers.length)} / ${filteredUsers.length}` : '0 / 0'}
                     </div>
-                    <button
-                        className="toolbar-btn"
-                        onClick={() => paginate(currentPage - 1)}
-                        disabled={currentPage === 1}
-                    >
-                        ◀
-                    </button>
-                    <button
-                        className="toolbar-btn"
-                        onClick={() => paginate(currentPage + 1)}
-                        disabled={currentPage === totalPages}
-                    >
-                        ▶
-                    </button>
+                    <button className="toolbar-btn" onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}>◀</button>
+                    <button className="toolbar-btn" onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}>▶</button>
                 </div>
             </div>
 
+            {/* Add/Edit Form */}
             {showAddForm && (
-                <div className="add-user-form">
-                    <h3>{isEditing ? "Chỉnh Sửa Người Dùng" : "Thêm Người Dùng Mới"}</h3>
-
+                <form className="add-user-form" onSubmit={onSubmitHandler}>
+                    <h3>{isEditing ? "✏️ Chỉnh Sửa Người Dùng" : "✨ Thêm Người Dùng Mới"}</h3>
                     <div className="form-grid">
                         <div className="form-col">
-                            <FileUpload
-                                label="Ảnh đại diện"
-                                name="user-image"
-                                value={image}
-                                onChange={(e) => setImage(e.target.files[0])}
-                                preview={
-                                    image
-                                        ? URL.createObjectURL(image)
-                                        : (isEditing && currentImage)
-                                            ? `${url}/images/${currentImage}`
-                                            : "Chọn ảnh đại diện"
-                                }
-                                helperText="Chọn ảnh đại diện (tùy chọn)"
-                            />
+                            <label>🖼️ Ảnh đại diện</label>
+                            <div className="image-upload-box" onClick={() => document.getElementById("user-image").click()}>
+                                {(image || currentImage) ? (
+                                    <img src={image ? URL.createObjectURL(image) : getImageUrl(currentImage)} alt="Preview" />
+                                ) : (
+                                    <div className="upload-placeholder">📸<p>Chọn ảnh</p></div>
+                                )}
+                            </div>
+                            <input type="file" id="user-image" hidden accept="image/*" onChange={(e) => setImage(e.target.files[0])} />
                         </div>
                         <div className="form-col">
-                            <FormInput
-                                label="Tên người dùng"
-                                name="name"
-                                value={values.name}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                placeholder="Nhập tên người dùng"
-                                required
-                                error={touched.name ? errors.name : ''}
-                                helperText="Tên sẽ hiển thị trong hệ thống"
-                            />
-                        </div>
-                        <div className="form-col">
-                            <FormInput
-                                label="Email"
-                                name="email"
-                                type="email"
-                                value={values.email}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                placeholder="Nhập email"
-                                required
-                                error={touched.email ? errors.email : ''}
-                                helperText="Email dùng để đăng nhập"
-                            />
-                        </div>
-                        <div className="form-col">
-                            <FormInput
-                                label="Số điện thoại"
-                                name="phone"
-                                type="tel"
-                                value={values.phone}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                placeholder="Nhập số điện thoại"
-                                error={touched.phone ? errors.phone : ''}
-                                helperText="Để trống nếu không có"
-                            />
-                        </div>
-                        <div className="form-col">
-                            <FormInput
-                                label="Mật khẩu"
-                                name="password"
-                                type="password"
-                                value={values.password}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                placeholder={isEditing ? "Để trống nếu không đổi" : "Nhập mật khẩu"}
-                                required={!isEditing}
-                                error={touched.password ? errors.password : ''}
-                                helperText={isEditing ? "Để trống nếu không muốn đổi mật khẩu" : "Tối thiểu 8 ký tự"}
-                            />
-                        </div>
-                        <div className="form-col">
-                            <FormSelect
-                                label="Vai trò"
-                                name="role"
-                                value={values.role}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                options={[
-                                    { value: 'user', label: 'Người dùng' },
-                                    { value: 'admin', label: 'Quản trị viên' }
-                                ]}
-                                required
-                                error={touched.role ? errors.role : ''}
-                                helperText="Quản trị viên có toàn quyền truy cập"
-                            />
-                        </div>
-                        <div className="form-col">
-                            <FormSelect
-                                label="Trạng thái"
-                                name="isActive"
-                                value={values.isActive.toString()}
-                                onChange={(e) => setValue('isActive', e.target.value === 'true')}
-                                options={[
-                                    { value: 'true', label: 'Hoạt động' },
-                                    { value: 'false', label: 'Không hoạt động' }
-                                ]}
-                                helperText="Vô hiệu hóa tài khoản người dùng"
-                            />
+                            <div className="form-group"><label>👤 Tên người dùng *</label><input type="text" name="name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} placeholder="Nhập tên" required /></div>
+                            <div className="form-group"><label>📧 Email *</label><input type="email" name="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} placeholder="Nhập email" required /></div>
+                            <div className="form-group"><label>📞 Số điện thoại</label><input type="tel" name="phone" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} placeholder="Nhập SĐT" /></div>
+                            <div className="form-group"><label>🔒 Mật khẩu {!isEditing && "*"}</label><input type="password" name="password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} placeholder={isEditing ? "Để trống nếu không đổi" : "Nhập mật khẩu"} /></div>
+                            <div className="form-row"><div className="form-group"><label>👑 Vai trò</label><select value={formData.role} onChange={(e) => setFormData({ ...formData, role: e.target.value })}><option value="user">Người dùng</option><option value="admin">Quản trị viên</option></select></div></div>
                         </div>
                     </div>
-
-                    <FormActions
-                        onSubmit={onSubmitHandler}
-                        onCancel={cancelEdit}
-                        submitText={isEditing ? "Cập Nhật Người Dùng" : "Thêm Người Dùng"}
-                        cancelText="Hủy"
-                        loading={submitting}
-                    />
-                </div>
+                    <div className="form-actions"><button type="submit" className="submit-btn" disabled={submitting}>{submitting ? "Đang xử lý..." : (isEditing ? "💾 Cập Nhật" : "➕ Thêm Mới")}</button><button type="button" className="cancel-btn" onClick={resetForm}>❌ Hủy</button></div>
+                </form>
             )}
 
+            {/* User Table */}
             <div className="user-table">
-                {loading ? (
-                    <SkeletonTable rows={5} columns={7} />
-                ) : (
-                    <>
-                        <div className="user-table-format title">
-                            <b>Ảnh</b>
-                            <b>Tên</b>
-                            <b>Số điện thoại</b>
-                            <b>Email</b>
-                            <b>Vai trò</b>
-                            <b>Trạng thái</b>
-                            <b>Thao Tác</b>
+                <div className="user-table-format title"><b>🖼️ Ảnh</b><b>👤 Tên</b><b>📞 SĐT</b><b>📧 Email</b><b>👑 Vai trò</b><b>📊 Trạng thái</b><b>⚙️ Thao tác</b></div>
+                {loading ? <SkeletonTable rows={5} columns={7} /> : currentUsers.length > 0 ? currentUsers.map((user) => (
+                    <div key={user._id} className="user-table-format">
+                        <div className="user-image">{user.image ? <img src={getImageUrl(user.image)} alt={user.name} /> : <div className="placeholder-img">👤</div>}</div>
+                        <p className="user-name">{user.name}</p><p>{user.phone || "—"}</p><p>{user.email}</p>
+                        <span className={`role-badge ${user.isAdmin ? "admin" : "user"}`}>{user.isAdmin ? "Admin" : "User"}</span>
+                        <span className={`status-badge ${user.isActive !== false ? "active" : "inactive"}`}>{user.isActive !== false ? "✅ Hoạt động" : "❌ Bị khóa"}</span>
+                        <div className="action-buttons">
+                            <button className="lock-btn" onClick={() => handleToggleUserStatus(user)} title={user.isActive !== false ? "Khóa" : "Mở khóa"}>{user.isActive !== false ? "🔒" : "🔓"}</button>
+                            <button className="edit-btn" onClick={() => editUser(user)}>✏️</button>
+                            <button className="delete-btn" onClick={() => handleDeleteUser(user._id)} disabled={user.isAdmin} title={user.isAdmin ? "Không thể xóa Admin" : "Xóa"}>🗑️</button>
                         </div>
-                        {currentUsers.length > 0 ? (
-                            currentUsers.map((user) => (
-                                <div key={user._id} className="user-table-format">
-                                    <div className="user-image">
-                                        {user.image ? (
-                                            <img src={`${url}${user.image}`} alt={user.name} />
-                                        ) : (
-                                            <div className="placeholder-img">?</div>
-                                        )}
-                                    </div>
-                                    <p className="user-name">{user.name}</p>
-                                    <p>{user.phone || "N/A"}</p>
-                                    <p>{user.email}</p>
-                                    <span className="role-badge">{user.isAdmin ? "admin" : "user"}</span>
-                                    <span className={`status-badge ${user.isActive !== false ? 'active' : 'inactive'}`}>
-                                        {user.isActive !== false ? 'Hoạt động' : 'Đã khóa'}
-                                    </span>
-                                    <div className="action-buttons">
-                                        <button
-                                            className={`lock-btn ${user.isActive !== false ? 'lock' : 'unlock'}`}
-                                            onClick={() => handleToggleUserStatus(user)}
-                                            title={user.isActive !== false ? 'Khóa tài khoản' : 'Mở khóa tài khoản'}
-                                        >
-                                            {user.isActive !== false ? '🔒' : '🔓'}
-                                        </button>
-                                        <button className="edit-btn" onClick={() => editUser(user)}>
-                                            Sửa
-                                        </button>
-                                        <button className="delete-btn" onClick={() => handleDeleteUser(user._id)}>
-                                            Xóa
-                                        </button>
-                                    </div>
-                                </div>
-                            ))
-                        ) : (
-                            <div className="empty-state">
-                                <p>Chưa có người dùng nào</p>
-                            </div>
-                        )}
-                    </>
-                )}
-            </div>
-
-            {/* Pagination */}
-            {
-                totalPages > 1 && (
-                    <div className="pagination">
-                        <button
-                            onClick={() => paginate(currentPage - 1)}
-                            disabled={currentPage === 1}
-                            className="pagination-btn"
-                        >
-                            Trước
-                        </button>
-
-                        <div className="pagination-numbers">
-                            {[...Array(totalPages)].map((_, index) => (
-                                <button
-                                    key={index + 1}
-                                    onClick={() => paginate(index + 1)}
-                                    className={`pagination-number ${currentPage === index + 1 ? 'active' : ''}`}
-                                >
-                                    {index + 1}
-                                </button>
-                            ))}
-                        </div>
-
-                        <button
-                            onClick={() => paginate(currentPage + 1)}
-                            disabled={currentPage === totalPages}
-                            className="pagination-btn"
-                        >
-                            Tiếp
-                        </button>
                     </div>
-                )
-            }
-        </div >
+                )) : <div className="empty-state"><div className="empty-icon">👥</div><p>Chưa có người dùng nào</p></div>}
+            </div>
+        </div>
     );
 };
 

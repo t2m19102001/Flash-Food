@@ -3,12 +3,12 @@ import './Login.scss'
 import { assets } from '../../assets/assets'
 import { StoreContext } from '../../context/StoreContext'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom' // THÊM useNavigate để chuyển trang mượt
+import { useNavigate } from 'react-router-dom'
 
 const Login = ({ setShowLogin }) => {
 
-    const { url, setToken, setUserName } = useContext(StoreContext)
-    const navigate = useNavigate(); // Khởi tạo navigate
+    const { url, login, isAuthenticated } = useContext(StoreContext)
+    const navigate = useNavigate();
 
     const [currState, setCurrState] = useState("Login")
     const [data, setData] = useState({
@@ -26,6 +26,7 @@ const Login = ({ setShowLogin }) => {
             ...data,
             [name]: value
         }));
+        setError(""); // Xóa lỗi khi user bắt đầu nhập lại
     }
 
     const onLogin = async (event) => {
@@ -34,80 +35,131 @@ const Login = ({ setShowLogin }) => {
         setLoading(true);
 
         try {
-            let endpoint = `${url}/api/user/login`;
-            let body = { email: data.email, password: data.password };
-
-            if (currState === "Register") {
-                endpoint = `${url}/api/user/register`;
-                body = { name: data.name, email: data.email, password: data.password };
-            }
-
-            const response = await axios.post(endpoint, body);
+            let result;
             
-            console.log("Phản hồi từ Server:", response.data);
-
-            if (response.data.success) {
-                const { token, name, isAdmin } = response.data;
-
-                // 1. Lưu thông tin vào LocalStorage
-                setToken(token);
-                setUserName(name);
-                localStorage.setItem("token", token);
-                localStorage.setItem("userName", name);
-                localStorage.setItem("isAdmin", String(isAdmin)); 
-
-                // 2. LOGIC MỚI: Dù là Admin hay User đều vào trang cá nhân
-                setShowLogin(false); // Đóng popup login
-
-                // Điều hướng về trang thông tin cá nhân (ví dụ là /myorders hoặc /profile)
-                // Lâm hãy thay "/myorders" bằng route trang cá nhân của Lâm nhé
-                navigate("/myorders"); 
+            if (currState === "Register") {
+                // Đăng ký
+                const response = await axios.post(`${url}/api/user/register`, {
+                    name: data.name,
+                    email: data.email,
+                    password: data.password
+                }, {
+                    withCredentials: true
+                });
+                result = response.data;
                 
-                // Nếu Lâm muốn thông báo nhẹ một cái
-                console.log(isAdmin ? "Admin đã đăng nhập và vào trang cá nhân" : "User đã vào trang cá nhân");
-
+                if (result.success) {
+                    // Đăng ký thành công, tự động đăng nhập
+                    const loginResult = await login(data.email, data.password);
+                    if (loginResult.success) {
+                        setShowLogin(false);
+                        navigate("/myorders");
+                    } else {
+                        setError(loginResult.message || "Đăng ký thành công, vui lòng đăng nhập");
+                        setCurrState("Login");
+                    }
+                } else {
+                    setError(result.message || "Đăng ký thất bại!");
+                }
             } else {
-                setError(response.data.message || "Email hoặc mật khẩu không đúng!");
+                // Đăng nhập
+                result = await login(data.email, data.password);
+                
+                if (result.success) {
+                    setShowLogin(false);
+                    navigate("/myorders");
+                } else {
+                    setError(result.message || "Email hoặc mật khẩu không đúng!");
+                }
             }
         } catch (err) {
             console.error("Lỗi kết nối:", err);
-            setError("Lỗi kết nối Server.");
+            setError(err.response?.data?.message || "Lỗi kết nối đến máy chủ. Vui lòng thử lại sau!");
         } finally {
             setLoading(false);
         }
     }
 
     return (
-        <div className='login'>
-            <form onSubmit={onLogin} className="login-container">
-                <div className="login-title">
-                    <h2>{currState === "Login" ? "Đăng nhập" : "Đăng ký"}</h2>
-                    <img onClick={() => setShowLogin(false)} src={assets.cross_icon} alt="close" />
-                </div>
-                <div className="login-inputs">
-                    {currState === "Register" && (
-                        <input type="text" name="name" placeholder="Tên của bạn" onChange={onChangeHandler} value={data.name} required />
-                    )}
-                    <input name="email" type="email" placeholder='Email của bạn' required onChange={onChangeHandler} value={data.email} />
-                    <input name="password" type="password" placeholder='Mật khẩu' required onChange={onChangeHandler} value={data.password} />
-                </div>
-                
-                {error && <p className="login-error" style={{ color: "red", fontSize: "13px", marginTop: "5px" }}>{error}</p>}
-                
-                <button type="submit" disabled={loading}>
-                    {loading ? "Đang xử lý..." : (currState === "Register" ? "Tạo tài khoản" : "Đăng nhập")}
-                </button>
+        <div className='login-overlay'>
+            <div className='login'>
+                <form onSubmit={onLogin} className="login-container">
+                    <div className="login-title">
+                        <h2>{currState === "Login" ? "🔐 Đăng nhập" : "📝 Đăng ký"}</h2>
+                        <img onClick={() => setShowLogin(false)} src={assets.cross_icon} alt="close" />
+                    </div>
+                    
+                    <div className="login-inputs">
+                        {currState === "Register" && (
+                            <div className="input-group">
+                                <span className="input-icon">👤</span>
+                                <input 
+                                    type="text" 
+                                    name="name" 
+                                    placeholder="Họ và tên" 
+                                    onChange={onChangeHandler} 
+                                    value={data.name} 
+                                    required 
+                                />
+                            </div>
+                        )}
+                        <div className="input-group">
+                            <span className="input-icon">📧</span>
+                            <input 
+                                name="email" 
+                                type="email" 
+                                placeholder='Email' 
+                                required 
+                                onChange={onChangeHandler} 
+                                value={data.email} 
+                            />
+                        </div>
+                        <div className="input-group">
+                            <span className="input-icon">🔒</span>
+                            <input 
+                                name="password" 
+                                type="password" 
+                                placeholder='Mật khẩu' 
+                                required 
+                                onChange={onChangeHandler} 
+                                value={data.password} 
+                            />
+                        </div>
+                    </div>
+                    
+                    {error && <p className="login-error">{error}</p>}
+                    
+                    <button type="submit" className="login-btn" disabled={loading}>
+                        {loading ? (
+                            <>
+                                <span className="spinner"></span>
+                                Đang xử lý...
+                            </>
+                        ) : (
+                            currState === "Register" ? "📝 Tạo tài khoản" : "🔐 Đăng nhập"
+                        )}
+                    </button>
 
-                <div className="login-condition">
-                    <input type="checkbox" required />
-                    <p>Tôi đồng ý với thỏa thuận người dùng.</p>
-                </div>
-                {
-                    currState === "Login"
-                        ? <p>Tạo tài khoản mới? <span onClick={() => setCurrState("Register")}>Nhấp vào đây</span></p>
-                        : <p>Bạn đã có tài khoản? <span onClick={() => setCurrState("Login")}>Đăng nhập ngay</span></p>
-                }
-            </form>
+                    <div className="login-condition">
+                        <input type="checkbox" required />
+                        <p>Tôi đồng ý với <span>Điều khoản sử dụng</span> và <span>Chính sách bảo mật</span></p>
+                    </div>
+                    
+                    <div className="login-switch">
+                        {currState === "Login" ? (
+                            <p>
+                                Chưa có tài khoản? 
+                                <span onClick={() => setCurrState("Register")}> Đăng ký ngay</span>
+                            </p>
+                        ) : (
+                            <p>
+                                Đã có tài khoản? 
+                                <span onClick={() => setCurrState("Login")}> Đăng nhập ngay</span>
+                            </p>
+                        )}
+                    </div>
+                </form>
+            </div>
         </div>
     )
 }

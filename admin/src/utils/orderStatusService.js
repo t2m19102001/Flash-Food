@@ -5,20 +5,30 @@ class OrderStatusService {
     this.reconnectAttempts = 0;
     this.maxReconnectAttempts = 5;
     this.reconnectDelay = 3000;
+    // 🔥 THÊM CỜ BẬT/TẮT SSE
+    this.enabled = false; // Đổi thành true khi backend sẵn sàng
   }
 
   // Connect to SSE endpoint
   connect(userId) {
+    // 🔥 KIỂM TRA NẾU BỊ TẮT THÌ KHÔNG KẾT NỐI
+    if (!this.enabled) {
+      console.log('🔕 SSE service is disabled. Set enabled = true to enable.');
+      return;
+    }
+
     if (this.eventSource) {
       this.disconnect();
     }
 
     try {
       const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000";
-      this.eventSource = new EventSource(`${apiUrl}/api/orders/subscribe`);
+      // 🔥 THÊM USER_ID VÀO URL NẾU CẦN
+      const url = userId ? `${apiUrl}/api/orders/subscribe?userId=${userId}` : `${apiUrl}/api/orders/subscribe`;
+      this.eventSource = new EventSource(url);
       
       this.eventSource.onopen = () => {
-        console.log('SSE Connection established');
+        console.log('✅ SSE Connection established');
         this.reconnectAttempts = 0;
       };
 
@@ -32,12 +42,12 @@ class OrderStatusService {
       };
 
       this.eventSource.onerror = (error) => {
-        console.error('SSE Connection error:', error);
+        console.error('❌ SSE Connection error:', error);
         this.handleReconnect();
       };
 
       this.eventSource.onclose = () => {
-        console.log('SSE Connection closed');
+        console.log('🔌 SSE Connection closed');
         this.handleReconnect();
       };
 
@@ -53,11 +63,10 @@ class OrderStatusService {
 
     switch (type) {
       case 'connected':
-        console.log('Connected to order status updates');
+        console.log('✅ Connected to order status updates');
         break;
         
       case 'order_update':
-        // Notify all listeners about order status change
         this.notifyListeners('orderUpdate', { orderId, status, userId });
         break;
         
@@ -68,15 +77,17 @@ class OrderStatusService {
 
   // Handle reconnection logic
   handleReconnect() {
+    if (!this.enabled) return;
+    
     if (this.reconnectAttempts < this.maxReconnectAttempts) {
       this.reconnectAttempts++;
-      console.log(`Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`);
+      console.log(`🔄 Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`);
       
       setTimeout(() => {
         this.connect();
       }, this.reconnectDelay * this.reconnectAttempts);
     } else {
-      console.error('Max reconnection attempts reached');
+      console.error('❌ Max reconnection attempts reached');
       this.notifyListeners('connectionError', { message: 'Unable to connect to order status updates' });
     }
   }
@@ -120,7 +131,27 @@ class OrderStatusService {
 
   // Get connection status
   isConnected() {
-    return this.eventSource && this.eventSource.readyState === EventSource.OPEN;
+    return this.enabled && this.eventSource && this.eventSource.readyState === EventSource.OPEN;
+  }
+
+  // 🔥 THÊM HÀM BẬT/TẮT SSE
+  enable() {
+    this.enabled = true;
+    this.connect();
+  }
+
+  disable() {
+    this.enabled = false;
+    this.disconnect();
+  }
+
+  // 🔥 THÊM HÀM KIỂM TRA TRẠNG THÁI
+  getStatus() {
+    return {
+      enabled: this.enabled,
+      connected: this.isConnected(),
+      reconnectAttempts: this.reconnectAttempts
+    };
   }
 }
 

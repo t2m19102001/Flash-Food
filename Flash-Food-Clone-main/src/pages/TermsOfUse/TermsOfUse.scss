@@ -1,0 +1,356 @@
+/* BIẾN MÀU SẮC */
+$primary-orange: #ff6b4a;
+$primary-dark: #e55a3b;
+$primary-light: #ff8c6b;
+$gradient-primary: linear-gradient(135deg, $primary-orange, $primary-dark);
+$gradient-gold: linear-gradient(135deg, #f59e0b, #d97706);
+$gradient-purple: linear-gradient(135deg, #8b5cf6, #7c3aed);
+$text-dark: #0f172a;
+$text-gray: #475569;
+$text-light: #64748b;
+$white: #ffffff;
+$bg-light: #f8fafc;
+$bg-gray: #f1f5f9;
+$border-light: #e2e8f0;
+$shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+$shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+$shadow-lg: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
+$shadow-glow: 0 0 20px rgba(255, 107, 74, 0.3);
+$transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+$transition-fast: all 0.2s ease;
+
+.terms-of-use {
+  .terms-hero {
+    background: $gradient-primary;
+    padding: 80px 20px;
+    text-align: center;
+    color: $white;
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(255,255,255,0.1), transparent);
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: -30%;
+      left: -10%;
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, rgba(255,255,255,0.08), transparent);
+      border-radius: 50%;
+      animation: float 8s ease-in-out infinite reverse;
+    }
+    
+    h1 {
+      font-size: 52px;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      
+      @media (max-width: 768px) {
+        font-size: 36px;
+      }
+    }
+    
+    p {
+      font-size: 18px;
+      opacity: 0.95;
+      position: relative;
+      z-index: 1;
+      
+      @media (max-width: 768px) {
+        font-size: 15px;
+      }
+    }
+  }
+  
+  .terms-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 60px 5%;
+    
+    .terms-content {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 50px;
+      
+      @media (max-width: 968px) {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      
+      /* ========== SIDEBAR ========== */
+      .terms-sidebar {
+        position: sticky;
+        top: 100px;
+        height: fit-content;
+        
+        @media (max-width: 968px) {
+          position: static;
+        }
+        
+        ul {
+          background: $white;
+          border-radius: 24px;
+          padding: 16px 8px;
+          box-shadow: $shadow-md;
+          list-style: none;
+          margin: 0;
+          border: 1px solid $border-light;
+          transition: $transition;
+          
+          &:hover {
+            box-shadow: $shadow-lg;
+          }
+          
+          li {
+            padding: 14px 20px;
+            margin: 4px 0;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: $transition;
+            font-weight: 500;
+            color: $text-gray;
+            position: relative;
+            overflow: hidden;
+            
+            &::before {
+              content: "";
+              position: absolute;
+              left: 0;
+              top: 0;
+              width: 0;
+              height: 100%;
+              background: rgba(255, 107, 74, 0.08);
+              transition: $transition;
+              z-index: 0;
+            }
+            
+            &:hover {
+              color: $primary-orange;
+              transform: translateX(8px);
+              
+              &::before {
+                width: 100%;
+              }
+            }
+            
+            &.active {
+              background: $gradient-primary;
+              color: $white;
+              box-shadow: $shadow-glow;
+              transform: translateX(0);
+              
+              &::before {
+                display: none;
+              }
+              
+              &:hover {
+                transform: translateX(0);
+              }
+            }
+          }
+        }
+      }
+      
+      /* ========== MAIN CONTENT ========== */
+      .terms-main {
+        background: $white;
+        border-radius: 32px;
+        padding: 48px;
+        box-shadow: $shadow-md;
+        transition: $transition;
+        
+        @media (max-width: 768px) {
+          padding: 30px 24px;
+        }
+        
+        &:hover {
+          box-shadow: $shadow-lg;
+        }
+        
+        .terms-section {
+          margin-bottom: 56px;
+          scroll-margin-top: 100px;
+          
+          &:last-of-type {
+            margin-bottom: 0;
+          }
+          
+          h2 {
+            font-size: 26px;
+            font-weight: 700;
+            color: $text-dark;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            position: relative;
+            display: inline-block;
+            
+            @media (max-width: 768px) {
+              font-size: 22px;
+            }
+            
+            &::after {
+              content: "";
+              position: absolute;
+              bottom: 0;
+              left: 0;
+              width: 50px;
+              height: 3px;
+              background: $gradient-primary;
+              border-radius: 3px;
+              transition: $transition;
+            }
+            
+            &::before {
+              content: "";
+              position: absolute;
+              bottom: 0;
+              left: 0;
+              width: 100px;
+              height: 3px;
+              background: rgba(255, 107, 74, 0.2);
+              border-radius: 3px;
+            }
+          }
+          
+          p {
+            color: $text-gray;
+            line-height: 1.7;
+            margin-bottom: 18px;
+            font-size: 15px;
+            
+            @media (max-width: 768px) {
+              font-size: 14px;
+              line-height: 1.6;
+            }
+          }
+          
+          ul {
+            padding-left: 24px;
+            margin: 16px 0;
+            
+            li {
+              color: $text-gray;
+              margin-bottom: 10px;
+              line-height: 1.6;
+              position: relative;
+              padding-left: 8px;
+              
+              &::marker {
+                color: $primary-orange;
+              }
+            }
+          }
+          
+          // Hiệu ứng fade in khi scroll vào
+          &.in-view {
+            animation: fadeInUp 0.5s ease forwards;
+          }
+        }
+        
+        .terms-footer {
+          margin-top: 48px;
+          padding-top: 24px;
+          border-top: 1px solid $border-light;
+          text-align: center;
+          
+          p {
+            font-size: 13px;
+            color: $text-light;
+            margin: 0;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* ========== ANIMATIONS ========== */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(5deg);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 1200px) {
+  .terms-of-use .terms-container {
+    padding: 50px 4%;
+  }
+}
+
+@media (max-width: 768px) {
+  .terms-of-use {
+    .terms-hero {
+      padding: 60px 20px;
+    }
+    
+    .terms-container .terms-content .terms-main {
+      padding: 30px 20px;
+      
+      .terms-section h2 {
+        font-size: 20px;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .terms-of-use {
+    .terms-hero h1 {
+      font-size: 28px;
+    }
+    
+    .terms-container .terms-content .terms-sidebar ul li {
+      padding: 10px 16px;
+      font-size: 13px;
+    }
+  }
+}
+
+/* ========== SCROLLBAR CUSTOM ========== */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: $bg-gray;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $primary-orange;
+  border-radius: 10px;
+  
+  &:hover {
+    background: $primary-dark;
+  }
+}

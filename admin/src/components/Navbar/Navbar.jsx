@@ -3,7 +3,7 @@ import './Navbar.scss'
 import { assets } from "../../assets/assets";
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { getCookie, removeCookie } from '../../utils/cookieHelper';
+import { removeCookie } from '../../utils/cookieHelper';
 import { NotificationBell } from '../Notifications/Notifications';
 
 const Navbar = ({ setIsLoggedIn, url }) => {
@@ -30,18 +30,20 @@ const Navbar = ({ setIsLoggedIn, url }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Fetch user profile
+  // Fetch user profile - 🔥 SỬA: dùng withCredentials
   const fetchProfile = async () => {
     try {
-      const token = getCookie("adminToken");
       const response = await axios.get(`${url}/api/user/profile`, {
-        headers: { token }
+        withCredentials: true  // 🔥 QUAN TRỌNG: gửi cookie
       });
       if (response.data.success) {
         setUserProfile(response.data.user);
       }
     } catch (error) {
       console.error("Error fetching profile:", error);
+      if (error.response?.status === 401) {
+        toast.error("Phiên đăng nhập hết hạn, vui lòng đăng nhập lại!");
+      }
     }
   };
 
@@ -61,6 +63,7 @@ const Navbar = ({ setIsLoggedIn, url }) => {
     setPasswordData({ ...passwordData, [e.target.name]: e.target.value });
   };
 
+  // 🔥 SỬA: dùng withCredentials cho change password
   const handleChangePassword = async (e) => {
     e.preventDefault();
 
@@ -75,12 +78,11 @@ const Navbar = ({ setIsLoggedIn, url }) => {
     }
 
     try {
-      const token = getCookie("adminToken");
       const response = await axios.post(`${url}/api/user/change-password`, {
         currentPassword: passwordData.currentPassword,
         newPassword: passwordData.newPassword
       }, {
-        headers: { token }
+        withCredentials: true  // 🔥 QUAN TRỌNG: gửi cookie
       });
 
       if (response.data.success) {
@@ -92,7 +94,11 @@ const Navbar = ({ setIsLoggedIn, url }) => {
       }
     } catch (error) {
       console.error("Error changing password:", error);
-      toast.error("Lỗi khi đổi mật khẩu");
+      if (error.response?.status === 401) {
+        toast.error("Phiên đăng nhập hết hạn, vui lòng đăng nhập lại!");
+      } else {
+        toast.error(error.response?.data?.message || "Lỗi khi đổi mật khẩu");
+      }
     }
   };
 
@@ -130,15 +136,15 @@ const Navbar = ({ setIsLoggedIn, url }) => {
               <div className='dropdown-divider'></div>
               <div className='dropdown-items'>
                 <button className='dropdown-item' onClick={handleOpenUserInfo}>
-                  <span>Thông tin cá nhân</span>
+                  <span>👤 Thông tin cá nhân</span>
                 </button>
                 <button className='dropdown-item' onClick={handleOpenChangePassword}>
-                  <span>Đổi mật khẩu</span>
+                  <span>🔒 Đổi mật khẩu</span>
                 </button>
               </div>
               <div className='dropdown-divider'></div>
               <button className='dropdown-item logout' onClick={handleLogout}>
-                <span>Đăng xuất</span>
+                <span>🚪 Đăng xuất</span>
               </button>
             </div>
           )}
@@ -149,7 +155,7 @@ const Navbar = ({ setIsLoggedIn, url }) => {
           <div className='modal-overlay' onClick={() => setShowUserInfo(false)}>
             <div className='modal-content' onClick={(e) => e.stopPropagation()}>
               <div className='modal-header'>
-                <h3>Thông tin cá nhân</h3>
+                <h3>👤 Thông tin cá nhân</h3>
                 <button className='close-btn' onClick={() => setShowUserInfo(false)}>×</button>
               </div>
               <div className='modal-body'>
@@ -180,7 +186,10 @@ const Navbar = ({ setIsLoggedIn, url }) => {
                     </div>
                   </div>
                 ) : (
-                  <p>Đang tải thông tin...</p>
+                  <div className="loading-spinner">
+                    <div className="spinner"></div>
+                    <p>Đang tải thông tin...</p>
+                  </div>
                 )}
               </div>
               <div className='modal-footer'>
@@ -195,7 +204,7 @@ const Navbar = ({ setIsLoggedIn, url }) => {
           <div className='modal-overlay' onClick={() => setShowChangePassword(false)}>
             <div className='modal-content' onClick={(e) => e.stopPropagation()}>
               <div className='modal-header'>
-                <h3>Đổi mật khẩu</h3>
+                <h3>🔒 Đổi mật khẩu</h3>
                 <button className='close-btn' onClick={() => setShowChangePassword(false)}>×</button>
               </div>
               <div className='modal-body'>

@@ -1,0 +1,289 @@
+$primary-orange: #ff6b4a;
+$primary-dark: #e55a3b;
+$gradient-primary: linear-gradient(135deg, #ff6b4a, #ff885e);
+$text-dark: #1e293b;
+$text-gray: #475569;
+$text-light: #64748b;
+$white: #ffffff;
+$bg-light: #f8fafc;
+$border-light: #e2e8f0;
+$shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+$shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+$shadow-lg: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
+$shadow-hover: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+$transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+$transition-fast: all 0.2s ease;
+
+.careers-page {
+  .careers-hero {
+    background: $gradient-primary;
+    padding: 80px 20px;
+    text-align: center;
+    color: $white;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(255,255,255,0.1), transparent);
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+
+      h1 {
+        font-size: 52px;
+        margin-bottom: 16px;
+        font-weight: 800;
+
+        @media (max-width: 768px) {
+          font-size: 36px;
+        }
+      }
+
+      p {
+        font-size: 18px;
+        margin-bottom: 24px;
+      }
+
+      .hero-stats {
+        display: flex;
+        justify-content: center;
+        gap: 32px;
+        flex-wrap: wrap;
+
+        span {
+          font-size: 14px;
+          background: rgba(255,255,255,0.15);
+          padding: 6px 16px;
+          border-radius: 40px;
+        }
+      }
+    }
+  }
+
+  .careers-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 20px;
+
+    .careers-intro {
+      text-align: center;
+      margin-bottom: 60px;
+
+      h2 {
+        font-size: 32px;
+        color: $text-dark;
+        margin-bottom: 40px;
+
+        &::after {
+          content: "";
+          display: block;
+          width: 60px;
+          height: 3px;
+          background: $gradient-primary;
+          margin: 16px auto 0;
+          border-radius: 2px;
+        }
+      }
+
+      .benefits-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 30px;
+        margin-top: 20px;
+
+        .benefit-card {
+          background: $white;
+          padding: 32px 24px;
+          border-radius: 24px;
+          box-shadow: $shadow-md;
+          transition: $transition;
+
+          &:hover {
+            transform: translateY(-8px);
+            box-shadow: $shadow-hover;
+          }
+
+          .benefit-icon {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 16px;
+          }
+
+          h3 {
+            font-size: 20px;
+            color: $text-dark;
+            margin-bottom: 12px;
+          }
+
+          p {
+            font-size: 14px;
+            color: $text-gray;
+            line-height: 1.5;
+          }
+        }
+      }
+    }
+
+    .jobs-section {
+      margin-bottom: 60px;
+
+      h2 {
+        font-size: 32px;
+        color: $text-dark;
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      .jobs-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        .job-card {
+          background: $white;
+          padding: 24px;
+          border-radius: 20px;
+          box-shadow: $shadow-md;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          transition: $transition;
+
+          @media (max-width: 768px) {
+            flex-direction: column;
+            gap: 20px;
+            text-align: center;
+          }
+
+          &:hover {
+            transform: translateX(8px);
+            box-shadow: $shadow-lg;
+            border-left: 4px solid $primary-orange;
+          }
+
+          .job-info {
+            flex: 1;
+
+            h3 {
+              font-size: 20px;
+              color: $text-dark;
+              margin-bottom: 10px;
+            }
+
+            .job-meta {
+              display: flex;
+              gap: 16px;
+              flex-wrap: wrap;
+              margin-bottom: 12px;
+
+              span {
+                font-size: 13px;
+                padding: 4px 12px;
+                background: $bg-light;
+                border-radius: 20px;
+                color: $text-light;
+              }
+            }
+
+            .job-desc {
+              font-size: 14px;
+              color: $text-gray;
+              line-height: 1.5;
+            }
+          }
+
+          .job-actions {
+            display: flex;
+            gap: 12px;
+            flex-direction: column;
+            min-width: 140px;
+
+            button {
+              padding: 10px 20px;
+              border-radius: 40px;
+              font-size: 14px;
+              font-weight: 600;
+              cursor: pointer;
+              transition: $transition-fast;
+            }
+
+            .apply-btn {
+              background: $gradient-primary;
+              border: none;
+              color: $white;
+
+              &:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(255,107,74,0.3);
+              }
+            }
+
+            .details-btn {
+              background: transparent;
+              border: 1px solid $border-light;
+              color: $text-gray;
+
+              &:hover {
+                border-color: $primary-orange;
+                color: $primary-orange;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .careers-contact {
+      text-align: center;
+      background: $bg-light;
+      padding: 48px 32px;
+      border-radius: 32px;
+
+      h3 {
+        font-size: 28px;
+        color: $text-dark;
+        margin-bottom: 12px;
+      }
+
+      p {
+        color: $text-gray;
+        margin-bottom: 24px;
+      }
+
+      .submit-cv-btn {
+        background: $gradient-primary;
+        border: none;
+        padding: 14px 32px;
+        border-radius: 40px;
+        color: $white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: $transition;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(255,107,74,0.3);
+        }
+      }
+    }
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(5deg);
+  }
+}

@@ -1,0 +1,26 @@
+// src/components/ImageWithLazy/ImageWithLazy.scss
+.lazy-image-container {
+  position: relative;
+  overflow: hidden;
+  background: #f0f0f0;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.3s ease;
+  }
+  
+  .lazy-placeholder {
+    filter: blur(10px);
+    transform: scale(1.05);
+  }
+  
+  .lazy-image {
+    opacity: 0;
+    
+    &.loaded {
+      opacity: 1;
+    }
+  }
+}

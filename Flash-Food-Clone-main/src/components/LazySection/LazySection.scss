@@ -1,0 +1,36 @@
+// src/components/LazySection/LazySection.scss
+.lazy-section {
+  width: 100%;
+  min-height: 200px;
+}
+
+.lazy-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  min-height: 200px;
+  
+  .loader-dot {
+    width: 12px;
+    height: 12px;
+    background: #f5a623;
+    border-radius: 50%;
+    animation: bounce 0.6s ease-in-out infinite;
+    
+    &:nth-child(1) { animation-delay: 0s; }
+    &:nth-child(2) { animation-delay: 0.15s; }
+    &:nth-child(3) { animation-delay: 0.3s; }
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(-15px);
+    opacity: 1;
+  }
+}

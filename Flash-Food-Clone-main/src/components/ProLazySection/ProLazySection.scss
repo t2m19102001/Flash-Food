@@ -1,0 +1,60 @@
+// src/components/ProLazySection/ProLazySection.scss
+.pro-lazy-section {
+  width: 100%;
+  min-height: 200px;
+}
+
+.pro-lazy-placeholder {
+  width: 100%;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8edf2 100%);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.shimmer-effect {
+  width: 100%;
+  
+  .shimmer-line {
+    height: 20px;
+    background: linear-gradient(
+      90deg,
+      #e0e0e0 0%,
+      #f0f0f0 50%,
+      #e0e0e0 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    
+    &:nth-child(2) {
+      width: 80%;
+    }
+    
+    &.short {
+      width: 60%;
+    }
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .pro-lazy-placeholder {
+    padding: 1rem;
+    border-radius: 16px;
+  }
+  
+  .shimmer-line {
+    height: 16px;
+    margin-bottom: 0.75rem;
+  }
+}

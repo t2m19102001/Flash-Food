@@ -3,66 +3,153 @@ import './FoodItem.scss'
 import { assets } from '../../assets/assets'
 import { StoreContext } from '../../context/StoreContext'
 import ReviewPopup from '../ReviewPopup/ReviewPopup'
-import { useNavigate } from 'react-router-dom' // Bước 1: Import useNavigate
+import { useNavigate } from 'react-router-dom'
 
 const FoodItem = ({ id, name, price, description, image }) => {
 
-  const { cartItems, addToCart, removeFromCart, getImageUrl } = useContext(StoreContext) // Lấy getImageUrl từ Context
+  const { cartItems, addToCart, removeFromCart, getImageUrl } = useContext(StoreContext)
   const [showReview, setShowReview] = useState(false)
-  const navigate = useNavigate() // Bước 2: Khởi tạo navigate
+  const [isHovered, setIsHovered] = useState(false)
+  const [showToast, setShowToast] = useState(false)
+  const [toastMessage, setToastMessage] = useState('')
+  const [isAdding, setIsAdding] = useState(false)
+  const navigate = useNavigate()
 
-  // Hàm để chuyển trang khi click vào ảnh hoặc tên
   const handleNavigate = () => {
-    navigate(`/product/${id}`); // Điều hướng đến Route đã khai báo trong App.jsx
-    window.scrollTo(0, 0); // Cuộn lên đầu trang cho đẹp
+    navigate(`/product/${id}`)
+    window.scrollTo(0, 0)
+  }
+
+  // Format giá tiền
+  const formatPrice = (price) => {
+    return price.toLocaleString('vi-VN') + 'đ'
+  }
+
+  // Hiển thị toast notification
+  const showNotification = (message, type = 'success') => {
+    setToastMessage(message)
+    setShowToast(true)
+    setTimeout(() => {
+      setShowToast(false)
+    }, 2000)
+  }
+
+  // Xử lý thêm vào giỏ với animation
+  const handleAddToCart = async () => {
+    setIsAdding(true)
+    addToCart(id)
+    showNotification(` Đã thêm ${name} vào giỏ hàng!`)
+    setTimeout(() => {
+      setIsAdding(false)
+    }, 300)
+  }
+
+  const handleRemoveFromCart = () => {
+    removeFromCart(id)
+    showNotification(`🗑️ Đã xóa ${name} khỏi giỏ hàng`, 'remove')
   }
 
   return (
-    <div className='food-item'>
-      <div className="food-item-container">
-        {/* Bước 3: Sử dụng getImageUrl để hiện ảnh từ database và thêm sự kiện click */}
-        <img 
-          className='food-item-image' 
-          src={getImageUrl(image)} 
-          alt={name} 
-          onClick={handleNavigate}
-          style={{cursor: 'pointer'}}
-        />
-        {
-          !cartItems[id]
-            ? <img className='add' onClick={() => addToCart(id)} src={assets.add_icon_white} />
-            : <div className='food-item-counter'>
-              <img onClick={() => removeFromCart(id)} src={assets.remove_icon_red} />
-              <p>{cartItems[id]}</p>
-              <img onClick={() => addToCart(id)} src={assets.add_icon_green} />
+    <>
+      <div 
+        className='food-item'
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <div className="food-item-container">
+          <div className="food-item-image-wrapper">
+            <img 
+              className={`food-item-image ${isHovered ? 'hovered' : ''}`}
+              src={getImageUrl(image)} 
+              alt={name} 
+              onClick={handleNavigate}
+            />
+            <div className="food-item-overlay" onClick={handleNavigate}>
+              <span>🔍 Xem chi tiết</span>
             </div>
-        }
-      </div>
-      <div className="food-item-info">
-        <div className="food-item-name-rating">
-          {/* Bước 4: Cho phép click vào tên món ăn để xem chi tiết */}
-          <p onClick={handleNavigate} style={{cursor: 'pointer'}}>{name}</p>
-          <img
-            src={assets.rating_starts}
-            alt=""
-            className="rating-clickable"
-            onClick={() => setShowReview(true)}
-            title="Xem đánh giá"
-          />
+          </div>
+          
+          <div className="food-item-action">
+            {!cartItems[id] ? (
+              <button 
+                className={`add-to-cart-btn ${isAdding ? 'adding' : ''}`}
+                onClick={handleAddToCart}
+                disabled={isAdding}
+              >
+                {isAdding ? (
+                  <>
+                    <span className="spinner-small"></span>
+                    Đang thêm...
+                  </>
+                ) : (
+                  <>
+                    <img src={assets.add_icon_white} alt="Thêm vào giỏ" />
+                    <span>Thêm vào giỏ</span>
+                  </>
+                )}
+              </button>
+            ) : (
+              <div className='food-item-counter'>
+                <button 
+                  onClick={handleRemoveFromCart} 
+                  className="counter-btn remove"
+                >
+                  <img src={assets.remove_icon_red} alt="Bớt" />
+                </button>
+                <span className="counter-number">{cartItems[id]}</span>
+                <button 
+                  onClick={handleAddToCart} 
+                  className="counter-btn add"
+                >
+                  <img src={assets.add_icon_green} alt="Thêm" />
+                </button>
+              </div>
+            )}
+          </div>
         </div>
-        <p className='food-item-desc'>{description}</p>
-        {/* Hiển thị giá có dấu phân cách nghìn cho chuyên nghiệp */}
-        <p className='food-item-price'>{price.toLocaleString()} VNĐ</p> 
+        
+        <div className="food-item-info">
+          <div className="food-item-name-rating">
+            <p onClick={handleNavigate} className="food-item-name">
+              {name}
+            </p>
+            <div 
+              className="food-item-rating" 
+              onClick={() => setShowReview(true)}
+              title="Xem đánh giá"
+            >
+              <img src={assets.rating_starts} alt="Đánh giá" />
+              <span className="rating-count">(0)</span>
+            </div>
+          </div>
+          
+          <p className='food-item-desc'>{description}</p>
+          
+          <div className="food-item-price-wrapper">
+            <span className="food-item-price">{formatPrice(price)}</span>
+            {price > 100000 && <span className="price-badge">Hot 🔥</span>}
+          </div>
+        </div>
+
+        {showReview && (
+          <ReviewPopup
+            foodId={id}
+            foodName={name}
+            onClose={() => setShowReview(false)}
+          />
+        )}
       </div>
 
-      {showReview && (
-        <ReviewPopup
-          foodId={id}
-          foodName={name}
-          onClose={() => setShowReview(false)}
-        />
+      {/* Toast Notification */}
+      {showToast && (
+        <div className={`toast-notification ${showToast ? 'show' : ''}`}>
+          <div className="toast-content">
+            <span className="toast-icon">{toastMessage.includes('') ? '🎉' : '🗑️'}</span>
+            <span className="toast-message">{toastMessage}</span>
+          </div>
+        </div>
       )}
-    </div>
+    </>
   )
 }
 

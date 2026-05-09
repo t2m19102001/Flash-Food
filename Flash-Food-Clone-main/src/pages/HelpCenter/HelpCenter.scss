@@ -1,0 +1,191 @@
+$primary-orange: #ff6b4a;
+$primary-dark: #e55a3b;
+$text-dark: #1e293b;
+$text-gray: #64748b;
+$white: #ffffff;
+$bg-light: #f8fafc;
+$border-light: #e2e8f0;
+$shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+$shadow-lg: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
+$transition: all 0.3s ease;
+
+.help-center {
+  .help-hero {
+    background: linear-gradient(135deg, $primary-orange, $primary-dark);
+    padding: 80px 20px;
+    text-align: center;
+    color: $white;
+    
+    h1 {
+      font-size: 48px;
+      margin-bottom: 16px;
+      
+      @media (max-width: 768px) {
+        font-size: 36px;
+      }
+    }
+    
+    p {
+      font-size: 18px;
+      opacity: 0.9;
+    }
+  }
+  
+  .help-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 20px;
+    
+    .help-grid {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 40px;
+      
+      @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+      }
+      
+      .help-sidebar {
+        .contact-card {
+          background: $white;
+          padding: 24px;
+          border-radius: 20px;
+          box-shadow: $shadow-md;
+          margin-bottom: 30px;
+          
+          h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: $text-dark;
+          }
+          
+          .contact-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            
+            .icon {
+              font-size: 24px;
+            }
+            
+            strong {
+              display: block;
+              color: $text-dark;
+              margin-bottom: 4px;
+            }
+            
+            p {
+              color: $text-gray;
+              margin: 0;
+            }
+          }
+        }
+        
+        .faq-categories {
+          background: $white;
+          padding: 24px;
+          border-radius: 20px;
+          box-shadow: $shadow-md;
+          
+          h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: $text-dark;
+          }
+          
+          ul {
+            list-style: none;
+            padding: 0;
+            
+            li {
+              padding: 12px 16px;
+              border-radius: 12px;
+              cursor: pointer;
+              transition: $transition;
+              color: $text-gray;
+              
+              &:hover {
+                background: rgba(255, 107, 74, 0.1);
+                color: $primary-orange;
+              }
+              
+              &.active {
+                background: $primary-orange;
+                color: $white;
+              }
+            }
+          }
+        }
+      }
+      
+      .faq-section {
+        background: $white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: $shadow-md;
+        
+        h2 {
+          font-size: 28px;
+          color: $text-dark;
+          margin-bottom: 30px;
+          position: relative;
+          
+          &::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, $primary-orange, $primary-dark);
+            border-radius: 2px;
+          }
+        }
+        
+        .faq-list {
+          .faq-item {
+            border-bottom: 1px solid $border-light;
+            
+            .faq-question {
+              padding: 20px 0;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              cursor: pointer;
+              font-weight: 600;
+              color: $text-dark;
+              transition: $transition;
+              
+              &:hover {
+                color: $primary-orange;
+              }
+              
+              .faq-icon {
+                font-size: 24px;
+                color: $primary-orange;
+              }
+            }
+            
+            .faq-answer {
+              max-height: 0;
+              overflow: hidden;
+              transition: max-height 0.3s ease;
+              
+              p {
+                padding-bottom: 20px;
+                color: $text-gray;
+                line-height: 1.6;
+              }
+            }
+            
+            &.open {
+              .faq-answer {
+                max-height: 200px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

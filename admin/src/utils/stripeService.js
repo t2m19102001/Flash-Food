@@ -1,45 +1,79 @@
 import { loadStripe } from '@stripe/stripe-js';
 
-const STRIPE_PUBLISHABLE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_51234567890';
+// 🔥 LẤY KEY TỪ BIẾN MÔI TRƯỜNG (không hardcode)
+const STRIPE_PUBLISHABLE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || '';
+
+// Kiểm tra Stripe có được cấu hình không
+const isStripeConfigured = !!STRIPE_PUBLISHABLE_KEY && STRIPE_PUBLISHABLE_KEY !== 'pk_test_51234567890';
 
 class StripeService {
   constructor() {
     this.stripe = null;
     this.elements = null;
+    this.isEnabled = isStripeConfigured;
+  }
+
+  // Kiểm tra Stripe có sẵn sàng không
+  isAvailable() {
+    if (!this.isEnabled) {
+      console.warn('⚠️ Stripe is disabled: Missing or invalid publishable key');
+      return false;
+    }
+    return true;
   }
 
   // Initialize Stripe
   async initialize() {
+    if (!this.isAvailable()) {
+      console.warn('⚠️ Stripe not available, skipping initialization');
+      return null;
+    }
+    
     if (!this.stripe) {
-      this.stripe = await loadStripe(STRIPE_PUBLISHABLE_KEY);
+      try {
+        this.stripe = await loadStripe(STRIPE_PUBLISHABLE_KEY);
+        console.log('✅ Stripe initialized successfully');
+      } catch (error) {
+        console.error('❌ Failed to initialize Stripe:', error);
+        this.isEnabled = false;
+        return null;
+      }
     }
     return this.stripe;
   }
 
   // Create payment intent
   async createPaymentIntent(amount, orderData) {
+    if (!this.isAvailable()) {
+      return { 
+        clientSecret: null, 
+        error: 'Stripe chưa được cấu hình. Vui lòng liên hệ quản trị viên!' 
+      };
+    }
+
     try {
-      const response = await fetch('/api/create-payment-intent', {
+      const response = await fetch('/api/payment/create-intent', {  // 🔥 SỬA ĐÚNG ENDPOINT
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          amount: Math.round(amount * 100), // Stripe expects amount in cents
+          amount: Math.round(amount),  // Số tiền đã là VND, không nhân 100
           currency: 'vnd',
-          orderId: orderData.orderId,
-          items: orderData.items,
-          customerEmail: orderData.customerEmail
-        })
+          orderId: orderData?.orderId,
+          items: orderData?.items,
+          customerEmail: orderData?.customerEmail
+        }),
+        credentials: 'include'  // 🔥 THÊM CREDENTIALS
       });
 
-      const { clientSecret, error } = await response.json();
+      const data = await response.json();
 
-      if (error) {
-        throw new Error(error.message);
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to create payment intent');
       }
 
-      return { clientSecret, error: null };
+      return { clientSecret: data.clientSecret, error: null };
     } catch (error) {
       console.error('Error creating payment intent:', error);
       return { clientSecret: null, error: error.message };
@@ -57,7 +91,7 @@ class StripeService {
       appearance: {
         theme: 'stripe',
         variables: {
-          colorPrimary: '#ff6347',
+          colorPrimary: '#ff6b4a',
           fontFamily: 'system-ui, -apple-system, sans-serif',
         }
       },
@@ -117,6 +151,10 @@ class StripeService {
 
   // Get supported payment methods
   getSupportedPaymentMethods() {
+    if (!this.isAvailable()) {
+      return [];
+    }
+    
     return [
       {
         id: 'card',
@@ -142,6 +180,15 @@ class StripeService {
       style: 'currency',
       currency: 'VND'
     }).format(amount);
+  }
+
+  // Get Stripe status
+  getStatus() {
+    return {
+      isEnabled: this.isAvailable(),
+      hasPublishableKey: !!STRIPE_PUBLISHABLE_KEY,
+      publishableKeyPrefix: STRIPE_PUBLISHABLE_KEY ? STRIPE_PUBLISHABLE_KEY.substring(0, 7) + '...' : 'none'
+    };
   }
 }
 

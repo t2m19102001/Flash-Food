@@ -2,6 +2,8 @@ import express from "express";
 import { 
     registerUser, 
     loginUser, 
+    logoutUser,
+    checkAuthStatus,
     listUsers, 
     deleteUser, 
     updateUser, 
@@ -27,11 +29,24 @@ userRouter.post("/login", loginUser);
 userRouter.get("/profile", authMiddleware, getProfile);
 userRouter.post("/change-password", authMiddleware, changePassword);
 
-// Route cập nhật Profile: Cho phép sửa Email, tên, ảnh...
+// 🔥 THÊM: Kiểm tra trạng thái đăng nhập
+userRouter.get("/check-auth", authMiddleware, checkAuthStatus);
+
+// 🔥 THÊM: Đăng xuất
+userRouter.post("/logout", authMiddleware, logoutUser);
+
+// Route cập nhật Profile: Cho phép sửa tên, email, SĐT, giới tính, ngày sinh, địa chỉ, ảnh...
 userRouter.post("/update", 
     authMiddleware, 
-    uploadMiddleware.single("image"), 
-    handleUploadError, 
+    (req, res, next) => {
+        // Hỗ trợ cả FormData và JSON
+        uploadMiddleware.single("image")(req, res, (err) => {
+            if (err) {
+                return handleUploadError(err, req, res, next);
+            }
+            next();
+        });
+    }, 
     updateUser
 );
 
