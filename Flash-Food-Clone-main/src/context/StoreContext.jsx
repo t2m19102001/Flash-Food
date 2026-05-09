@@ -40,7 +40,11 @@ const StoreContextProvider = (props) => {
     if (imagePath.startsWith("http")) return imagePath;
     const base = url.endsWith("/") ? url.slice(0, -1) : url;
     const p = imagePath.startsWith("/") ? imagePath.slice(1) : imagePath;
+    // Known backend prefixes → serve from API base
     if (p.startsWith("uploads/") || p.startsWith("images/")) return `${base}/${p}`;
+    // Vite-bundled static assets (e.g. assets/food-CD_jjlU7.jpg) → root-relative, no prefix
+    if (p.startsWith("assets/")) return `/${p}`;
+    // Bare "category/file.jpg" with one slash → under uploads/
     if (p.includes("/")) return `${base}/uploads/${p}`;
     return `${base}/images/${p}`;
   };
