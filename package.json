@@ -1,0 +1,21 @@
+{
+  "name": "flash-food-monorepo",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n be,fe,admin -c blue,green,magenta \"npm:dev:be\" \"npm:dev:fe\" \"npm:dev:admin\"",
+    "dev:be": "npm --prefix Flash-Food-Clone-BackEnd run dev",
+    "dev:fe": "npm --prefix Flash-Food-Clone-main run dev",
+    "dev:admin": "npm --prefix admin run dev",
+    "build:fe": "npm --prefix Flash-Food-Clone-main run build",
+    "build:admin": "cross-env VITE_BASE_PATH=/admin/ npm --prefix admin run build",
+    "build": "npm run build:fe && npm run build:admin",
+    "install:all": "npm --prefix Flash-Food-Clone-BackEnd install && npm --prefix Flash-Food-Clone-main install && npm --prefix admin install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

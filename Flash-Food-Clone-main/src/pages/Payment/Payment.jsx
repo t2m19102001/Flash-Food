@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import axios from 'axios';
+import { StoreContext } from '../../context/StoreContext';
 import './Payment.scss';
 
 // Load Stripe (thay bằng publishable key thật của bạn)
@@ -10,6 +11,7 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 
 
 // Component nhập thẻ thanh toán
 const PaymentForm = ({ clientSecret, orderId, amount, onSuccess, onError }) => {
+  const { url } = useContext(StoreContext);
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -43,11 +45,11 @@ const PaymentForm = ({ clientSecret, orderId, amount, onSuccess, onError }) => {
         console.log('Payment succeeded!', paymentIntent);
         
         // Gọi API xác nhận thanh toán thành công
-        await axios.post('/api/payment/success', {
+        await axios.post(`${url}/api/payment/success`, {
           orderId: orderId,
           paymentIntentId: paymentIntent.id
         }, {
-          headers: { token: localStorage.getItem('token') }
+          withCredentials: true
         });
         
         onSuccess?.(paymentIntent);

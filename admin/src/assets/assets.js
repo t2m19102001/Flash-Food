@@ -3,23 +3,24 @@ import logo from './logo.png'
 import header_img from './header.jpg'
 import search_icon from './search_icon.png'
 
-// Category menu images - use backend URLs
-const ansang = "http://localhost:4000/uploads/sang/48-bistro-52-ltr-quan-1-ho-chi-minh.jpg"
-const antrua = "http://localhost:4000/uploads/trua/com-suon-ba-cuong-nguyen-hue-quan-1-ho-chi-minh.jpg"
-const antoi = "http://localhost:4000/uploads/toi/bugis-singapore-am-thuc-singapore-vincom-center-quan-1-ho-chi-minh.jpg"
-const anvat = "http://localhost:4000/uploads/anvat/che-ba-ba.jpg"
-const banhgio = "http://localhost:4000/uploads/banhgio/gio-cha-lang-huong-quan-1-ho-chi-minh.jpg"
-const banhmi = "http://localhost:4000/uploads/banhmi/banh-mi-hong-hoa-nguyen-van-trang-62-nguyen-van-trang-p-ben-thanh-quan-1.jpg"
-const bunrieu = "http://localhost:4000/uploads/bunrieu/canh-bun-and-bun-rieu-nam-ky-khoi-nghia-quan-3-ho-chi-minh.jpg"
-const cafe = "http://localhost:4000/uploads/cafe/cong-caphe-vincom-dong-khoi-quan-1-ho-chi-minh.jpg"
-const comtam = "http://localhost:4000/uploads/comtam/phuc-loc-tho-com-tam-dam-da-tung-huong-vi-743-745-kha-van-can-p-linh-tay-quan-thu-duc.jpg"
-const comvanphong = "http://localhost:4000/uploads/comvanphong/venezia-pizza-com-van-phong-quan-1-ho-chi-minh.jpg"
-const hutieu = "http://localhost:4000/uploads/hutieu/a-chay-hu-tieu-mi-quan-1-ho-chi-minh.jpg"
-const lau = "http://localhost:4000/uploads/lau/kubara-lau-nhat-japanese-hotpot-saigon-centre-quan-1-ho-chi-minh.jpg"
-const nuocep = "http://localhost:4000/uploads/nuocep/duy-dua-quan-10-ho-chi-minh.jpg"
-const sinhto = "http://localhost:4000/uploads/sinhto/chang-zo-juice-nuoc-ep-dinh-duong-quan-1-ho-chi-minh.jpg"
-const trasua = "http://localhost:4000/uploads/trasua/38-flower-market-tea-house.jpg"
-const xoiman = "http://localhost:4000/uploads/xoiman/xoi-357-le-van-luong-quan-7-ho-chi-minh.jpg"
+// Category menu images — built from VITE_API_URL at build time
+const API = import.meta.env.VITE_API_URL;
+const ansang = `${API}/uploads/sang/48-bistro-52-ltr-quan-1-ho-chi-minh.jpg`
+const antrua = `${API}/uploads/trua/com-suon-ba-cuong-nguyen-hue-quan-1-ho-chi-minh.jpg`
+const antoi = `${API}/uploads/toi/bugis-singapore-am-thuc-singapore-vincom-center-quan-1-ho-chi-minh.jpg`
+const anvat = `${API}/uploads/anvat/che-ba-ba.jpg`
+const banhgio = `${API}/uploads/banhgio/gio-cha-lang-huong-quan-1-ho-chi-minh.jpg`
+const banhmi = `${API}/uploads/banhmi/banh-mi-hong-hoa-nguyen-van-trang-62-nguyen-van-trang-p-ben-thanh-quan-1.jpg`
+const bunrieu = `${API}/uploads/bunrieu/canh-bun-and-bun-rieu-nam-ky-khoi-nghia-quan-3-ho-chi-minh.jpg`
+const cafe = `${API}/uploads/cafe/cong-caphe-vincom-dong-khoi-quan-1-ho-chi-minh.jpg`
+const comtam = `${API}/uploads/comtam/phuc-loc-tho-com-tam-dam-da-tung-huong-vi-743-745-kha-van-can-p-linh-tay-quan-thu-duc.jpg`
+const comvanphong = `${API}/uploads/comvanphong/venezia-pizza-com-van-phong-quan-1-ho-chi-minh.jpg`
+const hutieu = `${API}/uploads/hutieu/a-chay-hu-tieu-mi-quan-1-ho-chi-minh.jpg`
+const lau = `${API}/uploads/lau/kubara-lau-nhat-japanese-hotpot-saigon-centre-quan-1-ho-chi-minh.jpg`
+const nuocep = `${API}/uploads/nuocep/duy-dua-quan-10-ho-chi-minh.jpg`
+const sinhto = `${API}/uploads/sinhto/chang-zo-juice-nuoc-ep-dinh-duong-quan-1-ho-chi-minh.jpg`
+const trasua = `${API}/uploads/trasua/38-flower-market-tea-house.jpg`
+const xoiman = `${API}/uploads/xoiman/xoi-357-le-van-luong-quan-7-ho-chi-minh.jpg`
 
 import add_icon_white from './add_icon_white.png'
 import add_icon_green from './add_icon_green.png'
@@ -74,7 +75,7 @@ export const food_list = [
     {
         _id: "1",
         name: "Bò nướng",
-        image: "http://localhost:4000/uploads/sang/48-bistro-52-ltr-quan-1-ho-chi-minh.jpg",
+        image: `${API}/uploads/sang/48-bistro-52-ltr-quan-1-ho-chi-minh.jpg`,
         price: 120000,
         description: "Bò nướng cao cấp, rau thơm tươi ngon",
         category: "Sáng"
@@ -82,7 +83,7 @@ export const food_list = [
     {
         _id: "2",
         name: "Bún trộn",
-        image: "http://localhost:4000/uploads/sang/bun-tron-quan-1-ho-chi-minh.jpg",
+        image: `${API}/uploads/sang/bun-tron-quan-1-ho-chi-minh.jpg`,
         price: 35000,
         description: "Bún trộn đặc sản, đậm vị",
         category: "Sáng"
@@ -90,7 +91,7 @@ export const food_list = [
     {
         _id: "3",
         name: "Hủ tiếu Thái Lan",
-        image: "http://localhost:4000/uploads/sang/hu-tieu-thai-lan-doi-thai-quan-1-ho-chi-minh.jpg",
+        image: `${API}/uploads/sang/hu-tieu-thai-lan-doi-thai-quan-1-ho-chi-minh.jpg`,
         price: 85000,
         description: "Hủ tiếu Thái Lan với hải sản tươi",
         category: "Sáng"
@@ -98,7 +99,7 @@ export const food_list = [
     {
         _id: "4",
         name: "Mì xào giòn",
-        image: "http://localhost:4000/uploads/sang/hu-tiu-mi-xao-gion-a-minh-cho-cu-quan-1-ho-chi-minh.jpg",
+        image: `${API}/uploads/sang/hu-tiu-mi-xao-gion-a-minh-cho-cu-quan-1-ho-chi-minh.jpg`,
         price: 45000,
         description: "Mì xào giòn với topping đa dạng",
         category: "Sáng"
@@ -106,7 +107,7 @@ export const food_list = [
     {
         _id: "5",
         name: "Phở bò",
-        image: "http://localhost:4000/uploads/sang/pho-co-lang-quan-1-ho-chi-minh.jpg",
+        image: `${API}/uploads/sang/pho-co-lang-quan-1-ho-chi-minh.jpg`,
         price: 55000,
         description: "Phở bò truyền thống, nước dùng đậm đà",
         category: "Sáng"

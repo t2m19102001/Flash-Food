@@ -48,8 +48,13 @@ const securityHeaders = helmet({
       defaultSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       scriptSrc: ["'self'", "https://js.stripe.com"],
-      imgSrc: ["'self'", "data:", "https:", "http://localhost:*"],
-      connectSrc: ["'self'", "https://api.stripe.com", "http://localhost:*"],
+      imgSrc: ["'self'", "data:", "https:", "http:"],
+      connectSrc: [
+        "'self'",
+        "https://api.stripe.com",
+        ...(process.env.ALLOWED_ORIGINS || '')
+          .split(',').map(o => o.trim()).filter(Boolean),
+      ],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
       objectSrc: ["'none'"],
       mediaSrc: ["'self'"],
@@ -165,9 +170,8 @@ const ipFilter = (req, res, next) => {
 
 // CORS enhancement
 const enhancedCORS = (req, res, next) => {
-  const allowedOrigins = process.env.ALLOWED_ORIGINS ?
-    process.env.ALLOWED_ORIGINS.split(',') :
-    ["http://localhost:5173", "http://localhost:5174"];
+  const allowedOrigins = (process.env.ALLOWED_ORIGINS || '')
+    .split(',').map(o => o.trim()).filter(Boolean);
 
   const origin = req.headers.origin;
 

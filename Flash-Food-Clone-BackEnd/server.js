@@ -198,25 +198,6 @@ app.use("/api/notifications", notificationRouter);
 app.use('/api/payment', paymentRouter);
 
 
-// ========== SERVE FRONTEND ==========
-const adminDistPath = path.join(__dirname, "../admin/dist");
-
-if (fs.existsSync(adminDistPath)) {
-  app.use(express.static(adminDistPath));
-  
-  app.use((req, res, next) => {
-    if (req.path.startsWith('/api') || 
-        req.path.startsWith('/uploads') || 
-        req.path.startsWith('/images') || 
-        req.path.includes('.')) {
-      return next();
-    }
-    res.sendFile(path.resolve(adminDistPath, "index.html"));
-  });
-} else {
-  console.log("⚠️ Admin dist folder not found at:", adminDistPath);
-}
-
 app.get("/", (req, res) => {
   res.send("API Working");
 });

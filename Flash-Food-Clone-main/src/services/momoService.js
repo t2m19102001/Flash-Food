@@ -1,13 +1,16 @@
 // src/services/momoService.js
 import CryptoJS from 'crypto-js';
 
+const FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL;
+const API_URL = import.meta.env.VITE_API_URL;
+
 const MOMO_CONFIG = {
   endpoint: 'https://test-payment.momo.vn/v2/gateway/api/create',
   partnerCode: 'MOMO',
   accessKey: 'F8BBA842ECF85',
   secretKey: 'K951B6PE1waDMi640xX08PD3vg6EkVlz',
-  redirectUrl: 'http://localhost:5173/payment-success',
-  ipnUrl: 'http://localhost:5173/payment-callback'
+  redirectUrl: `${FRONTEND_URL}/payment-success`,
+  ipnUrl: `${API_URL}/api/payment/momo/ipn`
 };
 
 export const createMomoPayment = async (orderInfo) => {
