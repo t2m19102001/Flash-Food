@@ -31,9 +31,19 @@ const seedDir = path.join(__dirname, '..', 'seed-uploads');
 const uploadsDir = path.join(__dirname, '..', 'uploads');
 
 const dryRun = process.argv.includes('--dry-run');
-const VITE_HASH_RE = /-[A-Za-z0-9_-]{8}(\.[a-zA-Z]+)$/;
 
-const stripHash = (name) => name.replace(VITE_HASH_RE, '$1');
+// Vite asset hash: filename ends with "-<8 chars>.<ext>" where the 8 chars
+// always contain at least one uppercase letter or digit (e.g. -DiRKWaE7).
+// Without that constraint, plain Vietnamese names like "...-chi-minh.jpg"
+// would be matched and mis-stripped.
+const VITE_HASH_RE = /-([A-Za-z0-9_-]{8})(\.[a-zA-Z]+)$/;
+
+const stripHash = (name) => {
+  const m = name.match(VITE_HASH_RE);
+  if (!m) return name;
+  if (!/[A-Z0-9]/.test(m[1])) return name; // not a real Vite hash
+  return name.slice(0, -m[0].length) + m[2];
+};
 
 const buildSeedMap = () => {
   const map = new Map();
@@ -69,9 +79,10 @@ const extractFilename = (raw) => {
 const resolveNewPath = (raw, seedMap) => {
   const filename = extractFilename(raw);
   if (!filename) return null;
-  const cleaned = stripHash(filename);
-  if (seedMap.has(cleaned)) return seedMap.get(cleaned);
+  // Try filename as-is first (already clean), then with Vite hash stripped.
   if (seedMap.has(filename)) return seedMap.get(filename);
+  const cleaned = stripHash(filename);
+  if (cleaned !== filename && seedMap.has(cleaned)) return seedMap.get(cleaned);
   if (userUploadExists(filename)) return `uploads/images/${filename}`;
   return null;
 };
