@@ -6,7 +6,8 @@
 // (without the Vite hash). This script walks every doc with an `image`
 // field, strips host + Vite hash, looks the cleaned filename up in
 // seed-uploads/* (or uploads/images/ for user uploads), and rewrites the
-// field to "<folder>/<filename>" so the runtime buildImageUrl resolves it.
+// field to "uploads/<folder>/<filename>" so the runtime buildImageUrl
+// resolves it under same-origin /uploads/.
 //
 // Run on the server (where MONGO_URI is set):
 //   cd Flash-Food-Clone-BackEnd
@@ -41,7 +42,7 @@ const buildSeedMap = () => {
     const folderPath = path.join(seedDir, folder);
     if (!fs.statSync(folderPath).isDirectory()) continue;
     for (const file of fs.readdirSync(folderPath)) {
-      map.set(file, `${folder}/${file}`);
+      map.set(file, `uploads/${folder}/${file}`);
     }
   }
   return map;
@@ -71,7 +72,7 @@ const resolveNewPath = (raw, seedMap) => {
   const cleaned = stripHash(filename);
   if (seedMap.has(cleaned)) return seedMap.get(cleaned);
   if (seedMap.has(filename)) return seedMap.get(filename);
-  if (userUploadExists(filename)) return filename;
+  if (userUploadExists(filename)) return `uploads/images/${filename}`;
   return null;
 };
 
@@ -158,11 +159,8 @@ const main = async () => {
   console.log(`Connected to MongoDB${dryRun ? ' (DRY RUN)' : ''}`);
 
   const seedMap = buildSeedMap();
-  console.log(
-    `Loaded ${seedMap.size} seed files across ${
-      new Set([...seedMap.values()].map((v) => v.split('/')[0])).size
-    } folders`,
-  );
+  const folderCount = new Set([...seedMap.values()].map((v) => v.split('/')[1])).size;
+  console.log(`Loaded ${seedMap.size} seed files across ${folderCount} folders`);
 
   await runCollection('food', foodModel, (d, m, s) => fixDocImage(d, d.name, m, s), seedMap);
   await runCollection('category', categoryModel, (d, m, s) => fixDocImage(d, d.name, m, s), seedMap);
