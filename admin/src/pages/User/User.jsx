@@ -3,6 +3,7 @@ import "./User.scss";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { SkeletonTable, LoadingOverlay } from "../../components/Loading/Loading";
+import { buildImageUrl } from "../../utils/imageUrl";
 
 const User = ({ url }) => {
     const [users, setUsers] = useState([]);
@@ -26,13 +27,7 @@ const User = ({ url }) => {
         isActive: true
     });
 
-    // 🔥 HÀM LẤY URL ẢNH
-    const getImageUrl = (imagePath) => {
-        if (!imagePath) return '';
-        if (imagePath.startsWith('http')) return imagePath;
-        if (imagePath.startsWith('/')) return `${url}${imagePath}`;
-        return `${url}/images/${imagePath}`;
-    };
+    const getImageUrl = buildImageUrl;
 
     // Filter users
     const filteredUsers = users.filter(user => {

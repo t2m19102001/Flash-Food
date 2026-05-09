@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import './Orders.scss'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import { buildImageUrl } from '../../utils/imageUrl'
 
 const Orders = ({ url }) => {
   const [orders, setOrders] = useState([]);
@@ -412,7 +413,7 @@ const Orders = ({ url }) => {
                     <tbody>
                       {selectedOrder.items?.map((item, idx) => (
                         <tr key={idx}>
-                          <td><img src={item.image ? `${url}/images/${item.image}` : '/placeholder.png'} alt={item.name} className="product-image" onError={(e) => { e.target.src = 'https://placehold.co/50x50?text=No+Image'; }} /></td>
+                          <td><img src={item.image ? buildImageUrl(item.image) : '/placeholder.png'} alt={item.name} className="product-image" onError={(e) => { e.target.src = 'https://placehold.co/50x50?text=No+Image'; }} /></td>
                           <td>{item.name}</td>
                           <td>{item.price?.toLocaleString()}đ</td>
                           <td>x{item.quantity}</td>
