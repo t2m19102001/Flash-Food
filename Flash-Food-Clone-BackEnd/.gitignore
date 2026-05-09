@@ -2,6 +2,7 @@ node_modules/
 .env
 .env.*
 !.env.example
-uploads/
+# Ignore user uploads but track seed images per category
+uploads/images/
 *.log
 .DS_Store
