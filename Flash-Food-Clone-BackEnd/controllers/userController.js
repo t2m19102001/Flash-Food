@@ -169,8 +169,8 @@ const updateUser = async (req, res) => {
         if (name !== undefined) updateData.name = name.trim();
         if (email !== undefined) {
             const normalizedEmail = email.toLowerCase().trim();
-            const emailTaken = await userModel.findOne({ email: normalizedEmail, _id: { $ne: userId } });
-            if (emailTaken) {
+            const existingUser = await userModel.findOne({ email: normalizedEmail });
+            if (existingUser && existingUser._id.toString() !== userId.toString()) {
                 return res.status(400).json({ success: false, message: "Email này đã được sử dụng bởi tài khoản khác" });
             }
             updateData.email = normalizedEmail;
