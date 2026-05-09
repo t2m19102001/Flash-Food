@@ -165,9 +165,16 @@ const updateUser = async (req, res) => {
         console.log("3. File upload:", req.file ? req.file.filename : "Không có ảnh mới");
 
         const updateData = {};
-        
+
         if (name !== undefined) updateData.name = name.trim();
-        if (email !== undefined) updateData.email = email.toLowerCase().trim();
+        if (email !== undefined) {
+            const normalizedEmail = email.toLowerCase().trim();
+            const emailTaken = await userModel.findOne({ email: normalizedEmail, _id: { $ne: userId } });
+            if (emailTaken) {
+                return res.status(400).json({ success: false, message: "Email này đã được sử dụng bởi tài khoản khác" });
+            }
+            updateData.email = normalizedEmail;
+        }
         if (phone !== undefined) updateData.phone = phone;
         if (secondaryPhone !== undefined) updateData.secondaryPhone = secondaryPhone;
         if (gender !== undefined) updateData.gender = gender;
