@@ -38,9 +38,11 @@ const StoreContextProvider = (props) => {
   const getImageUrl = (imagePath) => {
     if (!imagePath) return "";
     if (imagePath.startsWith("http")) return imagePath;
-    const cleanUrl = url.endsWith("/") ? url.slice(0, -1) : url;
-    const cleanPath = imagePath.startsWith("/") ? imagePath : `/${imagePath}`;
-    return `${cleanUrl}${cleanPath}`;
+    const base = url.endsWith("/") ? url.slice(0, -1) : url;
+    const p = imagePath.startsWith("/") ? imagePath.slice(1) : imagePath;
+    if (p.startsWith("uploads/") || p.startsWith("images/")) return `${base}/${p}`;
+    if (p.includes("/")) return `${base}/uploads/${p}`;
+    return `${base}/images/${p}`;
   };
 
   const fetchFoodList = async () => {
