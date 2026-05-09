@@ -88,7 +88,7 @@ const clearAllTokens = () => {
 };
 
 const App = () => {
-  const url = import.meta.env.VITE_API_URL || "http://localhost:4000";
+  const url = import.meta.env.VITE_API_URL || "";
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 

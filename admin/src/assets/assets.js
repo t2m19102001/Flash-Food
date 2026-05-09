@@ -3,8 +3,9 @@ import logo from './logo.png'
 import header_img from './header.jpg'
 import search_icon from './search_icon.png'
 
-// Category menu images — built from VITE_API_URL at build time
-const API = import.meta.env.VITE_API_URL;
+// Category menu images — built from VITE_API_URL at build time.
+// Empty string = relative URLs (so the page works under both VPN and public host).
+const API = import.meta.env.VITE_API_URL || "";
 const ansang = `${API}/uploads/sang/48-bistro-52-ltr-quan-1-ho-chi-minh.jpg`
 const antrua = `${API}/uploads/trua/com-suon-ba-cuong-nguyen-hue-quan-1-ho-chi-minh.jpg`
 const antoi = `${API}/uploads/toi/bugis-singapore-am-thuc-singapore-vincom-center-quan-1-ho-chi-minh.jpg`

@@ -22,7 +22,7 @@ class OrderStatusService {
     }
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000";
+      const apiUrl = import.meta.env.VITE_API_URL || "";
       // 🔥 THÊM USER_ID VÀO URL NẾU CẦN
       const url = userId ? `${apiUrl}/api/orders/subscribe?userId=${userId}` : `${apiUrl}/api/orders/subscribe`;
       this.eventSource = new EventSource(url);
