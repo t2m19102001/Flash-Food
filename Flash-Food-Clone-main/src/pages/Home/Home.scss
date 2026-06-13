@@ -1,0 +1,198 @@
+// Home.scss
+.home {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #fefaf5 0%, #ffffff 100%);
+  
+  .home-main {
+    .home-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px 40px 60px;
+      
+      @media (max-width: 1024px) {
+        padding: 20px 30px 50px;
+      }
+      
+      @media (max-width: 768px) {
+        padding: 15px 20px 40px;
+      }
+      
+      @media (max-width: 480px) {
+        padding: 10px 15px 30px;
+      }
+    }
+  }
+}
+
+// ========== MENU SKELETON ==========
+.menu-skeleton {
+  display: flex;
+  gap: 30px;
+  overflow-x: auto;
+  padding: 10px 0 20px;
+  margin-bottom: 20px;
+  
+  &::-webkit-scrollbar {
+    height: 4px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #e8e8e8;
+    border-radius: 10px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #f5a623;
+    border-radius: 10px;
+  }
+  
+  .menu-skeleton-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    min-width: 90px;
+    
+    .skeleton-circle {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.2s infinite;
+      border-radius: 50%;
+      
+      @media (max-width: 768px) {
+        width: 65px;
+        height: 65px;
+      }
+    }
+    
+    .skeleton-text {
+      width: 60px;
+      height: 14px;
+      background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.2s infinite;
+      border-radius: 7px;
+      
+      @media (max-width: 768px) {
+        width: 50px;
+        height: 12px;
+      }
+    }
+  }
+}
+
+// ========== FOOD SKELETON ==========
+.food-skeleton {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 30px;
+  margin-top: 20px;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+  }
+  
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .food-skeleton-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+    
+    .skeleton-image {
+      height: 200px;
+      background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.2s infinite;
+      
+      @media (max-width: 768px) {
+        height: 180px;
+      }
+    }
+    
+    .skeleton-title {
+      height: 20px;
+      width: 70%;
+      margin: 18px 16px 12px;
+      background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.2s infinite;
+      border-radius: 10px;
+    }
+    
+    .skeleton-price {
+      height: 18px;
+      width: 40%;
+      margin: 0 16px 20px;
+      background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.2s infinite;
+      border-radius: 9px;
+    }
+  }
+}
+
+// ========== SHIMMER ANIMATION ==========
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+// ========== ANIMATION KHI COMPONENT LOAD XONG ==========
+.menu-section, 
+.food-display-section {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ========== OPTIONAL: SCROLL REVEAL ==========
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1), 
+              transform 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+  
+  &.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ========== REDUCED MOTION (cho người dùng thích tiết kiệm pin) ==========
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-circle,
+  .skeleton-text,
+  .skeleton-image,
+  .skeleton-title,
+  .skeleton-price {
+    animation: none;
+    background: #e8e8e8;
+  }
+  
+  .menu-section, 
+  .food-display-section {
+    animation: none;
+  }
+}

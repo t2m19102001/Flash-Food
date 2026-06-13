@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxGraphModel dx="1800" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+
+    <!-- ==================== COLUMN 1 (x=30): User → Order → OrderItem ==================== -->
+
+    <!-- USER: col1, y=30 -->
+    <mxCell id="c_user" value="User" style="swimlane;fontStyle=1;align=center;startSize=40;whiteSpace=wrap;overflow=hidden;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;" vertex="1" parent="1">
+      <mxGeometry x="30" y="30" width="360" height="560" as="geometry" />
+    </mxCell>
+    <mxCell id="f_user" value="- _id : ObjectId&#xa;- name : String [required]&#xa;- email : String [required, unique]&#xa;- password : String [required]&#xa;- phone : String&#xa;- secondaryPhone : String&#xa;- gender : String&#xa;- dob : String&#xa;- address : String&#xa;- image : String&#xa;- isAdmin : Boolean&#xa;- isActive : Boolean&#xa;- role : String&#xa;- loyaltyPoints : Number&#xa;- cartData : Object&#xa;- favorites : [ObjectId → Food]&#xa;- orderHistory : [ObjectId → Order]&#xa;- savedAddresses : [String]&#xa;- createdAt : Date&#xa;- updatedAt : Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11;" vertex="1" parent="c_user">
+      <mxGeometry y="40" width="360" height="470" as="geometry" />
+    </mxCell>
+    <mxCell id="sep_user" value="" style="line;strokeColor=#6c8ebf;fillColor=none;" vertex="1" parent="c_user">
+      <mxGeometry y="510" width="360" height="8" as="geometry" />
+    </mxCell>
+    <mxCell id="m_user" value="«pre-save» updateTimestamp(): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;fontStyle=2;" vertex="1" parent="c_user">
+      <mxGeometry y="518" width="360" height="42" as="geometry" />
+    </mxCell>
+
+    <!-- ORDER: col1, y=670 (gap=80px from User bottom 590) -->
+    <mxCell id="c_order" value="Order" style="swimlane;fontStyle=1;align=center;startSize=40;whiteSpace=wrap;overflow=hidden;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;" vertex="1" parent="1">
+      <mxGeometry x="30" y="670" width="390" height="943" as="geometry" />
+    </mxCell>
+    <mxCell id="f_order" value="- _id : ObjectId&#xa;- userId : ObjectId → User [required]&#xa;- items : [OrderItem] [required]&#xa;- amount : Number [required, min:0]&#xa;- address : Address [required]&#xa;- status : String&#xa;  (pending | pending_payment | confirmed | processing&#xa;   | shipped | delivered | cancelled | payment_failed&#xa;   | refunded | payment_canceled)&#xa;- paymentMethod : String (cod | stripe | momo)&#xa;- paymentStatus : String&#xa;  (pending | paid | failed | canceled | refunded)&#xa;- transactionId : String&#xa;- paymentId : String&#xa;- paidAt : Date&#xa;- momoRequestId : String&#xa;- cancelReason : String&#xa;- cancelledBy : String (user | admin | system)&#xa;- cancelledAt : Date&#xa;- failureReason : String&#xa;- failureCode : String&#xa;- refundedAt : Date&#xa;- refundAmount : Number&#xa;- date : Date&#xa;- createdAt : Date&#xa;- updatedAt : Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11;" vertex="1" parent="c_order">
+      <mxGeometry y="40" width="390" height="605" as="geometry" />
+    </mxCell>
+    <mxCell id="sep_order" value="" style="line;strokeColor=#6c8ebf;fillColor=none;" vertex="1" parent="c_order">
+      <mxGeometry y="645" width="390" height="8" as="geometry" />
+    </mxCell>
+    <mxCell id="m_order" value="«virtual» totalItems: Number&#xa;«virtual» isPaid: Boolean&#xa;«virtual» isCancellable: Boolean&#xa;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#xa;«pre-save» calcTotalPrice(): void&#xa;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#xa;+ markAsPaid(transactionId, paymentMethod): Order&#xa;+ markAsFailed(reason, code): Order&#xa;+ cancel(reason, cancelledBy): Order&#xa;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#xa;«static» findByUser(userId): Order[]&#xa;«static» findOrderDetails(orderId): Order" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;fontStyle=2;" vertex="1" parent="c_order">
+      <mxGeometry y="653" width="390" height="290" as="geometry" />
+    </mxCell>
+
+    <!-- ORDER ITEM: col1, y=1690 (gap=77px from Order bottom 1613) -->
+    <mxCell id="c_orderitem" value="«Embedded»&#xa;OrderItem" style="swimlane;fontStyle=3;align=center;startSize=40;whiteSpace=wrap;overflow=hidden;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;" vertex="1" parent="1">
+      <mxGeometry x="30" y="1690" width="290" height="200" as="geometry" />
+    </mxCell>
+    <mxCell id="f_orderitem" value="- foodId : ObjectId → Food [required]&#xa;- name : String [required]&#xa;- price : Number [required]&#xa;- quantity : Number [required, min:1]&#xa;- image : String&#xa;- totalPrice : Number" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11;" vertex="1" parent="c_orderitem">
+      <mxGeometry y="40" width="290" height="160" as="geometry" />
+    </mxCell>
+
+    <!-- ==================== COLUMN 2 (x=460): Food → Review → Address → Promo ==================== -->
+
+    <!-- FOOD: col2, y=30 -->
+    <mxCell id="c_food" value="Food" style="swimlane;fontStyle=1;align=center;startSize=40;whiteSpace=wrap;overflow=hidden;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;" vertex="1" parent="1">
+      <mxGeometry x="460" y="30" width="310" height="265" as="geometry" />
+    </mxCell>
+    <mxCell id="f_food" value="- _id : ObjectId&#xa;- name : String [required]&#xa;- description : String&#xa;- price : Number [required]&#xa;- image : String [required]&#xa;- category : String [required]&#xa;- isAvailable : Boolean&#xa;- createdAt : Date&#xa;- updatedAt : Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11;" vertex="1" parent="c_food">
+      <mxGeometry y="40" width="310" height="225" as="geometry" />
+    </mxCell>
+
+    <!-- REVIEW: col2, y=345 (gap=50px from Food bottom 295) -->
+    <mxCell id="c_review" value="Review" style="swimlane;fontStyle=1;align=center;startSize=40;whiteSpace=wrap;overflow=hidden;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;" vertex="1" parent="1">
+      <mxGeometry x="460" y="345" width="300" height="245" as="geometry" />
+    </mxCell>
+    <mxCell id="f_review" value="- _id : ObjectId&#xa;- userId : ObjectId → User [required]&#xa;- foodId : ObjectId → Food [required]&#xa;- rating : Number [required, 1–5]&#xa;- comment : String&#xa;- date : Date&#xa;- createdAt : Date&#xa;- updatedAt : Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11;" vertex="1" parent="c_review">
+      <mxGeometry y="40" width="300" height="205" as="geometry" />
+    </mxCell>
+
+    <!-- ADDRESS: col2, y=670 (aligns with Order top, gap=80px from Review bottom 590) -->
+    <mxCell id="c_address" value="«Embedded»&#xa;Address" style="swimlane;fontStyle=3;align=center;startSize=40;whiteSpace=wrap;overflow=hidden;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;" vertex="1" parent="1">
+      <mxGeometry x="460" y="670" width="290" height="265" as="geometry" />
+    </mxCell>
+    <mxCell id="f_address" value="- firstName : String [required]&#xa;- lastName : String&#xa;- email : String [required]&#xa;- phone : String [required]&#xa;- address : String [required]&#xa;- city : String&#xa;- state : String&#xa;- country : String&#xa;- note : String" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11;" vertex="1" parent="c_address">
+      <mxGeometry y="40" width="290" height="225" as="geometry" />
+    </mxCell>
+
+    <!-- PROMO: col2, y=1000 (gap=65px from Address bottom 935) -->
+    <mxCell id="c_promo" value="Promo" style="swimlane;fontStyle=1;align=center;startSize=40;whiteSpace=wrap;overflow=hidden;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;" vertex="1" parent="1">
+      <mxGeometry x="460" y="1000" width="290" height="265" as="geometry" />
+    </mxCell>
+    <mxCell id="f_promo" value="- _id : ObjectId&#xa;- code : String [required, unique]&#xa;- discountPercent : Number [1–100, required]&#xa;- maxUses : Number&#xa;- usedCount : Number&#xa;- expiresAt : Date [required]&#xa;- isActive : Boolean&#xa;- createdAt : Date&#xa;- updatedAt : Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11;" vertex="1" parent="c_promo">
+      <mxGeometry y="40" width="290" height="225" as="geometry" />
+    </mxCell>
+
+    <!-- ==================== COLUMN 3 (x=820): Category → Notification → Contact ==================== -->
+
+    <!-- CATEGORY: col3, y=30 -->
+    <mxCell id="c_category" value="Category" style="swimlane;fontStyle=1;align=center;startSize=40;whiteSpace=wrap;overflow=hidden;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;" vertex="1" parent="1">
+      <mxGeometry x="820" y="30" width="290" height="200" as="geometry" />
+    </mxCell>
+    <mxCell id="f_category" value="- _id : ObjectId&#xa;- name : String [required, unique]&#xa;- image : String&#xa;- managedBy : ObjectId → User&#xa;- createdAt : Date&#xa;- updatedAt : Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11;" vertex="1" parent="c_category">
+      <mxGeometry y="40" width="290" height="160" as="geometry" />
+    </mxCell>
+
+    <!-- NOTIFICATION: col3, y=280 (gap=50px from Category bottom 230) -->
+    <mxCell id="c_notification" value="Notification" style="swimlane;fontStyle=1;align=center;startSize=40;whiteSpace=wrap;overflow=hidden;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;" vertex="1" parent="1">
+      <mxGeometry x="820" y="280" width="310" height="295" as="geometry" />
+    </mxCell>
+    <mxCell id="f_notification" value="- _id : ObjectId&#xa;- title : String [required]&#xa;- message : String [required]&#xa;- type : String (info|success|warning|error)&#xa;- target : String (all|users|admins)&#xa;- sentBy : ObjectId → User&#xa;- sentAt : Date&#xa;- readBy : [ObjectId → User]&#xa;- createdAt : Date&#xa;- updatedAt : Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11;" vertex="1" parent="c_notification">
+      <mxGeometry y="40" width="310" height="255" as="geometry" />
+    </mxCell>
+
+    <!-- CONTACT: col3, y=645 (gap=70px from Notification bottom 575) -->
+    <mxCell id="c_contact" value="Contact" style="swimlane;fontStyle=1;align=center;startSize=40;whiteSpace=wrap;overflow=hidden;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;" vertex="1" parent="1">
+      <mxGeometry x="820" y="645" width="290" height="265" as="geometry" />
+    </mxCell>
+    <mxCell id="f_contact" value="- _id : ObjectId&#xa;- name : String [required]&#xa;- email : String [required]&#xa;- subject : String [required]&#xa;- message : String [required]&#xa;- status : String (pending|read|replied)&#xa;- repliedAt : Date&#xa;- createdAt : Date&#xa;- updatedAt : Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11;" vertex="1" parent="c_contact">
+      <mxGeometry y="40" width="290" height="225" as="geometry" />
+    </mxCell>
+
+    <!-- ==================== COLUMN 4 (x=1190): Banner ==================== -->
+
+    <!-- BANNER: col4, y=30 -->
+    <mxCell id="c_banner" value="Banner" style="swimlane;fontStyle=1;align=center;startSize=40;whiteSpace=wrap;overflow=hidden;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;" vertex="1" parent="1">
+      <mxGeometry x="1190" y="30" width="280" height="265" as="geometry" />
+    </mxCell>
+    <mxCell id="f_banner" value="- _id : ObjectId&#xa;- title : String [required]&#xa;- subtitle : String&#xa;- image : String [required]&#xa;- link : String&#xa;- order : Number&#xa;- isActive : Boolean&#xa;- createdAt : Date&#xa;- updatedAt : Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11;" vertex="1" parent="c_banner">
+      <mxGeometry y="40" width="280" height="225" as="geometry" />
+    </mxCell>
+
+    <!-- ==================== RELATIONSHIPS ==================== -->
+
+    <!-- User → Order: đặt (1 → 0..*) -->
+    <mxCell id="r_user_order" value="đặt" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;endSize=8;fontSize=11;" edge="1" source="c_user" target="c_order" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="r_user_order_s" value="1" style="resizable=0;html=1;align=right;verticalAlign=bottom;labelBackgroundColor=none;fontSize=10;" connectable="0" vertex="1" parent="r_user_order">
+      <mxGeometry x="-1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+    </mxCell>
+    <mxCell id="r_user_order_t" value="0..*" style="resizable=0;html=1;align=left;verticalAlign=bottom;labelBackgroundColor=none;fontSize=10;" connectable="0" vertex="1" parent="r_user_order">
+      <mxGeometry x="1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+    </mxCell>
+
+    <!-- User → Review: viết (1 → 0..*) -->
+    <mxCell id="r_user_review" value="viết" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;endSize=8;fontSize=11;" edge="1" source="c_user" target="c_review" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="r_user_review_s" value="1" style="resizable=0;html=1;align=right;verticalAlign=bottom;labelBackgroundColor=none;fontSize=10;" connectable="0" vertex="1" parent="r_user_review">
+      <mxGeometry x="-1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+    </mxCell>
+    <mxCell id="r_user_review_t" value="0..*" style="resizable=0;html=1;align=left;verticalAlign=bottom;labelBackgroundColor=none;fontSize=10;" connectable="0" vertex="1" parent="r_user_review">
+      <mxGeometry x="1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+    </mxCell>
+
+    <!-- User → Food: yêu thích (0..* → 0..*) dashed -->
+    <mxCell id="r_user_food" value="yêu thích" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;endSize=8;dashed=1;fontSize=11;" edge="1" source="c_user" target="c_food" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="r_user_food_s" value="0..*" style="resizable=0;html=1;align=right;verticalAlign=bottom;labelBackgroundColor=none;fontSize=10;" connectable="0" vertex="1" parent="r_user_food">
+      <mxGeometry x="-1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+    </mxCell>
+    <mxCell id="r_user_food_t" value="0..*" style="resizable=0;html=1;align=left;verticalAlign=bottom;labelBackgroundColor=none;fontSize=10;" connectable="0" vertex="1" parent="r_user_food">
+      <mxGeometry x="1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+    </mxCell>
+
+    <!-- User → Notification: nhận / gửi (0..* → 0..*) -->
+    <mxCell id="r_user_notif" value="nhận / gửi" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;endSize=8;fontSize=11;" edge="1" source="c_user" target="c_notification" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="r_user_notif_s" value="0..*" style="resizable=0;html=1;align=right;verticalAlign=bottom;labelBackgroundColor=none;fontSize=10;" connectable="0" vertex="1" parent="r_user_notif">
+      <mxGeometry x="-1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+    </mxCell>
+    <mxCell id="r_user_notif_t" value="0..*" style="resizable=0;html=1;align=left;verticalAlign=bottom;labelBackgroundColor=none;fontSize=10;" connectable="0" vertex="1" parent="r_user_notif">
+      <mxGeometry x="1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+    </mxCell>
+
+    <!-- Review → Food: đánh giá (0..* → 1) -->
+    <mxCell id="r_review_food" value="đánh giá" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;endSize=8;fontSize=11;" edge="1" source="c_review" target="c_food" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="r_review_food_s" value="0..*" style="resizable=0;html=1;align=right;verticalAlign=bottom;labelBackgroundColor=none;fontSize=10;" connectable="0" vertex="1" parent="r_review_food">
+      <mxGeometry x="-1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+    </mxCell>
+    <mxCell id="r_review_food_t" value="1" style="resizable=0;html=1;align=left;verticalAlign=bottom;labelBackgroundColor=none;fontSize=10;" connectable="0" vertex="1" parent="r_review_food">
+      <mxGeometry x="1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+    </mxCell>
+
+    <!-- Category → Food: phân loại (1 → 0..*) Aggregation (hollow diamond) -->
+    <mxCell id="r_category_food" value="phân loại" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;endSize=8;startArrow=diamond;startFill=0;startSize=14;fontSize=11;" edge="1" source="c_category" target="c_food" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="r_category_food_s" value="1" style="resizable=0;html=1;align=right;verticalAlign=bottom;labelBackgroundColor=none;fontSize=10;" connectable="0" vertex="1" parent="r_category_food">
+      <mxGeometry x="-1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+    </mxCell>
+    <mxCell id="r_category_food_t" value="0..*" style="resizable=0;html=1;align=left;verticalAlign=bottom;labelBackgroundColor=none;fontSize=10;" connectable="0" vertex="1" parent="r_category_food">
+      <mxGeometry x="1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+    </mxCell>
+
+    <!-- Category → User: quản lý bởi (0..* → 1) -->
+    <mxCell id="r_category_user" value="quản lý bởi" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;endSize=8;fontSize=11;" edge="1" source="c_category" target="c_user" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="r_category_user_s" value="0..*" style="resizable=0;html=1;align=right;verticalAlign=bottom;labelBackgroundColor=none;fontSize=10;" connectable="0" vertex="1" parent="r_category_user">
+      <mxGeometry x="-1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+    </mxCell>
+    <mxCell id="r_category_user_t" value="1" style="resizable=0;html=1;align=left;verticalAlign=bottom;labelBackgroundColor=none;fontSize=10;" connectable="0" vertex="1" parent="r_category_user">
+      <mxGeometry x="1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+    </mxCell>
+
+    <!-- Order → OrderItem: chứa (1 → 1..*) Composition (filled diamond) -->
+    <mxCell id="r_order_item" value="chứa" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;endSize=8;startArrow=diamond;startFill=1;startSize=14;fontSize=11;" edge="1" source="c_order" target="c_orderitem" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="r_order_item_s" value="1" style="resizable=0;html=1;align=right;verticalAlign=bottom;labelBackgroundColor=none;fontSize=10;" connectable="0" vertex="1" parent="r_order_item">
+      <mxGeometry x="-1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+    </mxCell>
+    <mxCell id="r_order_item_t" value="1..*" style="resizable=0;html=1;align=left;verticalAlign=bottom;labelBackgroundColor=none;fontSize=10;" connectable="0" vertex="1" parent="r_order_item">
+      <mxGeometry x="1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+    </mxCell>
+
+    <!-- Order → Address: có (1 → 1) Composition (filled diamond) -->
+    <mxCell id="r_order_address" value="có" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;endSize=8;startArrow=diamond;startFill=1;startSize=14;fontSize=11;" edge="1" source="c_order" target="c_address" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="r_order_address_s" value="1" style="resizable=0;html=1;align=right;verticalAlign=bottom;labelBackgroundColor=none;fontSize=10;" connectable="0" vertex="1" parent="r_order_address">
+      <mxGeometry x="-1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+    </mxCell>
+    <mxCell id="r_order_address_t" value="1" style="resizable=0;html=1;align=left;verticalAlign=bottom;labelBackgroundColor=none;fontSize=10;" connectable="0" vertex="1" parent="r_order_address">
+      <mxGeometry x="1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+    </mxCell>
+
+    <!-- OrderItem → Food: tham chiếu (0..* → 1) Dependency (dashed) -->
+    <mxCell id="r_item_food" value="tham chiếu" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;endSize=8;dashed=1;fontSize=11;" edge="1" source="c_orderitem" target="c_food" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="r_item_food_s" value="0..*" style="resizable=0;html=1;align=right;verticalAlign=bottom;labelBackgroundColor=none;fontSize=10;" connectable="0" vertex="1" parent="r_item_food">
+      <mxGeometry x="-1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+    </mxCell>
+    <mxCell id="r_item_food_t" value="1" style="resizable=0;html=1;align=left;verticalAlign=bottom;labelBackgroundColor=none;fontSize=10;" connectable="0" vertex="1" parent="r_item_food">
+      <mxGeometry x="1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+    </mxCell>
+
+  </root>
+</mxGraphModel>

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Dashboard.scss";
 import axios from "axios";
-import { getCookie } from "../../utils/cookieHelper";
 import { toast } from "react-toastify";
 import { SkeletonStats, SkeletonCard } from "../Loading/Loading";
 
@@ -29,10 +28,10 @@ const Dashboard = ({ url = "http://localhost:4000" }) => {
         conversionRate: 0
     });
     const [loading, setLoading] = useState(true);
-    const [dateRange, setDateRange] = useState("7days"); // 7days, 30days, 90days
-    const [selectedMetric, setSelectedMetric] = useState("revenue"); // revenue, orders, users
+    const [dateRange, setDateRange] = useState("7days");
+    const [selectedMetric, setSelectedMetric] = useState("revenue");
     const [autoRefresh, setAutoRefresh] = useState(false);
-    const [refreshInterval, setRefreshInterval] = useState(30000); // 30 seconds
+    const [refreshInterval, setRefreshInterval] = useState(30000);
 
     useEffect(() => {
         fetchStatistics();
@@ -48,27 +47,32 @@ const Dashboard = ({ url = "http://localhost:4000" }) => {
     const fetchStatistics = async () => {
         try {
             setLoading(true);
-            const token = getCookie("adminToken");
+            console.log("🟢 Bắt đầu fetch thống kê...");
 
-            // Fetch all data
+            // 🔥 DÙNG withCredentials THAY VÌ HEADER TOKEN
             const [statsRes, ordersRes, productsRes, usersRes] = await Promise.all([
-                axios.get(`${url}/api/stats`, { headers: { token } }).catch(err => {
+                axios.get(`${url}/api/admin/stats`, { withCredentials: true }).catch(err => {
                     console.error("Stats API error:", err.response?.status || err.message);
                     return { data: { success: false } };
                 }),
-                axios.get(`${url}/api/order/list`, { headers: { token } }).catch(err => {
+                axios.get(`${url}/api/order/list`, { withCredentials: true }).catch(err => {
                     console.error("Orders API error:", err.response?.status || err.message);
                     return { data: { orders: [] } };
                 }),
-                axios.get(`${url}/api/food/list`).catch(err => {
+                axios.get(`${url}/api/food/list`, { withCredentials: true }).catch(err => {
                     console.error("Products API error:", err.response?.status || err.message);
                     return { data: { foods: [] } };
                 }),
-                axios.get(`${url}/api/user/list`, { headers: { token } }).catch(err => {
+                axios.get(`${url}/api/user/list`, { withCredentials: true }).catch(err => {
                     console.error("Users API error:", err.response?.status || err.message);
                     return { data: { users: [] } };
                 })
             ]);
+
+            console.log("📥 Stats response:", statsRes.data);
+            console.log("📥 Orders count:", ordersRes.data.orders?.length || 0);
+            console.log("📥 Products count:", productsRes.data.foods?.length || 0);
+            console.log("📥 Users count:", usersRes.data.users?.length || 0);
 
             const orders = ordersRes.data.orders || [];
             const products = productsRes.data.foods || [];
@@ -85,19 +89,23 @@ const Dashboard = ({ url = "http://localhost:4000" }) => {
 
             // Orders by status
             const ordersByStatus = orders.reduce((acc, order) => {
-                acc[order.status] = (acc[order.status] || 0) + 1;
+                const status = order.status || "Pending";
+                acc[status] = (acc[status] || 0) + 1;
                 return acc;
             }, {
-                Processing: 0,
-                "Food Preparing": 0,
-                "Out for Delivery": 0,
-                Delivered: 0,
-                Cancelled: 0
+                pending: 0,
+                pending_payment: 0,
+                confirmed: 0,
+                processing: 0,
+                shipped: 0,
+                delivered: 0,
+                cancelled: 0,
+                payment_failed: 0
             });
 
             // Top products (from delivered orders)
             const productSales = {};
-            orders.filter(o => o.status === "Delivered").forEach(order => {
+            orders.filter(o => o.status === "delivered").forEach(order => {
                 order.items?.forEach(item => {
                     if (!productSales[item.name]) {
                         productSales[item.name] = {
@@ -108,7 +116,7 @@ const Dashboard = ({ url = "http://localhost:4000" }) => {
                         };
                     }
                     productSales[item.name].quantity += item.quantity;
-                    productSales[item.name].revenue += item.price * item.quantity;
+                    productSales[item.name].revenue += (item.price || 0) * item.quantity;
                 });
             });
 
@@ -145,7 +153,7 @@ const Dashboard = ({ url = "http://localhost:4000" }) => {
             // Calculate additional metrics
             const avgOrderValue = orders.length > 0 ? totalRevenue / orders.length : 0;
 
-            // Monthly growth (compare with last month)
+            // Monthly growth
             const lastMonth = new Date();
             lastMonth.setMonth(lastMonth.getMonth() - 1);
             const lastMonthOrders = orders.filter(order => new Date(order.date) >= lastMonth);
@@ -154,16 +162,16 @@ const Dashboard = ({ url = "http://localhost:4000" }) => {
                 ? ((thisMonthOrders.length - lastMonthOrders.length) / lastMonthOrders.length) * 100
                 : 0;
 
-            // Active users (users with orders in last 30 days)
+            // Active users
             const thirtyDaysAgo = new Date();
             thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
             const activeUsers = new Set(
                 orders
                     .filter(order => new Date(order.date) >= thirtyDaysAgo)
-                    .map(order => order.email)
+                    .map(order => order.userId?._id || order.userId)
             ).size;
 
-            // Conversion rate (users with orders / total users)
+            // Conversion rate
             const conversionRate = users.length > 0 ? (activeUsers / users.length) * 100 : 0;
 
             setStats({
@@ -184,7 +192,11 @@ const Dashboard = ({ url = "http://localhost:4000" }) => {
             });
         } catch (error) {
             console.error("❌ Error fetching statistics:", error);
-            toast.error("Lỗi khi tải thống kê. Vui lòng thử lại!");
+            if (error.response?.status === 401) {
+                toast.error("Phiên đăng nhập hết hạn, vui lòng đăng nhập lại!");
+            } else {
+                toast.error("Lỗi khi tải thống kê. Vui lòng thử lại!");
+            }
         } finally {
             setLoading(false);
         }
@@ -199,20 +211,37 @@ const Dashboard = ({ url = "http://localhost:4000" }) => {
 
     const getStatusColor = (status) => {
         const colors = {
-            Processing: "#ffc107",
-            "Food Preparing": "#2196f3",
-            "Out for Delivery": "#4caf50",
-            Delivered: "#155724",
-            Cancelled: "#dc3545"
+            pending: "#ffc107",
+            pending_payment: "#ff9800",
+            confirmed: "#2196f3",
+            processing: "#4caf50",
+            shipped: "#00bcd4",
+            delivered: "#155724",
+            cancelled: "#dc3545",
+            payment_failed: "#f44336"
         };
         return colors[status] || "#666";
+    };
+
+    const getStatusLabel = (status) => {
+        const labels = {
+            pending: "Chờ xử lý",
+            pending_payment: "Chờ thanh toán",
+            confirmed: "Đã xác nhận",
+            processing: "Đang xử lý",
+            shipped: "Đang giao",
+            delivered: "Đã giao",
+            cancelled: "Đã hủy",
+            payment_failed: "TT thất bại"
+        };
+        return labels[status] || status;
     };
 
     return (
         <div className="dashboard">
             <div className="dashboard-header">
                 <div>
-                    <h2>Dashboard & Thống Kê</h2>
+                    <h2>📊 Dashboard & Thống Kê</h2>
                     <p className="subtitle">Tổng quan hoạt động kinh doanh</p>
                 </div>
                 <div className="header-controls">
@@ -238,7 +267,7 @@ const Dashboard = ({ url = "http://localhost:4000" }) => {
                         <option value="300">5m</option>
                     </select>
                     <button className="refresh-btn" onClick={fetchStatistics} disabled={loading}>
-                        {loading ? "Đang tải..." : "Làm mới"}
+                        {loading ? "Đang tải..." : "🔄 Làm mới"}
                     </button>
                 </div>
             </div>
@@ -310,10 +339,9 @@ const Dashboard = ({ url = "http://localhost:4000" }) => {
 
             {/* Charts Section */}
             <div className="dashboard-grid">
-                {/* Revenue Chart */}
                 <div className="dashboard-section chart-section">
                     <div className="section-header">
-                        <h3> Doanh Thu Theo Ngày</h3>
+                        <h3>📈 Doanh Thu Theo Ngày</h3>
                         <select
                             className="date-range-selector"
                             value={dateRange}
@@ -348,11 +376,7 @@ const Dashboard = ({ url = "http://localhost:4000" }) => {
                                                 <div
                                                     className="bar"
                                                     style={{ height: `${heightPercent}%` }}
-                                                >
-                                                    <span className="bar-value">
-                                                        {item.revenue > 0 ? formatCurrency(item.revenue) : ""}
-                                                    </span>
-                                                </div>
+                                                />
                                                 <div className="bar-label">{item.date}</div>
                                             </div>
                                         );
@@ -363,10 +387,9 @@ const Dashboard = ({ url = "http://localhost:4000" }) => {
                     </div>
                 </div>
 
-                {/* Order Status */}
                 <div className="dashboard-section status-section">
                     <div className="section-header">
-                        <h3>Trạng Thái Đơn Hàng</h3>
+                        <h3>📊 Trạng Thái Đơn Hàng</h3>
                     </div>
 
                     <div className="status-list">
@@ -378,7 +401,7 @@ const Dashboard = ({ url = "http://localhost:4000" }) => {
                             return (
                                 <div key={status} className="status-item">
                                     <div className="status-info">
-                                        <span className="status-name">{status}</span>
+                                        <span className="status-name">{getStatusLabel(status)}</span>
                                         <span className="status-count">{count} đơn ({percentage}%)</span>
                                     </div>
                                     <div className="status-bar">
@@ -412,7 +435,7 @@ const Dashboard = ({ url = "http://localhost:4000" }) => {
                                 <div className="product-rank">#{index + 1}</div>
                                 <div className="product-image">
                                     {product.image ? (
-                                        <img src={`${url}${product.image}`} alt={product.name} />
+                                        <img src={`${url}/images/${product.image}`} alt={product.name} />
                                     ) : (
                                         <div className="placeholder">🍽️</div>
                                     )}

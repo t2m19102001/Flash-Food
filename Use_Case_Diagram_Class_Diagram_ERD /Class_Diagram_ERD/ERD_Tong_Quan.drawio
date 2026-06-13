@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-05-22T00:00:00.000Z" agent="GPT-5.2-Codex" version="20.8.16" type="device">
+  <diagram id="class-diagram-day-du" name="Class Diagram đầy đủ">
+    <mxGraphModel dx="2000" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="2" value="&lt;div style=&quot;text-align:center;font-style:italic;&quot;&gt;«Bộ sưu tập»&lt;/div&gt;&lt;div style=&quot;text-align:center;font-weight:bold;&quot;&gt;foods&lt;/div&gt;&lt;hr style=&quot;border:1px solid #000000;&quot;/&gt;&lt;div&gt;&lt;b&gt;Thuộc tính&lt;/b&gt;&lt;br/&gt;+_id: objectId&lt;br/&gt;+__v: int&lt;br/&gt;+address: string&lt;br/&gt;+category: string&lt;br/&gt;+description: string&lt;br/&gt;+image: string&lt;br/&gt;+isAvailable: bool&lt;br/&gt;+name: string&lt;br/&gt;+price: int&lt;br/&gt;+rating: mixed&lt;br/&gt;+ratingCount: int&lt;br/&gt;+updatedAt: date&lt;/div&gt;&lt;hr style=&quot;border:1px solid #000000;&quot;/&gt;&lt;div&gt;&lt;b&gt;Phương thức&lt;/b&gt;&lt;br/&gt;không có&lt;/div&gt;" style="shape=rectangle;whiteSpace=wrap;html=1;rounded=0;strokeColor=#000000;fillColor=#ffffff;fontFamily=Times New Roman;fontColor=#000000;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="40" y="220" width="300" height="260" as="geometry" />
+        </mxCell>
+
+        <mxCell id="3" value="&lt;div style=&quot;text-align:center;font-style:italic;&quot;&gt;«Bộ sưu tập»&lt;/div&gt;&lt;div style=&quot;text-align:center;font-weight:bold;&quot;&gt;orders&lt;/div&gt;&lt;hr style=&quot;border:1px solid #000000;&quot;/&gt;&lt;div&gt;&lt;b&gt;Thuộc tính&lt;/b&gt;&lt;br/&gt;+_id: objectId&lt;br/&gt;+__v: int&lt;br/&gt;+address: {}&lt;br/&gt;&amp;nbsp;&amp;nbsp;+_id: objectId&lt;br/&gt;&amp;nbsp;&amp;nbsp;+address: string&lt;br/&gt;&amp;nbsp;&amp;nbsp;+city: string&lt;br/&gt;&amp;nbsp;&amp;nbsp;+country: string&lt;br/&gt;&amp;nbsp;&amp;nbsp;+email: string&lt;br/&gt;&amp;nbsp;&amp;nbsp;+firstName: string&lt;br/&gt;&amp;nbsp;&amp;nbsp;+lastName: string&lt;br/&gt;&amp;nbsp;&amp;nbsp;+note: string&lt;br/&gt;&amp;nbsp;&amp;nbsp;+phone: string&lt;br/&gt;&amp;nbsp;&amp;nbsp;+state: string&lt;br/&gt;&amp;nbsp;&amp;nbsp;+street: string&lt;br/&gt;&amp;nbsp;&amp;nbsp;+zipcode: string&lt;br/&gt;+amount: int&lt;br/&gt;+cancelledAt: mixed&lt;br/&gt;+cancelledBy: string&lt;br/&gt;+cancelReason: string&lt;br/&gt;+createdAt: date&lt;br/&gt;+date: date&lt;br/&gt;+failureCode: string&lt;br/&gt;+failureReason: string&lt;br/&gt;+items: []&lt;br/&gt;&amp;nbsp;&amp;nbsp;+_id: mixed&lt;br/&gt;&amp;nbsp;&amp;nbsp;+__v: int&lt;br/&gt;&amp;nbsp;&amp;nbsp;+address: string&lt;br/&gt;&amp;nbsp;&amp;nbsp;+category: string&lt;br/&gt;&amp;nbsp;&amp;nbsp;+description: string&lt;br/&gt;&amp;nbsp;&amp;nbsp;+foodId: objectId&lt;br/&gt;&amp;nbsp;&amp;nbsp;+image: string&lt;br/&gt;&amp;nbsp;&amp;nbsp;+isAvailable: bool&lt;br/&gt;&amp;nbsp;&amp;nbsp;+name: string&lt;br/&gt;&amp;nbsp;&amp;nbsp;+price: int&lt;br/&gt;&amp;nbsp;&amp;nbsp;+quantity: int&lt;br/&gt;&amp;nbsp;&amp;nbsp;+rating: mixed&lt;br/&gt;&amp;nbsp;&amp;nbsp;+totalPrice: int&lt;br/&gt;&amp;nbsp;&amp;nbsp;+updatedAt: string&lt;br/&gt;+momoRequestId: string&lt;br/&gt;+note: string&lt;br/&gt;+paidAt: mixed&lt;br/&gt;+payment: bool&lt;br/&gt;+paymentId: mixed&lt;br/&gt;+paymentMethod: string&lt;br/&gt;+paymentStatus: string&lt;br/&gt;+refundAmount: int&lt;br/&gt;+refundedAt: null&lt;br/&gt;+status: string&lt;br/&gt;+transactionId: string&lt;br/&gt;+updatedAt: date&lt;br/&gt;+userId: mixed&lt;/div&gt;&lt;hr style=&quot;border:1px solid #000000;&quot;/&gt;&lt;div&gt;&lt;b&gt;Phương thức&lt;/b&gt;&lt;br/&gt;không có&lt;/div&gt;" style="shape=rectangle;whiteSpace=wrap;html=1;rounded=0;strokeColor=#000000;fillColor=#ffffff;fontFamily=Times New Roman;fontColor=#000000;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="420" y="40" width="360" height="840" as="geometry" />
+        </mxCell>
+
+        <mxCell id="4" value="&lt;div style=&quot;text-align:center;font-style:italic;&quot;&gt;«Bộ sưu tập»&lt;/div&gt;&lt;div style=&quot;text-align:center;font-weight:bold;&quot;&gt;promos&lt;/div&gt;&lt;hr style=&quot;border:1px solid #000000;&quot;/&gt;&lt;div&gt;&lt;b&gt;Thuộc tính&lt;/b&gt;&lt;br/&gt;+_id: objectId&lt;br/&gt;+__v: int&lt;br/&gt;+code: string&lt;br/&gt;+createdAt: date&lt;br/&gt;+discountPercent: int&lt;br/&gt;+expiresAt: date&lt;br/&gt;+isActive: bool&lt;br/&gt;+maxUses: int&lt;br/&gt;+updatedAt: date&lt;br/&gt;+usedCount: int&lt;/div&gt;&lt;hr style=&quot;border:1px solid #000000;&quot;/&gt;&lt;div&gt;&lt;b&gt;Phương thức&lt;/b&gt;&lt;br/&gt;không có&lt;/div&gt;" style="shape=rectangle;whiteSpace=wrap;html=1;rounded=0;strokeColor=#000000;fillColor=#ffffff;fontFamily=Times New Roman;fontColor=#000000;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="820" y="40" width="260" height="220" as="geometry" />
+        </mxCell>
+
+        <mxCell id="5" value="&lt;div style=&quot;text-align:center;font-style:italic;&quot;&gt;«Bộ sưu tập»&lt;/div&gt;&lt;div style=&quot;text-align:center;font-weight:bold;&quot;&gt;categories&lt;/div&gt;&lt;hr style=&quot;border:1px solid #000000;&quot;/&gt;&lt;div&gt;&lt;b&gt;Thuộc tính&lt;/b&gt;&lt;br/&gt;+_id: objectId&lt;br/&gt;+__v: int&lt;br/&gt;+created_at: date&lt;br/&gt;+createdAt: date&lt;br/&gt;+description: string&lt;br/&gt;+image: string&lt;br/&gt;+is_active: bool&lt;br/&gt;+name: string&lt;br/&gt;+parent_id: null&lt;br/&gt;+sort_order: int&lt;br/&gt;+updated_at: date&lt;br/&gt;+updatedAt: date&lt;/div&gt;&lt;hr style=&quot;border:1px solid #000000;&quot;/&gt;&lt;div&gt;&lt;b&gt;Phương thức&lt;/b&gt;&lt;br/&gt;không có&lt;/div&gt;" style="shape=rectangle;whiteSpace=wrap;html=1;rounded=0;strokeColor=#000000;fillColor=#ffffff;fontFamily=Times New Roman;fontColor=#000000;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="40" width="280" height="260" as="geometry" />
+        </mxCell>
+
+        <mxCell id="6" value="&lt;div style=&quot;text-align:center;font-style:italic;&quot;&gt;«Bộ sưu tập»&lt;/div&gt;&lt;div style=&quot;text-align:center;font-weight:bold;&quot;&gt;reviews&lt;/div&gt;&lt;hr style=&quot;border:1px solid #000000;&quot;/&gt;&lt;div&gt;&lt;b&gt;Thuộc tính&lt;/b&gt;&lt;br/&gt;+_id: objectId&lt;br/&gt;+__v: int&lt;br/&gt;+comment: string&lt;br/&gt;+createdAt: date&lt;br/&gt;+foodId: objectId&lt;br/&gt;+images: []&lt;br/&gt;+isVisible: bool&lt;br/&gt;+rating: int&lt;br/&gt;+reply: null&lt;br/&gt;+replyAt: null&lt;br/&gt;+replyBy: null&lt;br/&gt;+updatedAt: date&lt;br/&gt;+userId: objectId&lt;/div&gt;&lt;hr style=&quot;border:1px solid #000000;&quot;/&gt;&lt;div&gt;&lt;b&gt;Phương thức&lt;/b&gt;&lt;br/&gt;không có&lt;/div&gt;" style="shape=rectangle;whiteSpace=wrap;html=1;rounded=0;strokeColor=#000000;fillColor=#ffffff;fontFamily=Times New Roman;fontColor=#000000;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="40" y="540" width="300" height="260" as="geometry" />
+        </mxCell>
+
+        <mxCell id="7" value="&lt;div style=&quot;text-align:center;font-style:italic;&quot;&gt;«Bộ sưu tập»&lt;/div&gt;&lt;div style=&quot;text-align:center;font-weight:bold;&quot;&gt;users&lt;/div&gt;&lt;hr style=&quot;border:1px solid #000000;&quot;/&gt;&lt;div&gt;&lt;b&gt;Thuộc tính&lt;/b&gt;&lt;br/&gt;+_id: objectId&lt;br/&gt;+__v: int&lt;br/&gt;+address: string&lt;br/&gt;+averageReview: int&lt;br/&gt;+cartData: {}&lt;br/&gt;+createdAt: date&lt;br/&gt;+dob: string&lt;br/&gt;+email: string&lt;br/&gt;+favorites: []&lt;br/&gt;+gender: string&lt;br/&gt;+image: string&lt;br/&gt;+isActive: bool&lt;br/&gt;+isAdmin: bool&lt;br/&gt;+lastLogin: date&lt;br/&gt;+loyaltyPoints: int&lt;br/&gt;+name: string&lt;br/&gt;+orderHistory: []&lt;br/&gt;+password: string&lt;br/&gt;+phone: string&lt;br/&gt;+role: string&lt;br/&gt;+savedAddresses: []&lt;br/&gt;+secondaryPhone: string&lt;br/&gt;+totalReviews: int&lt;br/&gt;+updatedAt: date&lt;/div&gt;&lt;hr style=&quot;border:1px solid #000000;&quot;/&gt;&lt;div&gt;&lt;b&gt;Phương thức&lt;/b&gt;&lt;br/&gt;không có&lt;/div&gt;" style="shape=rectangle;whiteSpace=wrap;html=1;rounded=0;strokeColor=#000000;fillColor=#ffffff;fontFamily=Times New Roman;fontColor=#000000;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="520" width="300" height="380" as="geometry" />
+        </mxCell>
+
+        <mxCell id="8" value="&lt;div style=&quot;text-align:center;font-style:italic;&quot;&gt;«Bộ sưu tập»&lt;/div&gt;&lt;div style=&quot;text-align:center;font-weight:bold;&quot;&gt;notifications&lt;/div&gt;&lt;hr style=&quot;border:1px solid #000000;&quot;/&gt;&lt;div&gt;&lt;b&gt;Thuộc tính&lt;/b&gt;&lt;br/&gt;+_id: objectId&lt;br/&gt;+__v: int&lt;br/&gt;+createdAt: date&lt;br/&gt;+message: string&lt;br/&gt;+readBy: []&lt;br/&gt;+sentAt: date&lt;br/&gt;+sentBy: objectId&lt;br/&gt;+target: string&lt;br/&gt;+title: string&lt;br/&gt;+type: string&lt;br/&gt;+updatedAt: date&lt;/div&gt;&lt;hr style=&quot;border:1px solid #000000;&quot;/&gt;&lt;div&gt;&lt;b&gt;Phương thức&lt;/b&gt;&lt;br/&gt;không có&lt;/div&gt;" style="shape=rectangle;whiteSpace=wrap;html=1;rounded=0;strokeColor=#000000;fillColor=#ffffff;fontFamily=Times New Roman;fontColor=#000000;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="820" y="740" width="260" height="240" as="geometry" />
+        </mxCell>
+
+        <mxCell id="9" value="Ký hiệu&#xa;◇ Kết tập (Aggregation)&#xa;--&gt; Liên kết (Association)&#xa;«Bộ sưu tập» Bộ sưu tập MongoDB" style="shape=rectangle;whiteSpace=wrap;html=0;rounded=0;strokeColor=#000000;fillColor=#ffffff;fontFamily=Times New Roman;fontColor=#000000;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="820" y="300" width="260" height="180" as="geometry" />
+        </mxCell>
+
+        <mxCell id="10" value="được đặt trong" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;fontFamily=Times New Roman;fontColor=#000000;endArrow=block;endFill=0;" edge="1" parent="1" source="2" target="3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="11" value="đánh giá" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;fontFamily=Times New Roman;fontColor=#000000;endArrow=block;endFill=0;" edge="1" parent="1" source="6" target="2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="12" value="viết" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;fontFamily=Times New Roman;fontColor=#000000;endArrow=block;endFill=0;" edge="1" parent="1" source="6" target="7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="13" value="đặt" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;fontFamily=Times New Roman;fontColor=#000000;endArrow=block;endFill=0;" edge="1" parent="1" source="3" target="7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="14" value="nhận" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;fontFamily=Times New Roman;fontColor=#000000;endArrow=block;endFill=0;" edge="1" parent="1" source="8" target="7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="15" value="phân loại" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;fontFamily=Times New Roman;fontColor=#000000;startArrow=diamond;startFill=0;endArrow=block;endFill=0;" edge="1" parent="1" source="5" target="2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1100" y="260" />
+              <mxPoint x="360" y="260" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,59 +1,182 @@
 import foodModel from "../models/foodModel.js";
-import fs from "fs";
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-//add food item
-export const addFood = async (req, res) => {
-    let image_filename = req.file ? `${req.file.filename}` : "default.png";
-    const food = new foodModel({
-        name: req.body.name,
-        description: req.body.description,
-        price: req.body.price,
-        category: req.body.category,
-        image: image_filename
-    });
-    try {
-        await food.save();
-        res.json({ success: true, message: "Food Added" });
-    } catch (error) {
-        console.log(error);
-        res.json({ success: false, message: "Error" });
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// ========== HELPER: KIỂM TRA FILENAME AN TOÀN ==========
+const isValidFilename = (filename) => {
+    if (!filename || filename === "default.png") return false;
+    
+    // 🔒 Kiểm tra path traversal
+    const dangerousPatterns = ['../', '..\\', './', '.\\', '%2e', '%2f', '%5c', '/', '\\'];
+    for (const pattern of dangerousPatterns) {
+        if (filename.includes(pattern)) {
+            console.warn(`⚠️ Path traversal detected: ${filename}`);
+            return false;
+        }
     }
-}
-// all food list
+    
+    // 🔒 Kiểm tra extension hợp lệ
+    const ext = path.extname(filename).toLowerCase();
+    const allowedExts = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
+    if (!allowedExts.includes(ext)) {
+        console.warn(`⚠️ Invalid extension: ${ext}`);
+        return false;
+    }
+    
+    return true;
+};
+
+// ========== HELPER: XÓA ẢNH AN TOÀN ==========
+const deleteImageSafe = (filename) => {
+    return new Promise((resolve) => {
+        if (!filename || filename === "default.png") {
+            resolve(false);
+            return;
+        }
+        
+        if (!isValidFilename(filename)) {
+            console.warn(`⚠️ Skipping deletion of invalid filename: ${filename}`);
+            resolve(false);
+            return;
+        }
+        
+        // 🔥 SỬA: Dùng path.join để tạo đường dẫn tuyệt đối an toàn
+        const filePath = path.join(__dirname, '../uploads', filename);
+        
+        fs.access(filePath, fs.constants.F_OK, (err) => {
+            if (err) {
+                console.log(`File not found: ${filePath}`);
+                resolve(false);
+                return;
+            }
+            
+            fs.unlink(filePath, (unlinkErr) => {
+                if (unlinkErr) {
+                    console.error(`Error deleting file: ${filePath}`, unlinkErr);
+                    resolve(false);
+                } else {
+                    console.log(`✅ Deleted: ${filePath}`);
+                    resolve(true);
+                }
+            });
+        });
+    });
+};
+
+// ========== THÊM MÓN ĂN ==========
+export const addFood = async (req, res) => {
+    try {
+        // Kiểm tra file upload
+        if (!req.file) {
+            return res.json({ success: false, message: "Vui lòng upload ảnh món ăn!" });
+        }
+        
+        // Validate dữ liệu đầu vào
+        const { name, description, price, category } = req.body;
+        
+        if (!name || !description || !price || !category) {
+            // Xóa file đã upload nếu validate thất bại
+            await deleteImageSafe(req.file.filename);
+            return res.json({ success: false, message: "Vui lòng điền đầy đủ thông tin!" });
+        }
+        
+        const image_filename = req.file.filename;
+        
+        const food = new foodModel({
+            name: name.trim(),
+            description: description.trim(),
+            price: Number(price),
+            category: category.trim(),
+            image: image_filename
+        });
+        
+        await food.save();
+        
+        res.json({ 
+            success: true, 
+            message: "Thêm món ăn thành công!",
+            food: food
+        });
+        
+    } catch (error) {
+        console.error("Add food error:", error);
+        
+        // Xóa file đã upload nếu có lỗi
+        if (req.file) {
+            await deleteImageSafe(req.file.filename);
+        }
+        
+        res.json({ 
+            success: false, 
+            message: error.message || "Lỗi khi thêm món ăn!" 
+        });
+    }
+};
+
+// ========== DANH SÁCH MÓN ĂN ==========
 export const listFood = async (req, res) => {
     try {
         const foods = await foodModel.find({});
-        res.json({ success: true, foods: foods });
+        res.json({ success: true, foods });
     } catch (error) {
-        console.log(error);
-        res.json({ success: false, message: "Error" });
+        console.error("List food error:", error);
+        res.json({ success: false, message: "Lỗi khi lấy danh sách món ăn!" });
     }
-}
-// remove food list
+};
+
+// ========== XÓA MÓN ĂN ==========
 export const removeFood = async (req, res) => {
     try {
-        const food = await foodModel.findById(req.body.id);
-
-        if (food && food.image && food.image !== "default.png") {
-            fs.unlink(`uploads/${food.image}`, (err) => {
-                if (err) console.log("File not found, but continuing to delete record");
-            });
+        const { id } = req.body;
+        
+        if (!id) {
+            return res.json({ success: false, message: "Thiếu ID món ăn!" });
         }
-
-        await foodModel.findByIdAndDelete(req.body.id);
-        res.json({ success: true, message: "Food Removed" });
+        
+        const food = await foodModel.findById(id);
+        
+        if (!food) {
+            return res.json({ success: false, message: "Không tìm thấy món ăn!" });
+        }
+        
+        // 🔥 SỬA: Xóa ảnh an toàn trước khi xóa record
+        if (food.image && food.image !== "default.png") {
+            await deleteImageSafe(food.image);
+        }
+        
+        await foodModel.findByIdAndDelete(id);
+        
+        res.json({ 
+            success: true, 
+            message: "Xóa món ăn thành công!" 
+        });
+        
     } catch (error) {
-        console.log(error);
-        res.json({ success: false, message: "Error" });
+        console.error("Remove food error:", error);
+        res.json({ 
+            success: false, 
+            message: error.message || "Lỗi khi xóa món ăn!" 
+        });
     }
-}
+};
 
-// toggle food availability
+// ========== BẬT/TẮT TRẠNG THÁI MÓN ĂN ==========
 export const toggleAvailability = async (req, res) => {
     try {
-        const food = await foodModel.findById(req.body.id);
+        const { id } = req.body;
+        
+        if (!id) {
+            return res.json({ success: false, message: "Thiếu ID món ăn!" });
+        }
+        
+        const food = await foodModel.findById(id);
+        
         if (!food) {
-            return res.json({ success: false, message: "Food not found" });
+            return res.json({ success: false, message: "Không tìm thấy món ăn!" });
         }
 
         food.isAvailable = !food.isAvailable;
@@ -61,47 +184,125 @@ export const toggleAvailability = async (req, res) => {
 
         res.json({
             success: true,
-            message: `Food ${food.isAvailable ? "enabled" : "disabled"}`,
+            message: `Đã ${food.isAvailable ? "bật" : "tắt"} món ăn: ${food.name}`,
             isAvailable: food.isAvailable
         });
+        
     } catch (error) {
-        console.error("Error toggling availability:", error);
-        res.json({ success: false, message: "Error toggling availability" });
+        console.error("Toggle availability error:", error);
+        res.json({ 
+            success: false, 
+            message: "Lỗi khi thay đổi trạng thái món ăn!" 
+        });
     }
-}
+};
 
-// update food
+// ========== CẬP NHẬT MÓN ĂN ==========
 export const updateFood = async (req, res) => {
     try {
-        const foodId = req.body.id;
-        const food = await foodModel.findById(foodId);
-
+        const { id, name, description, price, category } = req.body;
+        
+        if (!id) {
+            if (req.file) {
+                await deleteImageSafe(req.file.filename);
+            }
+            return res.json({ success: false, message: "Thiếu ID món ăn!" });
+        }
+        
+        const food = await foodModel.findById(id);
+        
         if (!food) {
-            return res.json({ success: false, message: "Food not found" });
+            if (req.file) {
+                await deleteImageSafe(req.file.filename);
+            }
+            return res.json({ success: false, message: "Không tìm thấy món ăn!" });
         }
 
         // Update fields
-        food.name = req.body.name;
-        food.description = req.body.description;
-        food.price = req.body.price;
-        food.category = req.body.category;
+        if (name) food.name = name.trim();
+        if (description) food.description = description.trim();
+        if (price) food.price = Number(price);
+        if (category) food.category = category.trim();
 
-        // If new image uploaded, delete old image and update
+        // 🔥 SỬA: Xử lý ảnh mới an toàn
         if (req.file) {
-            // Delete old image if exists
+            // Xóa ảnh cũ nếu có
             if (food.image && food.image !== "default.png") {
-                fs.unlink(`uploads/${food.image}`, (err) => {
-                    if (err) console.log("Old file not found");
-                });
+                await deleteImageSafe(food.image);
             }
             food.image = req.file.filename;
         }
 
         await food.save();
-        res.json({ success: true, message: "Food Updated" });
+        
+        res.json({ 
+            success: true, 
+            message: "Cập nhật món ăn thành công!",
+            food: food
+        });
+        
     } catch (error) {
-        console.log(error);
-        res.json({ success: false, message: "Error updating food" });
+        console.error("Update food error:", error);
+        
+        if (req.file) {
+            await deleteImageSafe(req.file.filename);
+        }
+        
+        res.json({ 
+            success: false, 
+            message: error.message || "Lỗi khi cập nhật món ăn!" 
+        });
     }
-}
+};
 
+// ========== THÊM HÀM: LẤY MÓN ĂN THEO ID ==========
+export const getFoodById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        if (!id) {
+            return res.json({ success: false, message: "Thiếu ID món ăn!" });
+        }
+        
+        const food = await foodModel.findById(id);
+        
+        if (!food) {
+            return res.json({ success: false, message: "Không tìm thấy món ăn!" });
+        }
+        
+        res.json({ success: true, food });
+        
+    } catch (error) {
+        console.error("Get food by ID error:", error);
+        res.json({ 
+            success: false, 
+            message: "Lỗi khi lấy thông tin món ăn!" 
+        });
+    }
+};
+
+// ========== THÊM HÀM: LẤY MÓN ĂN THEO DANH MỤC ==========
+export const getFoodByCategory = async (req, res) => {
+    try {
+        const { category } = req.params;
+        
+        if (!category) {
+            return res.json({ success: false, message: "Thiếu danh mục!" });
+        }
+        
+        const foods = await foodModel.find({ category });
+        
+        res.json({ 
+            success: true, 
+            count: foods.length,
+            foods 
+        });
+        
+    } catch (error) {
+        console.error("Get food by category error:", error);
+        res.json({ 
+            success: false, 
+            message: "Lỗi khi lấy món ăn theo danh mục!" 
+        });
+    }
+};

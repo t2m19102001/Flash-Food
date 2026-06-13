@@ -1,0 +1,187 @@
+.payment-page {
+  min-height: 80vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #f8f9fc 100%);
+  padding: 40px 20px;
+  
+  .payment-container {
+    max-width: 600px;
+    margin: 0 auto;
+    
+    .payment-header {
+      text-align: center;
+      margin-bottom: 32px;
+      
+      h1 {
+        font-size: 32px;
+        color: #1e293b;
+        margin-bottom: 8px;
+      }
+      
+      p {
+        color: #64748b;
+      }
+    }
+    
+    .payment-content {
+      background: white;
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+      
+      .order-info {
+        border-bottom: 1px solid #e2e8f0;
+        padding-bottom: 20px;
+        margin-bottom: 24px;
+        
+        h3 {
+          font-size: 18px;
+          color: #1e293b;
+          margin-bottom: 16px;
+        }
+        
+        .order-details {
+          .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            
+            .amount {
+              color: #ff6b4a;
+              font-size: 20px;
+            }
+          }
+        }
+      }
+      
+      .payment-methods {
+        h3 {
+          font-size: 18px;
+          color: #1e293b;
+          margin-bottom: 16px;
+        }
+        
+        .method-card {
+          border: 1px solid #e2e8f0;
+          border-radius: 16px;
+          padding: 20px;
+          
+          .method-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            
+            .method-icon {
+              font-size: 24px;
+            }
+            
+            span {
+              font-weight: 600;
+              color: #1e293b;
+            }
+          }
+          
+          .stripe-form {
+            .card-element-wrapper {
+              padding: 12px;
+              border: 1px solid #e2e8f0;
+              border-radius: 12px;
+              margin-bottom: 16px;
+              transition: all 0.2s;
+              
+              &:focus-within {
+                border-color: #ff6b4a;
+                box-shadow: 0 0 0 3px rgba(255,107,74,0.1);
+              }
+            }
+            
+            .error-message {
+              color: #dc2626;
+              font-size: 14px;
+              margin-bottom: 16px;
+              padding: 8px 12px;
+              background: #fef2f2;
+              border-radius: 8px;
+            }
+            
+            .pay-button {
+              width: 100%;
+              padding: 14px 20px;
+              background: linear-gradient(135deg, #ff6b4a, #ff885e);
+              color: white;
+              border: none;
+              border-radius: 40px;
+              font-size: 16px;
+              font-weight: 600;
+              cursor: pointer;
+              transition: all 0.3s;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              
+              &:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 14px rgba(255,107,74,0.3);
+              }
+              
+              &:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+              }
+              
+              .spinner {
+                width: 20px;
+                height: 20px;
+                border: 2px solid white;
+                border-top-color: transparent;
+                border-radius: 50%;
+                animation: spin 0.6s linear infinite;
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    .back-button {
+      background: none;
+      border: none;
+      color: #64748b;
+      cursor: pointer;
+      font-size: 14px;
+      display: block;
+      margin: 0 auto;
+      
+      &:hover {
+        color: #ff6b4a;
+      }
+    }
+  }
+}
+
+.payment-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 16px;
+  
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #e2e8f0;
+    border-top-color: #ff6b4a;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

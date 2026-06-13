@@ -1,0 +1,637 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-05-23T00:00:00.000Z" agent="Claude Code" version="21.0.0" type="device">
+  <diagram name="UC-11 Đánh giá món ăn" id="uc11-review-food-sequence">
+    <mxGraphModel dx="1500" dy="900" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1700" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ===== TIÊU ĐỀ ===== -->
+        <mxCell id="title" value="Sequence Diagram — UC-11: Đánh giá món ăn"
+          style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Times New Roman;fontSize=15;fontStyle=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="100" y="-30" width="1200" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- ===== PARTICIPANT BOXES ===== -->
+
+        <!-- b1: Người dùng, center=100 -->
+        <mxCell id="b1" value="Người dùng"
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;fontFamily=Times New Roman;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;"
+          vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="160" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- b2: ReviewModalUI, center=300 -->
+        <mxCell id="b2" value="ReviewModalUI"
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;fontFamily=Times New Roman;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;"
+          vertex="1" parent="1">
+          <mxGeometry x="220" y="20" width="160" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- b3: reviewController, center=500 -->
+        <mxCell id="b3" value="reviewController"
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;fontFamily=Times New Roman;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;"
+          vertex="1" parent="1">
+          <mxGeometry x="420" y="20" width="160" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- b4: reviewService, center=700 -->
+        <mxCell id="b4" value="reviewService"
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;fontFamily=Times New Roman;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;"
+          vertex="1" parent="1">
+          <mxGeometry x="620" y="20" width="160" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- b5: reviewRepository, center=910 -->
+        <mxCell id="b5" value="reviewRepository"
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;fontFamily=Times New Roman;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;"
+          vertex="1" parent="1">
+          <mxGeometry x="820" y="20" width="180" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- b6: foodService, center=1130 -->
+        <mxCell id="b6" value="foodService"
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;fontFamily=Times New Roman;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;"
+          vertex="1" parent="1">
+          <mxGeometry x="1040" y="20" width="180" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- b7: MongoDB, center=1330 -->
+        <mxCell id="b7" value="MongoDB"
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;fontFamily=Times New Roman;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;"
+          vertex="1" parent="1">
+          <mxGeometry x="1250" y="20" width="160" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ===== LIFELINES ===== -->
+
+        <mxCell id="lf1" value=""
+          style="endArrow=none;dashed=1;strokeColor=#000000;strokeWidth=1;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="100" y="80" as="sourcePoint" />
+            <mxPoint x="100" y="1600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="lf2" value=""
+          style="endArrow=none;dashed=1;strokeColor=#000000;strokeWidth=1;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="300" y="80" as="sourcePoint" />
+            <mxPoint x="300" y="1600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="lf3" value=""
+          style="endArrow=none;dashed=1;strokeColor=#000000;strokeWidth=1;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="500" y="80" as="sourcePoint" />
+            <mxPoint x="500" y="1600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="lf4" value=""
+          style="endArrow=none;dashed=1;strokeColor=#000000;strokeWidth=1;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="700" y="80" as="sourcePoint" />
+            <mxPoint x="700" y="1600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="lf5" value=""
+          style="endArrow=none;dashed=1;strokeColor=#000000;strokeWidth=1;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="910" y="80" as="sourcePoint" />
+            <mxPoint x="910" y="1600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="lf6" value=""
+          style="endArrow=none;dashed=1;strokeColor=#000000;strokeWidth=1;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1130" y="80" as="sourcePoint" />
+            <mxPoint x="1130" y="1600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="lf7" value=""
+          style="endArrow=none;dashed=1;strokeColor=#000000;strokeWidth=1;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1330" y="80" as="sourcePoint" />
+            <mxPoint x="1330" y="1600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ===== ACTIVATION BARS ===== -->
+
+        <!-- ac2: ReviewModalUI, x=294, y=130→1545, h=1415 -->
+        <mxCell id="ac2" value=""
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;"
+          vertex="1" parent="1">
+          <mxGeometry x="294" y="130" width="12" height="1415" as="geometry" />
+        </mxCell>
+
+        <!-- ac3: reviewController, x=494, y=175→1505, h=1330 -->
+        <mxCell id="ac3" value=""
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;"
+          vertex="1" parent="1">
+          <mxGeometry x="494" y="175" width="12" height="1330" as="geometry" />
+        </mxCell>
+
+        <!-- ac4: reviewService, x=694, y=220→1465, h=1245 -->
+        <mxCell id="ac4" value=""
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;"
+          vertex="1" parent="1">
+          <mxGeometry x="694" y="220" width="12" height="1245" as="geometry" />
+        </mxCell>
+
+        <!-- ac5a: reviewRepository (findOrder), y=250→370 -->
+        <mxCell id="ac5a" value=""
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;"
+          vertex="1" parent="1">
+          <mxGeometry x="904" y="250" width="12" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- ac5b: reviewRepository (findReview), y=615→735 -->
+        <mxCell id="ac5b" value=""
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;"
+          vertex="1" parent="1">
+          <mxGeometry x="904" y="615" width="12" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- ac5c: reviewRepository (insert), y=985→1105 -->
+        <mxCell id="ac5c" value=""
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;"
+          vertex="1" parent="1">
+          <mxGeometry x="904" y="985" width="12" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- ac5d: reviewRepository (findAllByFoodId), y=1185→1305 -->
+        <mxCell id="ac5d" value=""
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;"
+          vertex="1" parent="1">
+          <mxGeometry x="904" y="1185" width="12" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- ac6: foodService, x=1124, y=1145→1425, h=280 -->
+        <mxCell id="ac6" value=""
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;"
+          vertex="1" parent="1">
+          <mxGeometry x="1124" y="1145" width="12" height="280" as="geometry" />
+        </mxCell>
+
+        <!-- ac7a: MongoDB (query order), y=290→330 -->
+        <mxCell id="ac7a" value=""
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;"
+          vertex="1" parent="1">
+          <mxGeometry x="1324" y="290" width="12" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ac7b: MongoDB (query review), y=655→695 -->
+        <mxCell id="ac7b" value=""
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;"
+          vertex="1" parent="1">
+          <mxGeometry x="1324" y="655" width="12" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ac7c: MongoDB (insert), y=1025→1065 -->
+        <mxCell id="ac7c" value=""
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;"
+          vertex="1" parent="1">
+          <mxGeometry x="1324" y="1025" width="12" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ac7d: MongoDB (query reviews), y=1225→1265 -->
+        <mxCell id="ac7d" value=""
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;"
+          vertex="1" parent="1">
+          <mxGeometry x="1324" y="1225" width="12" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ac7e: MongoDB (update foods), y=1345→1385 -->
+        <mxCell id="ac7e" value=""
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;"
+          vertex="1" parent="1">
+          <mxGeometry x="1324" y="1345" width="12" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ===== MESSAGES ===== -->
+
+        <!-- M1: Người dùng → ReviewModalUI: Gửi đánh giá (y=130) -->
+        <mxCell id="m1" value="Gửi đánh giá"
+          style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="100" y="130" as="sourcePoint" />
+            <mxPoint x="294" y="130" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M2: ReviewModalUI → reviewController: POST /api/review (y=175) -->
+        <mxCell id="m2" value="POST /api/review {foodId, orderId, rating, comment}"
+          style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="306" y="175" as="sourcePoint" />
+            <mxPoint x="494" y="175" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M3: reviewController → reviewService: create(...) (y=220) -->
+        <mxCell id="m3" value="create(userId, foodId, orderId, rating, comment)"
+          style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="506" y="220" as="sourcePoint" />
+            <mxPoint x="694" y="220" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M4: reviewService → reviewRepository: findOrder(orderId) (y=250) -->
+        <mxCell id="m4" value="findOrder(orderId)"
+          style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="706" y="250" as="sourcePoint" />
+            <mxPoint x="904" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M5: reviewRepository → MongoDB: query(orderId) (y=290) -->
+        <mxCell id="m5" value="query(orderId)"
+          style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="916" y="290" as="sourcePoint" />
+            <mxPoint x="1324" y="290" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M6: MongoDB → reviewRepository: order data (return, y=330) -->
+        <mxCell id="m6" value="order data"
+          style="html=1;endArrow=open;endFill=0;dashed=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1324" y="330" as="sourcePoint" />
+            <mxPoint x="916" y="330" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M7: reviewRepository → reviewService: order (return, y=370) -->
+        <mxCell id="m7" value="order"
+          style="html=1;endArrow=open;endFill=0;dashed=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="904" y="370" as="sourcePoint" />
+            <mxPoint x="706" y="370" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Self-loop 1: reviewService kiểm tra quyền sở hữu (y=390→410) -->
+        <mxCell id="sl1" value="Kiểm tra order.userId === userId &amp;&amp; order.status === &apos;Delivered&apos;"
+          style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=left;verticalAlign=bottom;exitX=1;exitY=0;exitDx=0;exitDy=0;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="706" y="390" as="sourcePoint" />
+            <mxPoint x="706" y="410" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="760" y="390" />
+              <mxPoint x="760" y="410" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ===== ALT COMBINED FRAGMENT 1: Kiểm tra quyền sở hữu và trạng thái đơn ===== -->
+
+        <!-- Alt 1 outer box: x=225, y=430, w=565, h=160 -->
+        <mxCell id="alt1_box" value=""
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=none;strokeWidth=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="225" y="430" width="565" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- "alt" label -->
+        <mxCell id="alt1_lbl" value="alt"
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;fontFamily=Times New Roman;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;"
+          vertex="1" parent="1">
+          <mxGeometry x="225" y="430" width="36" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- Condition 1 -->
+        <mxCell id="alt1_c1" value="[không phải chủ đơn hoặc đơn chưa được giao]"
+          style="text;html=1;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=11;fontStyle=2;align=left;verticalAlign=middle;"
+          vertex="1" parent="1">
+          <mxGeometry x="266" y="430" width="520" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- Divider dashed line: y=540 -->
+        <mxCell id="alt1_div" value=""
+          style="endArrow=none;dashed=1;strokeColor=#000000;strokeWidth=1;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="225" y="540" as="sourcePoint" />
+            <mxPoint x="790" y="540" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Condition 2 [else] -->
+        <mxCell id="alt1_c2" value="[điều kiện hợp lệ]"
+          style="text;html=1;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=11;fontStyle=2;align=left;verticalAlign=middle;"
+          vertex="1" parent="1">
+          <mxGeometry x="236" y="542" width="200" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- M8: reviewService → reviewController: throw ForbiddenException (y=470) -->
+        <mxCell id="m8" value="throw ForbiddenException (403)"
+          style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="694" y="470" as="sourcePoint" />
+            <mxPoint x="506" y="470" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M9: reviewController → ReviewModalUI: 403 Forbidden (return, y=505) -->
+        <mxCell id="m9" value="403 Forbidden"
+          style="html=1;endArrow=open;endFill=0;dashed=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="494" y="505" as="sourcePoint" />
+            <mxPoint x="306" y="505" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M10: reviewService → reviewRepository: findReview(userId, foodId) (y=615) -->
+        <mxCell id="m10" value="findReview(userId, foodId)"
+          style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="706" y="615" as="sourcePoint" />
+            <mxPoint x="904" y="615" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M11: reviewRepository → MongoDB: query(userId, foodId) (y=655) -->
+        <mxCell id="m11" value="query(userId, foodId)"
+          style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="916" y="655" as="sourcePoint" />
+            <mxPoint x="1324" y="655" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M12: MongoDB → reviewRepository: existing review / null (return, y=695) -->
+        <mxCell id="m12" value="existing review / null"
+          style="html=1;endArrow=open;endFill=0;dashed=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1324" y="695" as="sourcePoint" />
+            <mxPoint x="916" y="695" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M13: reviewRepository → reviewService: existing review / null (return, y=735) -->
+        <mxCell id="m13" value="existing review / null"
+          style="html=1;endArrow=open;endFill=0;dashed=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="904" y="735" as="sourcePoint" />
+            <mxPoint x="706" y="735" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Self-loop 2: reviewService kiểm tra trùng lặp (y=755→775) -->
+        <mxCell id="sl2" value="Kiểm tra trùng lặp (userId + foodId)"
+          style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=left;verticalAlign=bottom;exitX=1;exitY=0;exitDx=0;exitDy=0;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="706" y="755" as="sourcePoint" />
+            <mxPoint x="706" y="775" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="760" y="755" />
+              <mxPoint x="760" y="775" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ===== ALT COMBINED FRAGMENT 2: Kiểm tra đánh giá trùng lặp ===== -->
+
+        <!-- Alt 2 outer box: x=225, y=795, w=565, h=165 -->
+        <mxCell id="alt2_box" value=""
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=none;strokeWidth=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="225" y="795" width="565" height="165" as="geometry" />
+        </mxCell>
+
+        <mxCell id="alt2_lbl" value="alt"
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;fontFamily=Times New Roman;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;"
+          vertex="1" parent="1">
+          <mxGeometry x="225" y="795" width="36" height="22" as="geometry" />
+        </mxCell>
+
+        <mxCell id="alt2_c1" value="[đã tồn tại đánh giá của người dùng cho món này]"
+          style="text;html=1;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=11;fontStyle=2;align=left;verticalAlign=middle;"
+          vertex="1" parent="1">
+          <mxGeometry x="266" y="795" width="520" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- Divider: y=900 -->
+        <mxCell id="alt2_div" value=""
+          style="endArrow=none;dashed=1;strokeColor=#000000;strokeWidth=1;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="225" y="900" as="sourcePoint" />
+            <mxPoint x="790" y="900" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="alt2_c2" value="[chưa có đánh giá]"
+          style="text;html=1;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=11;fontStyle=2;align=left;verticalAlign=middle;"
+          vertex="1" parent="1">
+          <mxGeometry x="236" y="902" width="200" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- M14: reviewService → reviewController: throw ConflictException (y=835) -->
+        <mxCell id="m14" value="throw ConflictException (409)"
+          style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="694" y="835" as="sourcePoint" />
+            <mxPoint x="506" y="835" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M15: reviewController → ReviewModalUI: 409 Conflict (return, y=870) -->
+        <mxCell id="m15" value="409 Conflict"
+          style="html=1;endArrow=open;endFill=0;dashed=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="494" y="870" as="sourcePoint" />
+            <mxPoint x="306" y="870" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ===== LUỒNG CHÍNH SAU KHI KIỂM TRA ===== -->
+
+        <!-- M16: reviewService → reviewRepository: insert(reviewDoc) (y=985) -->
+        <mxCell id="m16" value="insert(reviewDoc)"
+          style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="706" y="985" as="sourcePoint" />
+            <mxPoint x="904" y="985" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M17: reviewRepository → MongoDB: insert reviewDoc (y=1025) -->
+        <mxCell id="m17" value="insert reviewDoc"
+          style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="916" y="1025" as="sourcePoint" />
+            <mxPoint x="1324" y="1025" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M18: MongoDB → reviewRepository: reviewDoc đã lưu (return, y=1065) -->
+        <mxCell id="m18" value="reviewDoc đã lưu"
+          style="html=1;endArrow=open;endFill=0;dashed=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1324" y="1065" as="sourcePoint" />
+            <mxPoint x="916" y="1065" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M19: reviewRepository → reviewService: reviewDoc (return, y=1105) -->
+        <mxCell id="m19" value="reviewDoc"
+          style="html=1;endArrow=open;endFill=0;dashed=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="904" y="1105" as="sourcePoint" />
+            <mxPoint x="706" y="1105" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M20: reviewService → foodService: updateAvgRating(foodId) (y=1145) -->
+        <mxCell id="m20" value="updateAvgRating(foodId)"
+          style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="706" y="1145" as="sourcePoint" />
+            <mxPoint x="1124" y="1145" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M21: foodService → reviewRepository: findAllByFoodId(foodId) (y=1185, going left) -->
+        <mxCell id="m21" value="findAllByFoodId(foodId)"
+          style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1124" y="1185" as="sourcePoint" />
+            <mxPoint x="916" y="1185" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M22: reviewRepository → MongoDB: query tất cả đánh giá (y=1225) -->
+        <mxCell id="m22" value="query tất cả đánh giá theo foodId"
+          style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="916" y="1225" as="sourcePoint" />
+            <mxPoint x="1324" y="1225" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M23: MongoDB → reviewRepository: reviews[] (return, y=1265) -->
+        <mxCell id="m23" value="reviews[]"
+          style="html=1;endArrow=open;endFill=0;dashed=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1324" y="1265" as="sourcePoint" />
+            <mxPoint x="916" y="1265" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M24: reviewRepository → foodService: reviews[] (return, y=1305, going right) -->
+        <mxCell id="m24" value="reviews[]"
+          style="html=1;endArrow=open;endFill=0;dashed=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="916" y="1305" as="sourcePoint" />
+            <mxPoint x="1124" y="1305" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M25: foodService → MongoDB: update foods (y=1345) -->
+        <mxCell id="m25" value="update foods {avgRating, reviewCount}"
+          style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1136" y="1345" as="sourcePoint" />
+            <mxPoint x="1324" y="1345" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M26: MongoDB → foodService: food đã cập nhật (return, y=1385) -->
+        <mxCell id="m26" value="food đã cập nhật"
+          style="html=1;endArrow=open;endFill=0;dashed=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1324" y="1385" as="sourcePoint" />
+            <mxPoint x="1136" y="1385" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M27: foodService → reviewService: thành công (return, y=1425) -->
+        <mxCell id="m27" value="thành công"
+          style="html=1;endArrow=open;endFill=0;dashed=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1124" y="1425" as="sourcePoint" />
+            <mxPoint x="706" y="1425" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M28: reviewService → reviewController: {review, thông báo thành công} (return, y=1465) -->
+        <mxCell id="m28" value="{ success: true, review, message: &apos;Đánh giá thành công&apos; }"
+          style="html=1;endArrow=open;endFill=0;dashed=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="694" y="1465" as="sourcePoint" />
+            <mxPoint x="506" y="1465" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M29: reviewController → ReviewModalUI: 201 Created (return, y=1505) -->
+        <mxCell id="m29" value="HTTP 201 Created + { review }"
+          style="html=1;endArrow=open;endFill=0;dashed=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="494" y="1505" as="sourcePoint" />
+            <mxPoint x="306" y="1505" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M30: ReviewModalUI → Người dùng: Thông báo thành công (return, y=1545) -->
+        <mxCell id="m30" value="Hiển thị: Đánh giá đã được ghi nhận thành công"
+          style="html=1;endArrow=open;endFill=0;dashed=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="294" y="1545" as="sourcePoint" />
+            <mxPoint x="100" y="1545" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

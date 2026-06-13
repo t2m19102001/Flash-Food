@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "./Sidebar.scss";
-import { assets } from "../../assets/assets";
 import { NavLink } from "react-router-dom";
 
 const Sidebar = () => {
@@ -10,9 +9,26 @@ const Sidebar = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  // Menu items - ĐƠN GIẢN, KHÔNG BỊ LỖI
+  const menuItems = [
+    { path: "/", icon: "📊", label: "Dashboard", group: "MAIN" },
+    { path: "/user", icon: "👥", label: "User", group: "MAIN" },
+    { path: "/product", icon: "🍽️", label: "Product", group: "MAIN" },
+    { path: "/orders", icon: "📦", label: "Order", group: "MAIN" },
+    { path: "/reviews", icon: "⭐", label: "Review", group: "MAIN" },
+    { path: "/category", icon: "📂", label: "Category", group: "MARKETING" },
+    { path: "/coupon", icon: "🎟️", label: "Coupon", group: "MARKETING" },
+    { path: "/banner", icon: "🖼️", label: "Banner", group: "MARKETING" },
+    { path: "/notification", icon: "🔔", label: "Notification", group: "SYSTEM" },
+    { path: "/settings", icon: "⚙️", label: "Settings", group: "SYSTEM" },
+    { path: "/report", icon: "📊", label: "Report", group: "SYSTEM" }
+  ];
+
+  // Nhóm menu
+  const groups = ["MAIN", "MARKETING", "SYSTEM"];
+
   return (
     <>
-      {/* Mobile Menu Toggle */}
       <button className="mobile-menu-toggle" onClick={toggleMobileMenu}>
         <span></span>
         <span></span>
@@ -20,31 +36,46 @@ const Sidebar = () => {
       </button>
       
       <div className={`sidebar ${isMobileMenuOpen ? 'open' : ''}`}>
-        <div className="sidebar-options">
-          <NavLink to="/" className="sidebar-option" onClick={() => setIsMobileMenuOpen(false)}>
-            <img src={assets.list_icon} alt="" />
-            <p>Dashboard</p>
-          </NavLink>
-          <NavLink to="/user" className="sidebar-option" onClick={() => setIsMobileMenuOpen(false)}>
-            <img src={assets.user_icons} alt="" />
-            <p>User</p>
-          </NavLink>
-           <NavLink to="/product" className="sidebar-option" onClick={() => setIsMobileMenuOpen(false)}>
-            <img src={assets.add_icon} alt="" />
-            <p>Product</p>
-          </NavLink>
-          <NavLink to="/orders" className="sidebar-option" onClick={() => setIsMobileMenuOpen(false)}>
-            <img src={assets.order_icon} alt="" />
-            <p>Order</p>
-          </NavLink>
-          <NavLink to="/reviews" className="sidebar-option" onClick={() => setIsMobileMenuOpen(false)}>
-            <img src={assets.rating_starts} alt="" />
-            <p>Review</p>
-          </NavLink>
+        <div className="sidebar-header">
+          <div className="logo">
+            <div className="logo-icon">🍔</div>
+            <h2>Flash Food</h2>
+          </div>
+          <p>Admin Dashboard</p>
+        </div>
+
+        <div className="sidebar-nav">
+          {groups.map(group => (
+            <div key={group}>
+              <div className="section-title">{group}</div>
+              {menuItems
+                .filter(item => item.group === group)
+                .map((item, idx) => (
+                  <NavLink
+                    key={idx}
+                    to={item.path}
+                    className={({ isActive }) => `sidebar-item ${isActive ? 'active' : ''}`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <span className="item-icon">{item.icon}</span>
+                    <span>{item.label}</span>
+                  </NavLink>
+                ))}
+            </div>
+          ))}
+        </div>
+
+        <div className="sidebar-footer">
+          <div className="user-info">
+            <div className="user-avatar">👤</div>
+            <div className="user-details">
+              <div className="user-name">Admin</div>
+              <div className="user-role">Quản trị viên</div>
+            </div>
+          </div>
         </div>
       </div>
       
-      {/* Mobile Overlay */}
       {isMobileMenuOpen && (
         <div className="mobile-overlay" onClick={toggleMobileMenu}></div>
       )}
