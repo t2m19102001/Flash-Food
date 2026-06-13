@@ -11,42 +11,27 @@ const StoreContextProvider = (props) => {
   const [userName, setUserName] = useState("");
   const [userImage, setUserImage] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
+  const [userId, setUserId] = useState(null);
+  const [token, setToken] = useState(null);
   const [promoCode, setPromoCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [authLoading, setAuthLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const url = import.meta.env.VITE_API_URL || "";
+  const url = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
-  // Cấu hình axios mặc định
   axios.defaults.withCredentials = true;
   axios.defaults.headers.common['Content-Type'] = 'application/json';
 
-  // 🔥 Interceptor xử lý lỗi 401 - KHÔNG redirect tự động
-  axios.interceptors.response.use(
-    (response) => response,
-    (error) => {
-      if (error.response?.status === 401) {
-        console.log("🔐 Phiên đăng nhập hết hạn");
-        // Không redirect tự động, để component tự xử lý
-      }
-      return Promise.reject(error);
-    }
-  );
-
+  // 🔥 GIỮ NGUYÊN HÀM getImageUrl CŨ (KHÔNG SỬA)
   const getImageUrl = (imagePath) => {
     if (!imagePath) return "";
     if (imagePath.startsWith("http")) return imagePath;
-    const base = url.endsWith("/") ? url.slice(0, -1) : url;
-    const p = imagePath.startsWith("/") ? imagePath.slice(1) : imagePath;
-    // Known backend prefixes → serve from API base
-    if (p.startsWith("uploads/") || p.startsWith("images/")) return `${base}/${p}`;
-    // Vite-bundled static assets (e.g. assets/food-CD_jjlU7.jpg) → root-relative, no prefix
-    if (p.startsWith("assets/")) return `/${p}`;
-    // Bare "category/file.jpg" with one slash → under uploads/
-    if (p.includes("/")) return `${base}/uploads/${p}`;
-    return `${base}/images/${p}`;
+    const cleanUrl = url.endsWith("/") ? url.slice(0, -1) : url;
+    const cleanPath = imagePath.startsWith("/") ? imagePath : `/${imagePath}`;
+    return `${cleanUrl}${cleanPath}`;
   };
 
   const fetchFoodList = async () => {
@@ -74,12 +59,11 @@ const StoreContextProvider = (props) => {
         setFoodList(static_food_list);
       }
     } catch (error) {
-      console.error("Lỗi fetch data, đang dùng dữ liệu tĩnh:", error);
+      console.error("Lỗi fetch data:", error);
       setFoodList(static_food_list);
     }
   };
 
-  // 🔥 KIỂM TRA TRẠNG THÁI ĐĂNG NHẬP (dùng cookie)
   const checkAuthStatus = async () => {
     setAuthLoading(true);
     try {
@@ -90,6 +74,9 @@ const StoreContextProvider = (props) => {
       if (response.data.success) {
         setIsAuthenticated(true);
         setUserName(response.data.user.name);
+        setUserId(response.data.user.id);
+        
+        // GIỮ NGUYÊN CÁCH LẤY ẢNH CŨ
         const imageUrl = response.data.user.image 
           ? (response.data.user.image.startsWith('http') 
               ? response.data.user.image 
@@ -97,42 +84,48 @@ const StoreContextProvider = (props) => {
           : "";
         setUserImage(imageUrl);
         setIsAdmin(response.data.user.isAdmin || false);
-        console.log("✅ Đã đăng nhập với tài khoản:", response.data.user.name);
         
-        // Lưu vào localStorage để fallback
-        if (imageUrl) localStorage.setItem("userImage", imageUrl);
+        if (response.data.token) {
+          setToken(response.data.token);
+          localStorage.setItem("token", response.data.token);
+        }
+        
         localStorage.setItem("userName", response.data.user.name);
+        localStorage.setItem("userId", response.data.user.id);
+        if (imageUrl) localStorage.setItem("userImage", imageUrl);
       } else {
         setIsAuthenticated(false);
-        console.log("🔓 Chưa đăng nhập");
       }
     } catch (error) {
-      console.log("🔓 Chưa đăng nhập hoặc phiên hết hạn");
       setIsAuthenticated(false);
       setUserName("");
       setUserImage("");
+      setUserId(null);
     } finally {
       setAuthLoading(false);
       setLoading(false);
     }
   };
 
-  // 🔥 ĐĂNG NHẬP
+  // 🔥 ĐĂNG NHẬP - GIỮ NGUYÊN
   const login = async (email, password) => {
     try {
       const response = await axios.post(`${url}/api/user/login`, {
         email,
         password
-      }, {
-        withCredentials: true,
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
+      }, { withCredentials: true });
       
       if (response.data.success) {
         setIsAuthenticated(true);
         setUserName(response.data.name);
+        setUserId(response.data.userId);
+        
+        if (response.data.token) {
+          setToken(response.data.token);
+          localStorage.setItem("token", response.data.token);
+        }
+        
+        // GIỮ NGUYÊN CÁCH LẤY ẢNH CŨ
         const imageUrl = response.data.image 
           ? (response.data.image.startsWith('http') 
               ? response.data.image 
@@ -141,65 +134,45 @@ const StoreContextProvider = (props) => {
         setUserImage(imageUrl);
         setIsAdmin(response.data.isAdmin || false);
         
-        // Lưu thông tin vào localStorage
         localStorage.setItem("userName", response.data.name);
+        localStorage.setItem("userId", response.data.userId);
         if (imageUrl) localStorage.setItem("userImage", imageUrl);
-        
-        console.log("✅ Login thành công:", response.data.name);
         
         return { success: true };
       }
       return { success: false, message: response.data.message };
     } catch (error) {
       console.error("Login error:", error);
-      let errorMessage = "Lỗi kết nối đến máy chủ";
-      
-      if (error.response) {
-        errorMessage = error.response.data?.message || "Sai email hoặc mật khẩu";
-      } else if (error.request) {
-        errorMessage = "Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng.";
-      }
-      
-      return { 
-        success: false, 
-        message: errorMessage
-      };
+      return { success: false, message: "Lỗi kết nối" };
     }
   };
 
-  // 🔥 ĐĂNG XUẤT - XÓA TOÀN BỘ DỮ LIỆU
   const logout = async () => {
     try {
-      await axios.post(`${url}/api/user/logout`, {}, {
-        withCredentials: true
-      });
+      await axios.post(`${url}/api/user/logout`, {}, { withCredentials: true });
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
-      // Reset tất cả state
       setIsAuthenticated(false);
       setUserName("");
       setUserImage("");
       setIsAdmin(false);
+      setUserId(null);
+      setToken(null);
       setCartItems({});
       setPromoCode("");
       setDiscount(0);
       setSearch("");
       
-      // 🔥 XÓA TOÀN BỘ LOCALSTORAGE
       localStorage.removeItem("userName");
       localStorage.removeItem("userImage");
-      
-      // 🔥 XÓA SESSIONSTORAGE
+      localStorage.removeItem("userId");
+      localStorage.removeItem("token");
       sessionStorage.clear();
-      
-      console.log("🚪 Đã đăng xuất, đã xóa toàn bộ dữ liệu lưu trữ");
     }
   };
 
-  // 🔥 HÀM CẬP NHẬT USER IMAGE (gọi từ Profile)
   const updateUserImage = (imageUrl) => {
-    console.log("🖼️ Cập nhật user image:", imageUrl);
     setUserImage(imageUrl);
     if (imageUrl) {
       localStorage.setItem("userImage", imageUrl);
@@ -208,9 +181,7 @@ const StoreContextProvider = (props) => {
     }
   };
 
-  // 🔥 HÀM CẬP NHẬT USER NAME
   const updateUserName = (name) => {
-    console.log("👤 Cập nhật user name:", name);
     setUserName(name);
     localStorage.setItem("userName", name);
   };
@@ -256,8 +227,13 @@ const StoreContextProvider = (props) => {
     return Math.max(0, totalAmount - discount);
   };
 
-  // Load dữ liệu khi khởi động
   useEffect(() => {
+    const savedToken = localStorage.getItem("token");
+    if (savedToken) {
+      setToken(savedToken);
+      setIsAuthenticated(true);
+    }
+    
     const init = async () => {
       await fetchFoodList();
       await checkAuthStatus();
@@ -265,7 +241,6 @@ const StoreContextProvider = (props) => {
     init();
   }, []);
 
-  // 🔥 CONTEXT VALUE - ĐẦY ĐỦ
   const contextValue = {
     food_list,
     cartItems,
@@ -281,6 +256,8 @@ const StoreContextProvider = (props) => {
     userImage,
     setUserImage: updateUserImage,
     isAdmin,
+    userId,
+    token,
     login,
     logout,
     promoCode,
@@ -290,6 +267,8 @@ const StoreContextProvider = (props) => {
     search,
     setSearch,
     getImageUrl,
+    selectedCategory,
+    setSelectedCategory,
     loading: loading || authLoading,
     authLoading
   };

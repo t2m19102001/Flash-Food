@@ -2,33 +2,33 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { StoreContext } from '../../context/StoreContext';
 import axios from 'axios';
+import ConfirmModal from '../../components/ConfirmModal/ConfirmModal';
 import './OrderDetail.scss';
 
 const OrderDetail = () => {
   const { orderId } = useParams();
   const navigate = useNavigate();
-  const { url, isAuthenticated, getImageUrl, logout } = useContext(StoreContext);
+  const { url, isAuthenticated, getImageUrl, logout, token } = useContext(StoreContext);
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [cancelling, setCancelling] = useState(false);
+  
+  // State cho modal hủy đơn
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [cancelReason, setCancelReason] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // 🔥 THÊM LOG ĐỂ DEBUG
-  console.log("🔍 OrderDetail - orderId từ params:", orderId);
+  console.log("🔍 OrderDetail - orderId:", orderId);
   console.log("🔍 OrderDetail - isAuthenticated:", isAuthenticated);
-  console.log("🔍 OrderDetail - url:", url);
 
   const fetchOrderDetail = async () => {
-    console.log("🟢 fetchOrderDetail được gọi");
-    
     if (!isAuthenticated) {
-      console.log("❌ Chưa đăng nhập, chuyển hướng về login");
       navigate('/login');
       return;
     }
     
     if (!orderId) {
-      console.log("❌ Không có orderId");
       setError("Không tìm thấy mã đơn hàng");
       setLoading(false);
       return;
@@ -42,10 +42,13 @@ const OrderDetail = () => {
       console.log("🟢 Gọi API:", apiUrl);
       
       const response = await axios.get(apiUrl, {
-        withCredentials: true
+        withCredentials: true,
+        headers: {
+          'Authorization': token ? `Bearer ${token}` : ''
+        }
       });
       
-      console.log("📥 Response nhận được:", response.data);
+      console.log("📥 Response:", response.data);
       
       if (response.data.success) {
         setOrder(response.data.order);
@@ -53,17 +56,13 @@ const OrderDetail = () => {
         setError(response.data.message || 'Không thể tải đơn hàng');
       }
     } catch (err) {
-      console.error('❌ Lỗi chi tiết:', err);
-      console.error('❌ Response status:', err.response?.status);
-      console.error('❌ Response data:', err.response?.data);
+      console.error('❌ Lỗi:', err);
       
       if (err.response?.status === 401) {
         setError('Phiên đăng nhập hết hạn, vui lòng đăng nhập lại!');
         setTimeout(() => logout(), 1500);
       } else if (err.response?.status === 404) {
         setError('Không tìm thấy đơn hàng');
-      } else if (err.code === 'ECONNABORTED' || err.message === 'Network Error') {
-        setError('Không thể kết nối đến máy chủ. Vui lòng kiểm tra backend!');
       } else {
         setError(err.response?.data?.message || 'Không thể tải thông tin đơn hàng');
       }
@@ -72,22 +71,38 @@ const OrderDetail = () => {
     }
   };
 
+  // Mở modal xác nhận hủy đơn
+  const openCancelModal = () => {
+    setCancelReason('');
+    setShowCancelModal(true);
+  };
+
+  // Xử lý hủy đơn
   const handleCancelOrder = async () => {
-    if (!window.confirm('Bạn có chắc muốn hủy đơn hàng này?')) return;
-    
+    if (!cancelReason.trim()) {
+      alert('Vui lòng nhập lý do hủy đơn');
+      return;
+    }
+
+    setIsSubmitting(true);
     setCancelling(true);
+    
     try {
       const response = await axios.post(`${url}/api/order/cancel`, {
         orderId: orderId,
-        reason: 'Khách hàng yêu cầu hủy',
+        reason: cancelReason.trim(),
         cancelledBy: 'user'
       }, {
-        withCredentials: true
+        withCredentials: true,
+        headers: {
+          'Authorization': token ? `Bearer ${token}` : ''
+        }
       });
       
       if (response.data.success) {
         alert('✅ Đã hủy đơn hàng thành công!');
-        fetchOrderDetail(); // Refresh lại thông tin
+        setShowCancelModal(false);
+        fetchOrderDetail();
       } else {
         alert(response.data.message || 'Hủy đơn thất bại');
       }
@@ -95,6 +110,7 @@ const OrderDetail = () => {
       console.error('Lỗi hủy đơn:', err);
       alert(err.response?.data?.message || 'Không thể hủy đơn hàng');
     } finally {
+      setIsSubmitting(false);
       setCancelling(false);
     }
   };
@@ -134,17 +150,14 @@ const OrderDetail = () => {
     return cancellableStatuses.includes(order.status);
   };
 
-  // 🔥 useEffect để gọi API khi component mount
   useEffect(() => {
-    console.log("🔄 useEffect chạy, orderId:", orderId);
     if (orderId) {
       fetchOrderDetail();
     } else {
-      console.log("❌ orderId không tồn tại, không gọi API");
       setLoading(false);
       setError("Không tìm thấy mã đơn hàng");
     }
-  }, [orderId]); // 🔥 THÊM orderId VÀO DEPENDENCY
+  }, [orderId]);
 
   if (loading) {
     return (
@@ -235,6 +248,7 @@ const OrderDetail = () => {
                   src={getImageUrl(item.image)} 
                   alt={item.name} 
                   className="item-image"
+                  onError={(e) => { e.target.src = '/default-food.png'; }}
                 />
                 <div className="item-info">
                   <p className="item-name">{item.name}</p>
@@ -249,16 +263,16 @@ const OrderDetail = () => {
           <div className="order-summary">
             <div className="summary-row">
               <span>Tạm tính:</span>
-              <span>{formatPrice(order.amount - 15000)}</span>
+              <span>{formatPrice(order.amount - (order.shippingFee || 15000))}</span>
             </div>
             <div className="summary-row">
               <span>Phí giao hàng:</span>
-              <span>{formatPrice(15000)}</span>
+              <span>{formatPrice(order.shippingFee || 15000)}</span>
             </div>
             {order.discount > 0 && (
               <div className="summary-row discount">
-                <span>Giảm giá ({order.discount}%):</span>
-                <span>-{formatPrice(order.amount * order.discount / 100)}</span>
+                <span>Giảm giá:</span>
+                <span>-{formatPrice(order.discount)}</span>
               </div>
             )}
             <div className="summary-row total">
@@ -272,7 +286,7 @@ const OrderDetail = () => {
           <div className="action-section">
             <button 
               className="cancel-order-btn" 
-              onClick={handleCancelOrder}
+              onClick={openCancelModal}
               disabled={cancelling}
             >
               {cancelling ? 'Đang xử lý...' : '❌ Hủy đơn hàng'}
@@ -288,6 +302,31 @@ const OrderDetail = () => {
           </div>
         )}
       </div>
+
+      {/* Modal xác nhận hủy đơn */}
+      <ConfirmModal
+        isOpen={showCancelModal}
+        onClose={() => setShowCancelModal(false)}
+        onConfirm={handleCancelOrder}
+        title="Hủy đơn hàng"
+        message={
+          <div className="cancel-reason-form">
+            <p>Bạn có chắc muốn hủy đơn hàng <strong>#{order._id?.slice(-8)}</strong>?</p>
+            <p className="reason-label">Vui lòng cho biết lý do:</p>
+            <textarea
+              className="reason-input"
+              placeholder="Nhập lý do hủy đơn..."
+              value={cancelReason}
+              onChange={(e) => setCancelReason(e.target.value)}
+              rows="3"
+              disabled={isSubmitting}
+            />
+          </div>
+        }
+        confirmText={isSubmitting ? "Đang xử lý..." : "Xác nhận hủy"}
+        cancelText="Quay lại"
+        isSubmitting={isSubmitting}
+      />
     </div>
   );
 };

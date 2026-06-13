@@ -4,7 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { SkeletonStats, SkeletonCard } from "../Loading/Loading";
 
-const Dashboard = ({ url }) => {
+const Dashboard = ({ url = "http://localhost:4000" }) => {
     const [stats, setStats] = useState({
         totalProducts: 0,
         totalOrders: 0,

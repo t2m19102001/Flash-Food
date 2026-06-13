@@ -3,14 +3,21 @@ import "./MyOrders.scss";
 import { StoreContext } from "../../context/StoreContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import ConfirmModal from "../../components/ConfirmModal/ConfirmModal";
 
 const MyOrders = () => {
-  const { url, isAuthenticated, logout } = useContext(StoreContext);
+  const { url, isAuthenticated, logout, token } = useContext(StoreContext);
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [cancellingId, setCancellingId] = useState(null);
+
+  // State cho modal hủy đơn
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [cancelReason, setCancelReason] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchOrders = async () => {
     if (!isAuthenticated) {
@@ -24,7 +31,10 @@ const MyOrders = () => {
     
     try {
       const response = await axios.post(`${url}/api/order/userorders`, {}, {
-        withCredentials: true
+        withCredentials: true,
+        headers: {
+          'Authorization': token ? `Bearer ${token}` : ''
+        }
       });
       
       if (response.data.success) {
@@ -50,21 +60,38 @@ const MyOrders = () => {
     }
   };
 
-  const handleCancelOrder = async (orderId) => {
-    if (!window.confirm("Bạn có chắc muốn hủy đơn hàng này?")) return;
+  // Mở modal xác nhận hủy đơn
+  const openCancelModal = (order) => {
+    setSelectedOrder(order);
+    setCancelReason("");
+    setShowCancelModal(true);
+  };
+
+  // Xử lý hủy đơn
+  const handleCancelOrder = async () => {
+    if (!cancelReason.trim()) {
+      alert("Vui lòng nhập lý do hủy đơn");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setCancellingId(selectedOrder?._id);
     
-    setCancellingId(orderId);
     try {
       const response = await axios.post(`${url}/api/order/cancel`, {
-        orderId: orderId,
-        reason: "Khách hàng yêu cầu hủy",
+        orderId: selectedOrder._id,
+        reason: cancelReason.trim(),
         cancelledBy: "user"
       }, {
-        withCredentials: true
+        withCredentials: true,
+        headers: {
+          'Authorization': token ? `Bearer ${token}` : ''
+        }
       });
       
       if (response.data.success) {
         alert("✅ Đã hủy đơn hàng thành công!");
+        setShowCancelModal(false);
         fetchOrders();
       } else {
         alert(response.data.message || "Hủy đơn thất bại");
@@ -73,6 +100,7 @@ const MyOrders = () => {
       console.error("Error cancelling order:", error);
       alert(error.response?.data?.message || "Không thể hủy đơn hàng");
     } finally {
+      setIsSubmitting(false);
       setCancellingId(null);
     }
   };
@@ -163,7 +191,7 @@ const MyOrders = () => {
           {orders.map((order, index) => {
             const statusInfo = getStatusBadge(order.status);
             const isCancellable = order.status === 'pending' || order.status === 'pending_payment';
-            const orderNote = order.address?.note; // 🔥 LẤY GHI CHÚ TỪ ĐƠN HÀNG
+            const orderNote = order.address?.note;
             
             return (
               <div key={index} className="order-card">
@@ -193,7 +221,6 @@ const MyOrders = () => {
                   ))}
                 </div>
 
-                {/* 🔥 THÊM PHẦN HIỂN THỊ GHI CHÚ */}
                 {orderNote && (
                   <div className="order-note">
                     <span className="note-label">📝 Ghi chú:</span>
@@ -224,7 +251,7 @@ const MyOrders = () => {
                   {isCancellable && (
                     <button 
                       className="action-btn cancel-btn" 
-                      onClick={() => handleCancelOrder(order._id)}
+                      onClick={() => openCancelModal(order)}
                       disabled={cancellingId === order._id}
                     >
                       {cancellingId === order._id ? 'Đang xử lý...' : '❌ Hủy đơn'}
@@ -241,6 +268,31 @@ const MyOrders = () => {
           })}
         </div>
       )}
+
+      {/* Modal xác nhận hủy đơn */}
+      <ConfirmModal
+        isOpen={showCancelModal}
+        onClose={() => setShowCancelModal(false)}
+        onConfirm={handleCancelOrder}
+        title="Hủy đơn hàng"
+        message={
+          <div className="cancel-reason-form">
+            <p>Bạn có chắc muốn hủy đơn hàng <strong>#{selectedOrder?._id?.slice(-8)}</strong>?</p>
+            <p className="reason-label">Vui lòng cho biết lý do:</p>
+            <textarea
+              className="reason-input"
+              placeholder="Nhập lý do hủy đơn..."
+              value={cancelReason}
+              onChange={(e) => setCancelReason(e.target.value)}
+              rows="3"
+              disabled={isSubmitting}
+            />
+          </div>
+        }
+        confirmText={isSubmitting ? "Đang xử lý..." : "Xác nhận hủy"}
+        cancelText="Quay lại"
+        isSubmitting={isSubmitting}
+      />
     </div>
   );
 };

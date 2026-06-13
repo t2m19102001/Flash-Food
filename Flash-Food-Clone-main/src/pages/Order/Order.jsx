@@ -11,7 +11,7 @@ const Order = () => {
   const {
     getTotalCartAmount,
     isAuthenticated,
-    userName,
+    userName, 
     url,
     logout,
     food_list,
@@ -541,7 +541,7 @@ const Order = () => {
             </button>
             {!data.address && (
               <p className="error-message">
-                ⚠️ Vui lòng cập nhật địa chỉ trước khi đặt hàng!
+                ⚠️ Vui lòng đăng nhập!
               </p>
             )}
           </div>

@@ -95,7 +95,7 @@ const Login = ({ setIsLoggedIn, url }) => {
                     </form>
 
                     <div className="back-to-home">
-                        <a href={import.meta.env.VITE_FRONTEND_URL}>
+                        <a href="http://localhost:5173">
                             ← Quay lại trang người dùng
                         </a>
                     </div>

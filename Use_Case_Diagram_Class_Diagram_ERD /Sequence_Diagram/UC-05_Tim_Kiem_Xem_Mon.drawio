@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-05-23T00:00:00.000Z" agent="Claude Code" version="21.0.0" type="device">
+  <diagram name="UC-05 Tìm kiếm và Xem món" id="uc05-search-view">
+    <mxGraphModel dx="1200" dy="800" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- TIÊU ĐỀ -->
+        <mxCell id="title" value="Sequence Diagram — UC-05: Tìm kiếm &amp; Xem món"
+          style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Times New Roman;fontSize=15;fontStyle=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="50" y="-30" width="1000" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- ===== PARTICIPANT BOXES ===== -->
+        <!-- b1: Người dùng, center=100 -->
+        <mxCell id="b1" value="Người dùng"
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;fontFamily=Times New Roman;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;"
+          vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="160" height="60" as="geometry" />
+        </mxCell>
+        <!-- b2: SearchUI, center=310 -->
+        <mxCell id="b2" value="SearchUI"
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;fontFamily=Times New Roman;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;"
+          vertex="1" parent="1">
+          <mxGeometry x="230" y="20" width="160" height="60" as="geometry" />
+        </mxCell>
+        <!-- b3: foodController, center=520 -->
+        <mxCell id="b3" value="foodController"
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;fontFamily=Times New Roman;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;"
+          vertex="1" parent="1">
+          <mxGeometry x="440" y="20" width="160" height="60" as="geometry" />
+        </mxCell>
+        <!-- b4: foodService, center=730 -->
+        <mxCell id="b4" value="foodService"
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;fontFamily=Times New Roman;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;"
+          vertex="1" parent="1">
+          <mxGeometry x="650" y="20" width="160" height="60" as="geometry" />
+        </mxCell>
+        <!-- b5: foodRepository, center=940 -->
+        <mxCell id="b5" value="foodRepository"
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;fontFamily=Times New Roman;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;"
+          vertex="1" parent="1">
+          <mxGeometry x="860" y="20" width="160" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ===== LIFELINES ===== -->
+        <mxCell id="lf1" value="" style="endArrow=none;dashed=1;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="100" y="80" as="sourcePoint" />
+            <mxPoint x="100" y="680" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lf2" value="" style="endArrow=none;dashed=1;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="310" y="80" as="sourcePoint" />
+            <mxPoint x="310" y="680" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lf3" value="" style="endArrow=none;dashed=1;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="520" y="80" as="sourcePoint" />
+            <mxPoint x="520" y="680" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lf4" value="" style="endArrow=none;dashed=1;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="730" y="80" as="sourcePoint" />
+            <mxPoint x="730" y="680" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lf5" value="" style="endArrow=none;dashed=1;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="940" y="80" as="sourcePoint" />
+            <mxPoint x="940" y="680" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ===== ACTIVATION BARS ===== -->
+        <!-- ac2: SearchUI, y=130→620 -->
+        <mxCell id="ac2" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="304" y="130" width="12" height="490" as="geometry" />
+        </mxCell>
+        <!-- ac3: foodController, y=210→620 -->
+        <mxCell id="ac3" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="514" y="210" width="12" height="410" as="geometry" />
+        </mxCell>
+        <!-- ac4: foodService, y=255→395 -->
+        <mxCell id="ac4" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="724" y="255" width="12" height="140" as="geometry" />
+        </mxCell>
+        <!-- ac5: foodRepository, y=300→345 -->
+        <mxCell id="ac5" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="934" y="300" width="12" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- ===== MESSAGES ===== -->
+
+        <!-- M1: Người dùng → SearchUI: Nhập từ khóa tìm kiếm (y=130) -->
+        <mxCell id="m1" value="Nhập từ khóa tìm kiếm"
+          style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="100" y="130" as="sourcePoint" />
+            <mxPoint x="304" y="130" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M2: SearchUI self-loop: Debounce 300ms (y=175) -->
+        <mxCell id="m2" value="Debounce 300ms"
+          style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=left;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="316" y="175" as="sourcePoint" />
+            <mxPoint x="316" y="195" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="360" y="175" />
+              <mxPoint x="360" y="195" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M3: SearchUI → foodController: GET /api/food/list (y=210) -->
+        <mxCell id="m3" value="GET /api/food/list?keyword=X&amp;category=Y"
+          style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="316" y="210" as="sourcePoint" />
+            <mxPoint x="514" y="210" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M4: foodController → foodService: search (y=255) -->
+        <mxCell id="m4" value="search(keyword, categoryId)"
+          style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="526" y="255" as="sourcePoint" />
+            <mxPoint x="724" y="255" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M5: foodService → foodRepository: findByCriteria (y=300) -->
+        <mxCell id="m5" value="findByCriteria({name, category, isAvailable: true})"
+          style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="736" y="300" as="sourcePoint" />
+            <mxPoint x="934" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M6: foodRepository → foodService (return, y=345) -->
+        <mxCell id="m6" value="Kết quả truy vấn"
+          style="html=1;endArrow=open;endFill=0;dashed=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="934" y="345" as="sourcePoint" />
+            <mxPoint x="736" y="345" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M7: foodService → foodController (return, y=390) -->
+        <mxCell id="m7" value="Danh sách món ăn"
+          style="html=1;endArrow=open;endFill=0;dashed=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="724" y="390" as="sourcePoint" />
+            <mxPoint x="526" y="390" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ===== ALT COMBINED FRAGMENT ===== -->
+        <!-- Alt outer box: x=15, y=415, w=595, h=205 -->
+        <mxCell id="alt_box" value=""
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=none;strokeWidth=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="15" y="415" width="595" height="205" as="geometry" />
+        </mxCell>
+        <!-- "alt" label box -->
+        <mxCell id="alt_lbl" value="alt"
+          style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;fontFamily=Times New Roman;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;"
+          vertex="1" parent="1">
+          <mxGeometry x="15" y="415" width="36" height="22" as="geometry" />
+        </mxCell>
+        <!-- Condition 1: [Kết quả rỗng] -->
+        <mxCell id="alt_c1" value="[Kết quả rỗng]"
+          style="text;html=1;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=11;fontStyle=2;align=left;verticalAlign=middle;"
+          vertex="1" parent="1">
+          <mxGeometry x="56" y="415" width="550" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- M8: foodController → SearchUI: HTTP 200 [] (y=455) -->
+        <mxCell id="m8" value="HTTP 200 [] (trống)"
+          style="html=1;endArrow=open;endFill=0;dashed=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="514" y="455" as="sourcePoint" />
+            <mxPoint x="316" y="455" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M9: SearchUI → Người dùng: Không tìm thấy (y=490) -->
+        <mxCell id="m9" value="Hiển thị: Không tìm thấy món ăn"
+          style="html=1;endArrow=open;endFill=0;dashed=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="304" y="490" as="sourcePoint" />
+            <mxPoint x="100" y="490" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Divider dashed line inside alt: y=510 -->
+        <mxCell id="alt_div" value=""
+          style="endArrow=none;dashed=1;strokeColor=#000000;strokeWidth=1;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="15" y="510" as="sourcePoint" />
+            <mxPoint x="610" y="510" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <!-- Condition 2: [Có kết quả] -->
+        <mxCell id="alt_c2" value="[Có kết quả]"
+          style="text;html=1;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=11;fontStyle=2;align=left;verticalAlign=middle;"
+          vertex="1" parent="1">
+          <mxGeometry x="25" y="512" width="200" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- M10: foodController → SearchUI: HTTP 200 [danh sách] (y=545) -->
+        <mxCell id="m10" value="HTTP 200 [danh sách món ăn]"
+          style="html=1;endArrow=open;endFill=0;dashed=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="514" y="545" as="sourcePoint" />
+            <mxPoint x="316" y="545" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- M11: SearchUI → Người dùng: Hiển thị danh sách (y=580) -->
+        <mxCell id="m11" value="Hiển thị danh sách món ăn"
+          style="html=1;endArrow=open;endFill=0;dashed=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=11;align=center;verticalAlign=bottom;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="304" y="580" as="sourcePoint" />
+            <mxPoint x="100" y="580" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

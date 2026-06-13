@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import "./Product.scss";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { buildImageUrl } from "../../utils/imageUrl";
 
 const Product = ({ url }) => {
   const [list, setList] = useState([]);
@@ -44,7 +43,23 @@ const Product = ({ url }) => {
     { value: "xoiman", label: "Xôi mặn" },
   ];
 
-  const getImageUrl = buildImageUrl;
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return "";
+    if (imagePath.startsWith("http")) return imagePath;
+
+    // 🔥 Nếu đường dẫn đã bắt đầu bằng /uploads/ (từ database)
+    if (imagePath.startsWith("/uploads/")) {
+      return `${url}${imagePath}`;
+    }
+
+    // Nếu imagePath có chứa thư mục con (ví dụ: anvat/ten_file.jpg)
+    if (imagePath.includes("/")) {
+      return `${url}/uploads/${imagePath}`;
+    }
+
+    // Nếu chỉ có tên file, lấy từ thư mục images
+    return `${url}/images/${imagePath}`;
+  };
 
   // Filter products
   const filteredProducts = list.filter((product) => {

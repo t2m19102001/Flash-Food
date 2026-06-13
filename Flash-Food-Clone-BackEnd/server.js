@@ -62,14 +62,7 @@ const corsOptions = {
     if (origin.match(/^http:\/\/localhost:517[0-9]$/)) {
       return callback(null, true);
     }
-
-    // Cho phép các origin được cấu hình trong .env (ALLOWED_ORIGINS)
-    const allowedOrigins = (process.env.ALLOWED_ORIGINS || '')
-      .split(',').map(o => o.trim()).filter(Boolean);
-    if (allowedOrigins.some(o => origin.startsWith(o))) {
-      return callback(null, true);
-    }
-
+    
     callback(new Error(`Not allowed by CORS: ${origin}`));
   },
   credentials: true,
@@ -178,9 +171,9 @@ if (!fs.existsSync(imagesDir)) {
   fs.mkdirSync(imagesDir, { recursive: true });
 }
 
-// uploads/ chứa toàn bộ ảnh: category subfolders (seed) + images/ (user upload)
-app.use('/uploads', express.static(uploadsDir));
-app.use('/images', express.static(imagesDir));
+// 🔥 PHỤC VỤ FILE TĨNH - QUAN TRỌNG CHO ẢNH
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/images', express.static(path.join(__dirname, 'uploads/images')));
 
 // ========== API ENDPOINTS ==========
 app.use("/api/food", foodRouter);
@@ -197,6 +190,25 @@ app.use("/api/report", reportRouter);
 app.use("/api/notifications", notificationRouter);
 app.use('/api/payment', paymentRouter);
 
+
+// ========== SERVE FRONTEND ==========
+const adminDistPath = path.join(__dirname, "../admin/dist");
+
+if (fs.existsSync(adminDistPath)) {
+  app.use(express.static(adminDistPath));
+  
+  app.use((req, res, next) => {
+    if (req.path.startsWith('/api') || 
+        req.path.startsWith('/uploads') || 
+        req.path.startsWith('/images') || 
+        req.path.includes('.')) {
+      return next();
+    }
+    res.sendFile(path.resolve(adminDistPath, "index.html"));
+  });
+} else {
+  console.log("⚠️ Admin dist folder not found at:", adminDistPath);
+}
 
 app.get("/", (req, res) => {
   res.send("API Working");

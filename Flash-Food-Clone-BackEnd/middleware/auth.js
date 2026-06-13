@@ -15,7 +15,7 @@ export const generateTokenAndSetCookie = (res, userId, isAdmin = false) => {
     // Set httpOnly cookie - BẢO MẬT HƠN LOCALSTORAGE
     res.cookie('token', token, {
         httpOnly: true,      // Không thể truy cập bằng JavaScript (chống XSS)
-        secure: process.env.COOKIE_SECURE === 'true', // Bật khi có HTTPS
+        secure: process.env.NODE_ENV === 'production', // Chỉ gửi qua HTTPS trong production
         sameSite: 'lax',     // 'strict' có thể gây lỗi khi redirect
         maxAge: 7 * 24 * 60 * 60 * 1000 // 7 ngày
     });
@@ -27,7 +27,7 @@ export const generateTokenAndSetCookie = (res, userId, isAdmin = false) => {
 export const clearTokenCookie = (res) => {
     res.clearCookie('token', {
         httpOnly: true,
-        secure: process.env.COOKIE_SECURE === 'true',
+        secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax'
     });
 };
@@ -254,7 +254,7 @@ export const refreshTokenIfNeeded = async (req, res, next) => {
             
             res.cookie('token', newToken, {
                 httpOnly: true,
-                secure: process.env.COOKIE_SECURE === 'true',
+                secure: process.env.NODE_ENV === 'production',
                 sameSite: 'lax',
                 maxAge: 7 * 24 * 60 * 60 * 1000
             });

@@ -5,20 +5,15 @@ import qr from 'qrcode';
 import orderModel from '../models/orderModel.js';
 import userModel from '../models/userModel.js';
 
-const requireEnv = (key) => {
-    const v = process.env[key];
-    if (!v) throw new Error(`Missing required env var: ${key}`);
-    return v;
-};
-
+// Cấu hình MoMo Test
 const config = {
-    accessKey: requireEnv('MOMO_ACCESS_KEY'),
-    secretKey: requireEnv('MOMO_SECRET_KEY'),
+    accessKey: process.env.MOMO_ACCESS_KEY || 'F8BBA842ECF85',
+    secretKey: process.env.MOMO_SECRET_KEY || 'K951B6PE1waDMi640xX08PD3vg6EkVlz',
     partnerCode: process.env.MOMO_PARTNER_CODE || 'MOMO',
     partnerName: process.env.MOMO_PARTNER_NAME || 'Flash Food',
     storeName: process.env.MOMO_STORE_NAME || 'FlashFoodStore',
-    ipnUrl: requireEnv('MOMO_IPN_URL'),
-    redirectUrl: requireEnv('MOMO_REDIRECT_URL'),
+    ipnUrl: process.env.MOMO_IPN_URL || 'http://localhost:4000/api/payment/momo/ipn',
+    redirectUrl: process.env.MOMO_REDIRECT_URL || 'http://localhost:5173/payment-success',
     requestType: 'captureWallet',
     apiEndpoint: 'https://test-payment.momo.vn/v2/gateway/api/create'
 };
@@ -251,13 +246,13 @@ export const momoCallback = async (req, res) => {
                     paidAt: new Date()
                 });
             }
-            return res.redirect(`${process.env.FRONTEND_URL}/payment-success?success=true&orderId=${originalOrderId}`);
+            return res.redirect(`http://localhost:5173/payment-success?success=true&orderId=${originalOrderId}`);
         } else {
-            return res.redirect(`${process.env.FRONTEND_URL}/payment-success?success=false&message=${encodeURIComponent(message || 'Thanh toán thất bại')}`);
+            return res.redirect(`http://localhost:5173/payment-success?success=false&message=${encodeURIComponent(message || 'Thanh toán thất bại')}`);
         }
     } catch (error) {
         console.error("Callback error:", error);
-        return res.redirect(`${process.env.FRONTEND_URL}/payment-success?success=false&message=System error`);
+        return res.redirect('http://localhost:5173/payment-success?success=false&message=System error');
     }
 };
 

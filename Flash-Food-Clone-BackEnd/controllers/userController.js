@@ -4,12 +4,12 @@ import bcrypt from "bcryptjs";
 import validator from "validator";
 import { generateTokenAndSetCookie, clearTokenCookie } from "../middleware/auth.js";
 
-// 1. Tạo token (chỉ dùng nội bộ, không trả về client)
+// 1. Tạo token
 const createToken = (id, isAdmin = false) => {
     return jwt.sign({ id, isAdmin }, process.env.JWT_SECRET, { expiresIn: '7d' });
 };
 
-// 2. Đăng nhập - Dùng cookie
+// 2. Đăng nhập
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -27,17 +27,22 @@ const loginUser = async (req, res) => {
             return res.status(401).json({ success: false, message: "Mật khẩu không đúng" });
         }
         
-        // Kiểm tra tài khoản có bị khóa không
         if (!user.isActive) {
             return res.status(403).json({ success: false, message: "Tài khoản đã bị khóa. Vui lòng liên hệ hỗ trợ!" });
         }
         
+        // Tạo token
+        const token = createToken(user._id, user.isAdmin);
+        
         // Set cookie
         generateTokenAndSetCookie(res, user._id, user.isAdmin);
         
+        // Trả về token cho frontend
         res.json({
             success: true,
             message: "Đăng nhập thành công",
+            token: token,
+            userId: user._id,
             isAdmin: user.isAdmin,
             name: user.name,
             image: user.image || ""
@@ -52,7 +57,6 @@ const loginUser = async (req, res) => {
 const registerUser = async (req, res) => {
     const { name, email, password, phone } = req.body;
     try {
-        // Validate đầu vào
         if (!name || !email || !password) {
             return res.status(400).json({ success: false, message: "Vui lòng điền đầy đủ thông tin" });
         }
@@ -89,13 +93,19 @@ const registerUser = async (req, res) => {
 
         const savedUser = await newUser.save();
         
-        // Set cookie cho user mới
+        // Tạo token
+        const token = createToken(savedUser._id, savedUser.isAdmin);
+        
+        // Set cookie
         generateTokenAndSetCookie(res, savedUser._id, savedUser.isAdmin);
 
         res.status(201).json({ 
             success: true, 
-            message: "Đăng ký thành công", 
-            name: savedUser.name 
+            message: "Đăng ký thành công",
+            token: token,
+            userId: savedUser._id,
+            name: savedUser.name,
+            isAdmin: savedUser.isAdmin
         });
     } catch (error) {
         console.error("Register Error:", error);
@@ -103,13 +113,13 @@ const registerUser = async (req, res) => {
     }
 };
 
-// 3b. Đăng xuất
+// 4. Đăng xuất
 const logoutUser = async (req, res) => {
     clearTokenCookie(res);
     res.json({ success: true, message: "Đã đăng xuất" });
 };
 
-// 3c. Kiểm tra trạng thái đăng nhập
+// 5. Kiểm tra trạng thái đăng nhập
 const checkAuthStatus = async (req, res) => {
     try {
         const userId = req.userId;
@@ -123,14 +133,19 @@ const checkAuthStatus = async (req, res) => {
             return res.status(401).json({ success: false, message: "User không tồn tại" });
         }
         
+        // Tạo token mới
+        const token = createToken(user._id, user.isAdmin);
+        
         res.json({
             success: true,
             user: {
+                id: user._id,
                 name: user.name,
                 email: user.email,
                 image: user.image,
                 isAdmin: user.isAdmin
-            }
+            },
+            token: token
         });
     } catch (error) {
         console.error("Check auth error:", error);
@@ -138,7 +153,7 @@ const checkAuthStatus = async (req, res) => {
     }
 };
 
-// 4. CẬP NHẬT PROFILE
+// 6. Cập nhật profile
 const updateUser = async (req, res) => {
     console.log("\n======= 📌 UPDATE API CALLED =======");
     
@@ -165,16 +180,9 @@ const updateUser = async (req, res) => {
         console.log("3. File upload:", req.file ? req.file.filename : "Không có ảnh mới");
 
         const updateData = {};
-
+        
         if (name !== undefined) updateData.name = name.trim();
-        if (email !== undefined) {
-            const normalizedEmail = email.toLowerCase().trim();
-            const existingUser = await userModel.findOne({ email: normalizedEmail });
-            if (existingUser && existingUser._id.toString() !== userId.toString()) {
-                return res.status(400).json({ success: false, message: "Email này đã được sử dụng bởi tài khoản khác" });
-            }
-            updateData.email = normalizedEmail;
-        }
+        if (email !== undefined) updateData.email = email.toLowerCase().trim();
         if (phone !== undefined) updateData.phone = phone;
         if (secondaryPhone !== undefined) updateData.secondaryPhone = secondaryPhone;
         if (gender !== undefined) updateData.gender = gender;
@@ -206,14 +214,7 @@ const updateUser = async (req, res) => {
             return res.status(404).json({ success: false, message: "Không tìm thấy người dùng" });
         }
 
-        console.log("7. ✅ UPDATE THÀNH CÔNG! Dữ liệu mới từ DB:");
-        console.log({
-            name: updatedUser.name,
-            secondaryPhone: updatedUser.secondaryPhone,
-            gender: updatedUser.gender,
-            dob: updatedUser.dob,
-            address: updatedUser.address
-        });
+        console.log("7. ✅ UPDATE THÀNH CÔNG!");
         console.log("===================================\n");
 
         res.json({ 
@@ -225,7 +226,6 @@ const updateUser = async (req, res) => {
         
     } catch (error) {
         console.error("❌ LỖI TRONG UPDATE USER:", error);
-        console.error("Chi tiết lỗi:", error.message);
         res.status(500).json({ 
             success: false, 
             message: "Lỗi server khi cập nhật profile: " + error.message 
@@ -233,7 +233,7 @@ const updateUser = async (req, res) => {
     }
 };
 
-// 5. Lấy thông tin cá nhân
+// 7. Lấy thông tin cá nhân
 const getProfile = async (req, res) => {
     console.log("\n======= 📌 GET PROFILE CALLED =======");
     try {
@@ -250,13 +250,7 @@ const getProfile = async (req, res) => {
             return res.status(404).json({ success: false, message: "Không tìm thấy người dùng" });
         }
         
-        console.log("2. Dữ liệu user trả về:", {
-            name: user.name,
-            secondaryPhone: user.secondaryPhone,
-            gender: user.gender,
-            dob: user.dob,
-            address: user.address
-        });
+        console.log("2. Dữ liệu user trả về");
         console.log("===================================\n");
         
         res.json({ success: true, user });
@@ -266,7 +260,7 @@ const getProfile = async (req, res) => {
     }
 };
 
-// 6. Đổi mật khẩu
+// 8. Đổi mật khẩu
 const changePassword = async (req, res) => {
     const { oldPassword, newPassword } = req.body;
     try {
@@ -299,7 +293,7 @@ const changePassword = async (req, res) => {
     }
 };
 
-// 7. Các hàm dành cho Admin
+// 9. Admin: Danh sách người dùng
 const listUsers = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -326,6 +320,7 @@ const listUsers = async (req, res) => {
     }
 };
 
+// 10. Admin: Xóa người dùng
 const deleteUser = async (req, res) => {
     try {
         const { id } = req.body;
@@ -338,7 +333,6 @@ const deleteUser = async (req, res) => {
             return res.status(404).json({ success: false, message: "Không tìm thấy người dùng" });
         }
         
-        // Không cho xóa admin cuối cùng
         const adminCount = await userModel.countDocuments({ isAdmin: true });
         if (user.isAdmin && adminCount === 1) {
             return res.status(400).json({ success: false, message: "Không thể xóa tài khoản Admin duy nhất" });
@@ -352,6 +346,7 @@ const deleteUser = async (req, res) => {
     }
 };
 
+// 11. Admin: Khóa/Mở khóa tài khoản
 const toggleUserStatus = async (req, res) => {
     try {
         const { id } = req.body;
@@ -362,7 +357,6 @@ const toggleUserStatus = async (req, res) => {
         const user = await userModel.findById(id);
         if (!user) return res.status(404).json({ success: false, message: "User không tồn tại" });
         
-        // Không cho khóa admin cuối cùng
         if (user.isAdmin) {
             const adminCount = await userModel.countDocuments({ isAdmin: true });
             if (adminCount === 1) {

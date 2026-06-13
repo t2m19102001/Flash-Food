@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import './Banner.scss'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import { buildImageUrl } from '../../utils/imageUrl'
 
 const Banner = ({ url }) => {
     const [banners, setBanners] = useState([])
@@ -60,7 +59,7 @@ const Banner = ({ url }) => {
             <div className="banner-grid">
                 {banners.map(banner => (
                     <div key={banner._id} className="banner-card">
-                        <img src={buildImageUrl(banner.image)} alt={banner.title} />
+                        <img src={`${url}/uploads/${banner.image}`} alt={banner.title} />
                         <div className="banner-info"><h4>{banner.title}</h4><p>{banner.subtitle}</p><small>Thứ tự: {banner.order}</small></div>
                         <div className="banner-actions"><button className="edit-btn" onClick={() => { setIsEditing(true); setEditingId(banner._id); setFormData(banner); setShowForm(true); }}>✏️</button><button className="delete-btn" onClick={() => handleDelete(banner._id)}>🗑️</button></div>
                     </div>

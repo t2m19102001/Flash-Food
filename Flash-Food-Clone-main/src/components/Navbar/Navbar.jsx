@@ -371,7 +371,7 @@ const Navbar = ({ setShowLogin }) => {
                 {isAdmin && (
                   <li
                     onClick={() =>
-                      window.location.assign(import.meta.env.VITE_ADMIN_URL)
+                      window.location.assign("http://localhost:5175")
                     }
                   >
                     <img src={assets.parcel_icon} alt="" />

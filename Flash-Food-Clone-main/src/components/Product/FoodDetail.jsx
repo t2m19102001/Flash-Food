@@ -1,12 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { StoreContext } from '../../context/StoreContext';
+import ReviewList from '../Review/ReviewList';
 import './FoodDetail.scss';
 
 const FoodDetail = () => {
   const { foodId } = useParams();
   const navigate = useNavigate();
-  const { food_list, addToCart, getImageUrl, userName } = useContext(StoreContext);
+  const { food_list, addToCart, getImageUrl, userName, token, isAuthenticated, url } = useContext(StoreContext);
+
+  // State cho review
+  const [reviews, setReviews] = useState([]);
+  const [averageRating, setAverageRating] = useState(0);
+  const [totalReviews, setTotalReviews] = useState(0);
+  const [loadingReviews, setLoadingReviews] = useState(true);
 
   // 1. Tìm món ăn hiện tại
   const foodItem = food_list.find((item) => String(item._id) === String(foodId));
@@ -24,6 +31,45 @@ const FoodDetail = () => {
       setRelatedProducts(suggestions);
     }
   }, [foodId, foodItem, food_list]);
+
+  // Lấy danh sách review
+  const fetchReviews = async () => {
+    try {
+      setLoadingReviews(true);
+      const response = await fetch(`${url}/api/review/food/${foodId}?page=1&limit=10`);
+      const data = await response.json();
+      
+      if (data.success) {
+        setReviews(data.reviews || []);
+        setAverageRating(data.averageRating || 0);
+        setTotalReviews(data.totalReviews || 0);
+      }
+    } catch (error) {
+      console.error("Lỗi lấy review:", error);
+    } finally {
+      setLoadingReviews(false);
+    }
+  };
+
+  useEffect(() => {
+    if (foodId) {
+      fetchReviews();
+    }
+  }, [foodId]);
+
+  // Render stars
+  const renderStars = (rating, size = "small") => {
+    const stars = [];
+    const roundedRating = Math.round(rating);
+    for (let i = 1; i <= 5; i++) {
+      stars.push(
+        <span key={i} className={`star ${i <= roundedRating ? "filled" : ""} ${size}`}>
+          ★
+        </span>
+      );
+    }
+    return stars;
+  };
 
   // Lấy tên người dùng để hiển thị thân thiện
   const displayName = userName || "bạn";
@@ -79,8 +125,12 @@ const FoodDetail = () => {
           <h1 className='food-name'>{foodItem.name}</h1>
           
           <div className="rating-section">
-            <div className="stars">★★★★★</div>
-            <span className="rating-count">50+ đánh giá trên FlashFood</span>
+            <div className="stars">
+              {renderStars(averageRating, "medium")}
+            </div>
+            <span className="rating-count">
+              {averageRating.toFixed(1)} ({totalReviews} đánh giá)
+            </span>
           </div>
 
           <div className="status-section">
@@ -114,6 +164,9 @@ const FoodDetail = () => {
           </button>
         </div>
       </div>
+
+      {/* --- PHẦN ĐÁNH GIÁ (REVIEW) --- */}
+      <ReviewList foodId={foodId} />
 
       {/* --- PHẦN GỢI Ý: 5 MÓN + 1 Ô XEM THÊM --- */}
       {relatedProducts.length > 0 && (

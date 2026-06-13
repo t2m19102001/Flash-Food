@@ -4,7 +4,6 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
 import { getCookie } from "../../utils/cookieHelper";
-import { buildImageUrl } from "../../utils/imageUrl";
 
 const List = ({ url }) => {
   const [list, setList] = useState([]);
@@ -61,7 +60,7 @@ const List = ({ url }) => {
           list.map((item, index) => {
             return (
               <div key={index} className="list-table-format">
-                <img src={buildImageUrl(item.image)} alt="" />
+                <img src={`${url}` + item.image} alt="" />
                 <p className="product-name">{item.name}</p>
                 <span className="category-badge">{item.category}</span>
                 <p className="product-price">{item.price.toLocaleString()} đ</p>
